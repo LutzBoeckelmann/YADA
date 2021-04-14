@@ -316,6 +316,15 @@ namespace YADA.Test
                 .EnsureNoOtherReferences()
                 .Ensure();
         }
+
+        [Test]
+        public void TypeLoader_Can_Load_Assembly_Specifiec_By_FileName() 
+        {
+            var sut = new Core.TypeLoader(new[] { @"./Example.dll" });
+            var types = sut.GetTypes();
+            Assert.NotNull(types);
+        }
+
         private void PrintType(Core.TypeDescription type)
         {
             foreach (var dependency in type.Dependencies)
@@ -421,20 +430,9 @@ namespace YADA.Test
 
         }
 
-    
         private Core.TypeDescription FetchType<T>() 
         {
-            var types = YADA.Core.Loader.GetTypes(typeof(T).Assembly.Location);
-            
-            foreach (var type in types)
-            {
-                if(type.FullName == typeof(T).FullName)                
-                {
-                    return type;
-                }
-            }
-
-            return null;
+            return YADA.Core.TypeLoader.GetType(typeof(T).FullName, typeof(T).Assembly.Location);
         }
     }
 

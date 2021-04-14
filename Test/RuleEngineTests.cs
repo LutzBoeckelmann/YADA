@@ -51,6 +51,8 @@ namespace YADA.Test
             public ITypeDescription Type { get; }
 
             public int Occurrence { get; }
+
+            public IEnumerable<IDependencyContext> Contexts => throw new NotImplementedException();
         }
 
         public class TypeMock : ITypeDescription
