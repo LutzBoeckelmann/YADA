@@ -38,7 +38,7 @@ namespace YADA.Core
             }
         }
         
-        public static TypeDescription AnalyseType(TypeDefinition typeDefinition) 
+        internal static TypeDescription AnalyseType(TypeDefinition typeDefinition) 
         {
             var result = new TypeDescription( typeDefinition.FullName);
 
