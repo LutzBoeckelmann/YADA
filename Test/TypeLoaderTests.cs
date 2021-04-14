@@ -122,7 +122,8 @@ namespace YADA.Test
         public void TypeLoader_Recognizes_ImplementedInterfaces_As_Dependencies() 
         {
             var type = FetchType<Example.ClassWithSeveralInterfaceDependencies>();
-    
+
+            PrintType(type);
             DependencyAssertion
             .ForType(type)
             .Expected<Example.IDependencyInterface>()
@@ -136,7 +137,7 @@ namespace YADA.Test
         public void TypeLoader_Recognizes_ImplementedGenericInterfaces_As_Dependencies() 
         {
             var type = FetchType<Example.ClassWithGenericInterfaceDependencies>();
-    
+            PrintType(type);
             DependencyAssertion
             .ForType(type)
             .Expected<Example.IDependencyInterface>()
@@ -318,18 +319,37 @@ namespace YADA.Test
         }
 
         [Test]
-        public void TypeLoader_Can_Load_Assembly_Specifiec_By_FileName() 
+        public void TypeLoader_Can_Load_Assembly_Specified_By_FileName() 
         {
             var sut = new Core.TypeLoader(new[] { @"./Example.dll" });
             var types = sut.GetTypes();
             Assert.NotNull(types);
         }
 
-        private void PrintType(Core.TypeDescription type)
+
+        [Test]
+        public void TypeLoader_Can_Analyse_Assembly() 
         {
+            var sut = new Core.TypeLoader(new[] { @"./Example.dll" });
+            var types = sut.GetTypes();
+            
+            foreach(var type in types) 
+            {
+                PrintType(type);
+                TestContext.WriteLine("--------------------------------------------------------------");
+            }
+        }
+
+
+        private void PrintType(Core.ITypeDescription type)
+        {
+            TestContext.WriteLine(type.FullName);
             foreach (var dependency in type.Dependencies)
             {
-                TestContext.WriteLine($"->{dependency.Type.FullName} ({dependency.Occurrence})");
+                TestContext.WriteLine($"    ->{dependency.Type.FullName} ({dependency.Occurrence}) :");
+                foreach(var context in dependency.Contexts) {
+                    TestContext.WriteLine($"        {context}");
+                }
             }
         }
 

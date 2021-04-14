@@ -1,14 +1,115 @@
 // Copyright (c) Lutz Boeckelmann and Contributors. MIT License - see LICENSE.txt
 
 using System.Collections.Generic;
+using System.Text;
 using Mono.Cecil;
 
 namespace YADA.Core
 {
     /// <summary>
+    /// The base idea of IDependencyConext is to provide information about  
+    /// where the current type is coupled to the dependency.
+    /// </summary>
+    public abstract class BaseContext : IDependencyContext 
+    {
+        public string Name { get; }
+
+        protected BaseContext(string name) { 
+            Name = name;
+            AdditionalInfomation = new Dictionary<string, string>();
+        }
+
+        public Dictionary<string, string> AdditionalInfomation { get; }
+
+        protected string PrintAdditionalInformation() 
+        {
+            StringBuilder result = new StringBuilder();
+            foreach(var pair in AdditionalInfomation)
+             {
+                result.Append($"{pair.Key} - {pair.Value}");
+
+            }
+
+            return result.ToString();
+        }
+    }
+
+    public class FieldContext : BaseContext
+    {
+        public FieldContext(string fieldName) : base(fieldName) {        }
+
+        public override string ToString()
+        {
+            return $"FieldContext {Name}";
+        }
+    }
+
+    public class InheritesContext : BaseContext
+    {
+        
+
+        public InheritesContext(string dependencyName) : base(dependencyName)  { }
+
+         public override string ToString()
+        {
+            return $"InheritesContext {Name}";
+        }
+    }
+
+    public enum MethodDependencyUsageType
+    {
+        Parameter,
+        ReturnType,
+        LocalVariable
+    }
+
+    public class MethodDefinitionContext : BaseContext
+    {
+        public MethodDependencyUsageType m_UsageType;
+
+        public MethodDefinitionContext(string methodName, MethodDependencyUsageType dependencyAccessType): base(methodName)  
+        {
+            m_UsageType = dependencyAccessType;
+        }
+
+         public override string ToString()
+        {
+            return $"MethodDefinitionContext {Name} as {m_UsageType}";
+        }
+    }
+
+    public enum MethodDependencyAccessType 
+    {
+        CallToMethodDefintion,
+        AccessFields,
+
+        CalledMethodReturnValue,
+
+        CalledMethodParameter,
+
+        TypeAccess
+    }
+
+    public class MethodBodyContext : BaseContext
+    {
+       
+        public MethodDependencyAccessType m_UsageType;
+
+        public MethodBodyContext(string methodName, MethodDependencyAccessType dependencyAccessType): base(methodName) 
+        {
+            m_UsageType = dependencyAccessType;
+        }
+
+        public override string ToString()
+        {
+            return $"MethodBodyContext {Name} as {m_UsageType} ({PrintAdditionalInformation()})";
+        }
+    }
+
+    /// <summary>
     /// Responsible for retriving all dependencies of the given type.
     /// </summary>
-    public class TypeAnalyser 
+    public class TypeAnalyser
     {
         internal static TypeDescription AnalyseType(TypeDefinition typeDefinition)
         {
@@ -17,19 +118,19 @@ namespace YADA.Core
             //Check fields
             foreach (var field in typeDefinition.Fields)
             {
-                AddDependency(result, field.FieldType);
+                AddDependency(result, field.FieldType, new FieldContext(field.Name));
             }
 
             // interfaces
             foreach (var implementedInterface in typeDefinition.Interfaces)
             {
-                AddDependency(result, implementedInterface.InterfaceType);
+                AddDependency(result, implementedInterface.InterfaceType, new InheritesContext(""));
             }
 
             // base class 
             if (typeDefinition.BaseType != null)
             {
-                AddDependency(result, typeDefinition.BaseType);
+                AddDependency(result, typeDefinition.BaseType, new InheritesContext(""));
             }
 
             AnalyseMethod(result, typeDefinition);
@@ -38,22 +139,23 @@ namespace YADA.Core
         }
 
 
-        private static void AnalyseMethod(TypeDescription result, TypeDefinition typeDefinition){
+        private static void AnalyseMethod(TypeDescription result, TypeDefinition typeDefinition)
+        {
 
-            
+
             // method 
             foreach (var method in typeDefinition.Methods)
             {
                 foreach (var parameter in method.Parameters)
                 {
-                    AddDependency(result, parameter.ParameterType);
+                    AddDependency(result, parameter.ParameterType, new MethodDefinitionContext(method.Name, MethodDependencyUsageType.Parameter));
                 }
 
                 var returnValue = method.MethodReturnType.ReturnType;
 
                 if (returnValue.FullName != "System.Void")
                 {
-                    AddDependency(result, returnValue);
+                    AddDependency(result, returnValue,  new MethodDefinitionContext(method.Name, MethodDependencyUsageType.ReturnType) );
                 }
 
                 if (method.HasBody)
@@ -61,7 +163,7 @@ namespace YADA.Core
                     //Console.WriteLine($"--- {method.FullName} ---");
                     foreach (var localVariable in method.Body.Variables)
                     {
-                        AddDependency(result, localVariable.VariableType);
+                        AddDependency(result, localVariable.VariableType, new MethodDefinitionContext(method.Name, MethodDependencyUsageType.LocalVariable));
                     }
 
                     foreach (var line in method.Body.Instructions)
@@ -77,19 +179,23 @@ namespace YADA.Core
 
                         if (line.Operand is MethodDefinition methodDefinition)
                         {
-                            AddDependency(result, methodDefinition.DeclaringType);
+                            var context = new MethodBodyContext(method.Name, MethodDependencyAccessType.CallToMethodDefintion);
+                            AddDependency(result, methodDefinition.DeclaringType, context );
                             //Console.WriteLine($"!! {methodDefinition.DeclaringType.FullName}");
                         }
 
                         if (line.Operand is FieldDefinition fieldDefinition)
                         {
-                            AddDependency(result, fieldDefinition.FieldType);
+                            // this may not be relevant for the dependency if its a local field, but may be used for deeper informations
+                            var context = new MethodBodyContext(method.Name, MethodDependencyAccessType.AccessFields);
+                            AddDependency(result, fieldDefinition.FieldType, context);
 
                             //Console.WriteLine($"!! {fieldDefinition.FieldType.FullName}");
                         }
                         if (line.Operand is TypeDefinition typeDefinition1)
                         {
-                            AddDependency(result, typeDefinition1);
+                            var context = new MethodBodyContext(method.Name, MethodDependencyAccessType.TypeAccess);
+                            AddDependency(result, typeDefinition1, context);
                             //Console.WriteLine($"!! {typeDefinition1.FullName}");
                         }
                         if (line.Operand is MethodReference methodReference)
@@ -97,12 +203,16 @@ namespace YADA.Core
 
                             if (methodReference.ReturnType.FullName != "System.Void")
                             {
-                                AddDependency(result, methodReference.ReturnType);
+                                var context = new MethodBodyContext(method.Name, MethodDependencyAccessType.CalledMethodReturnValue);
+                                context.AdditionalInfomation.Add("CalledMethod", methodReference.FullName);
+                                AddDependency(result, methodReference.ReturnType, context);
                             }
 
                             foreach (var t in methodReference.Parameters)
                             {
-                                AddDependency(result, t.ParameterType);
+                                var context = new MethodBodyContext(method.Name, MethodDependencyAccessType.CalledMethodParameter);
+                                context.AdditionalInfomation.Add("CalledMethod", methodReference.FullName);
+                                AddDependency(result, t.ParameterType, context);
                                 //Console.WriteLine("References to Parameter " + t.ParameterType.FullName);
                             }
 
@@ -112,7 +222,7 @@ namespace YADA.Core
 
             }
         }
-        private static void AddDependency(TypeDescription currentType, TypeReference dependency)
+        private static void AddDependency(TypeDescription currentType, TypeReference dependency, IDependencyContext context)
         {
             TypeDescription dependencyDescription;
 
@@ -121,7 +231,7 @@ namespace YADA.Core
             foreach (var type in dependencies)
             {
                 dependencyDescription = new TypeDescription(type.FullName);
-                currentType.AddDependency(dependencyDescription);
+                currentType.AddDependency(dependencyDescription, context);
             }
 
         }
