@@ -8,19 +8,45 @@ using YADA.Core;
 
 namespace YADA.Test
 {
+
+    [TestFixture]
+    public class Test {
+
+        public void test() {
+            var mapper = new ArchRuleExampleTypeRepository();
+
+            var typeRules = new ITypeRule[] 
+            { 
+                new CorrectNamespaceTypeRule(mapper) 
+            };
+
+            var dependencyRules = new IDependencyRule[] 
+            {
+                new CrossComponentAccessOnlyOnSameTechnicalLayerDependencyRule(mapper),
+                new OnlyAccessTypesOnOwnOrLowerTechnicalLayerDependencyRule(mapper),
+                new OnlyAccessTypesOnOwnOrLowerDomainLayerDependencyRule(mapper)
+            };
+            
+            var sut = new Core.DependencyRuleEngine(typeRules, dependencyRules);
+
+            sut.Analyse(new ITypeDescription[0]); 
+        }
+    }
+
     [TestFixture]
     public class RuleEngineTests
     {
+
         public class Filter : IDependencyRule
         {
-            private readonly Func<ITypeDescription, IDependency, bool> m_Function;
+            private readonly Func<ITypeDescription, IDependency, DependencyRuleResult> m_Function;
 
-            public Filter(Func<ITypeDescription, IDependency, bool> function)
+            public Filter(Func<ITypeDescription, IDependency, DependencyRuleResult> function)
             {
                 m_Function = function;
             }
 
-            public bool Apply(ITypeDescription type, IDependency dependency)
+            public DependencyRuleResult Apply(ITypeDescription type, IDependency dependency)
             {
                 return m_Function(type, dependency);
             }
@@ -28,14 +54,14 @@ namespace YADA.Test
 
         public class Filter2 : ITypeRule
         {
-            private readonly Func<ITypeDescription, bool> m_Function;
+            private readonly Func<ITypeDescription, DependencyRuleResult> m_Function;
 
-            public Filter2(Func<ITypeDescription, bool> function)
+            public Filter2(Func<ITypeDescription, DependencyRuleResult> function)
             {
                 m_Function = function;
             }
 
-            public bool Apply(ITypeDescription type)
+            public DependencyRuleResult Apply(ITypeDescription type)
             {
                 return m_Function(type);
             }
@@ -78,7 +104,7 @@ namespace YADA.Test
         [Test]
         public void Constructor_CorrectInput_Success() 
         {
-            var sut = new DependencyRuleEngine(new []{new Filter2(_=>true)}, new []{new Filter((s,d)=>true)});
+            var sut = new DependencyRuleEngine(new []{new Filter2(_=>DependencyRuleResult.Approve)}, new []{new Filter((s,d)=>DependencyRuleResult.Approve)});
 
             Assert.NotNull(sut);
         }
@@ -88,7 +114,7 @@ namespace YADA.Test
         {
             var input = new List<ITypeDescription>() { new TypeMock("Type1"), new TypeMock("Type2") };
 
-            var sut = new DependencyRuleEngine(new []{new Filter2(_=>true)}, new []{new Filter((s,d)=>true)});
+            var sut = new DependencyRuleEngine(new []{new Filter2(_=>DependencyRuleResult.Approve)}, new []{new Filter((s,d)=>DependencyRuleResult.Approve)});
 
             var result = sut.Analyse(input);
             
@@ -103,7 +129,7 @@ namespace YADA.Test
 
             var list = new List<ITypeDescription>();
 
-            var sut = new DependencyRuleEngine(new []{new Filter2(t => { list.Add(t); return true; })}, new []{new Filter((s,d)=>true)});
+            var sut = new DependencyRuleEngine(new []{new Filter2(t => { list.Add(t); return DependencyRuleResult.Approve; })}, new []{new Filter((s,d)=>DependencyRuleResult.Approve)});
 
             var result = sut.Analyse(input);
 
@@ -118,7 +144,9 @@ namespace YADA.Test
 
             bool dependencyFilterCall = false;
 
-            var sut = new DependencyRuleEngine(new []{new Filter2(_ =>true)}, new []{new Filter((s,d)=>dependencyFilterCall = true)});
+            var sut = new DependencyRuleEngine(
+                new[] { new Filter2(_ => DependencyRuleResult.Approve) }, 
+                new[] { new Filter((s, d) => { dependencyFilterCall = true; return DependencyRuleResult.Approve; })});
 
             var result = sut.Analyse(input);
 
@@ -127,20 +155,19 @@ namespace YADA.Test
 
         [Test]
         public void Analyse_SetOfTypesOneWithExactlyDependency_DependencyFiltersCalled() 
-        
         {
             var input = new List<TypeMock>() { new TypeMock("Type1"), new TypeMock("Type2") };
             input[0].Add(input[1]);
             
-
-
             var calls = new List<Tuple<ITypeDescription, IDependency>>();
-            var sut = new DependencyRuleEngine(new []{new Filter2(_ =>true)}, new []{new Filter((s, d) => { calls.Add(new Tuple<ITypeDescription, IDependency>(s, d)); return true; })});
+            var sut = new DependencyRuleEngine(new []{new Filter2(_ =>DependencyRuleResult.Approve)}, new []{new Filter((s, d) => { calls.Add(new Tuple<ITypeDescription, IDependency>(s, d)); return DependencyRuleResult.Approve; })});
 
             var result = sut.Analyse(input);
 
             Assert.That(calls, Is.EquivalentTo(new []{new Tuple<ITypeDescription, IDependency>(input[0], input[0].Dependencies.First())}));
         }
+
+
 
         
 
