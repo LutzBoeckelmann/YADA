@@ -12,20 +12,13 @@ namespace YADA.Test
         [Test]
         public void Apply_DependencyWithoutValidType_Ignore() 
         {
-            var type = MoqProvider.GetTypeDescriptionMoq("ValidType");
+            var type = new ArchRuleExampleType(null,null,null, true);
 
-            var invalidType = MoqProvider.GetTypeDescriptionMoq("InValidType");
+            var dependencyInvalidType = new ArchRuleExampleType(null,null,null, false);
 
-            var dependency = MoqProvider.GetDependencyMoq(invalidType);
+            var sut = new OnlyAccessTypesOnOwnOrLowerDomainLayerDependencyRule();
 
-            var moq = new Mock<IArchRuleExampleTypeRepository>();
-
-            moq.Setup(m => m.GetTypeRepresentation("ValidType")).Returns(new ArchRuleExampleTypes(null,null,null, true));
-            moq.Setup(m => m.GetTypeRepresentation("InValidType")).Returns(new ArchRuleExampleTypes(null,null,null, false));
-
-            var sut = new OnlyAccessTypesOnOwnOrLowerDomainLayerDependencyRule(moq.Object);
-
-            var result = sut.Apply(type, dependency);
+            var result = sut.Apply(type, new ArchRuleExampleDependency(dependencyInvalidType));
 
             Assert.That(result, Is.EqualTo(DependencyRuleResult.Ignore));
 
@@ -34,20 +27,13 @@ namespace YADA.Test
         [Test]
         public void Apply_ValidDependencyInSameLevel_Approve() 
         {
-             var type = MoqProvider.GetTypeDescriptionMoq("ValidType");
+            var type = new ArchRuleExampleType(new ArchRuleDomainLayer(ArchRuleDomainLayer.Core),null,null, true);
 
-            var otherValidType = MoqProvider.GetTypeDescriptionMoq("OtherValidType");
+            var otherValidType = new ArchRuleExampleType(new ArchRuleDomainLayer("Core"),null,null, true);
+            
+            var sut = new OnlyAccessTypesOnOwnOrLowerDomainLayerDependencyRule();
 
-            var dependency = MoqProvider.GetDependencyMoq(otherValidType);
-
-            var moq = new Mock<IArchRuleExampleTypeRepository>();
-
-            moq.Setup(m => m.GetTypeRepresentation("ValidType")).Returns(new ArchRuleExampleTypes(new ArchRuleDomainLayer(ArchRuleDomainLayer.Core),null,null, true));
-            moq.Setup(m => m.GetTypeRepresentation("OtherValidType")).Returns(new ArchRuleExampleTypes(new ArchRuleDomainLayer("Core"),null,null, true));
-
-            var sut = new OnlyAccessTypesOnOwnOrLowerDomainLayerDependencyRule(moq.Object);
-
-            var result = sut.Apply(type, dependency);
+            var result = sut.Apply(type, new ArchRuleExampleDependency(otherValidType));
 
             Assert.That(result, Is.EqualTo(DependencyRuleResult.Approve));
         }
@@ -55,20 +41,12 @@ namespace YADA.Test
         [Test]
         public void Apply_ValidDependencyOnLowerLevel_Approve() 
         {
-             var type = MoqProvider.GetTypeDescriptionMoq("ValidType");
+            var type = new ArchRuleExampleType(new ArchRuleDomainLayer(ArchRuleDomainLayer.Extentions), null, null, true);
+            var otherValidType = new ArchRuleExampleType(new ArchRuleDomainLayer(ArchRuleDomainLayer.Infrastructure),null,null, true);
 
-            var otherValidType = MoqProvider.GetTypeDescriptionMoq("OtherValidType");
+            var sut = new OnlyAccessTypesOnOwnOrLowerDomainLayerDependencyRule();
 
-            var dependency = MoqProvider.GetDependencyMoq(otherValidType);
-
-            var moq = new Mock<IArchRuleExampleTypeRepository>();
-
-            moq.Setup(m => m.GetTypeRepresentation("ValidType")).Returns(new ArchRuleExampleTypes(new ArchRuleDomainLayer(ArchRuleDomainLayer.Extentions),null,null, true));
-            moq.Setup(m => m.GetTypeRepresentation("OtherValidType")).Returns(new ArchRuleExampleTypes(new ArchRuleDomainLayer(ArchRuleDomainLayer.Infrastructure),null,null, true));
-
-            var sut = new OnlyAccessTypesOnOwnOrLowerDomainLayerDependencyRule(moq.Object);
-
-            var result = sut.Apply(type, dependency);
+            var result = sut.Apply(type, new ArchRuleExampleDependency(otherValidType));
 
             Assert.That(result, Is.EqualTo(DependencyRuleResult.Approve));
         }

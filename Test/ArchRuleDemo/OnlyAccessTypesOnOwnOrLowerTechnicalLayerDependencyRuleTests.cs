@@ -12,42 +12,25 @@ namespace YADA.Test
         [Test]
         public void Apply_DependencyWithoutValidType_Ignore() 
         {
-            var type = MoqProvider.GetTypeDescriptionMoq("ValidType");
+            var type = new ArchRuleExampleType(null,null,null, true);
+            var invalidType = new ArchRuleExampleType(null,null,null, false);
 
-            var invalidType = MoqProvider.GetTypeDescriptionMoq("InValidType");
+            var sut = new OnlyAccessTypesOnOwnOrLowerTechnicalLayerDependencyRule();
 
-            var dependency = MoqProvider.GetDependencyMoq(invalidType);
-
-            var moq = new Mock<IArchRuleExampleTypeRepository>();
-
-            moq.Setup(m => m.GetTypeRepresentation("ValidType")).Returns(new ArchRuleExampleTypes(null,null,null, true));
-            moq.Setup(m => m.GetTypeRepresentation("InValidType")).Returns(new ArchRuleExampleTypes(null,null,null, false));
-
-            var sut = new OnlyAccessTypesOnOwnOrLowerTechnicalLayerDependencyRule(moq.Object);
-
-            var result = sut.Apply(type, dependency);
+            var result = sut.Apply(type, new ArchRuleExampleDependency(invalidType));
 
             Assert.That(result, Is.EqualTo(DependencyRuleResult.Ignore));
-
         }
 
         [Test]
         public void Apply_ValidDependencyInSameLevel_Approve() 
         {
-             var type = MoqProvider.GetTypeDescriptionMoq("ValidType");
+            var type = new ArchRuleExampleType(null,null,new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.BusinessLogic), true);
+            var otherValidType = new ArchRuleExampleType(null, null, new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.BusinessLogic), true);
 
-            var otherValidType = MoqProvider.GetTypeDescriptionMoq("OtherValidType");
+            var sut = new OnlyAccessTypesOnOwnOrLowerTechnicalLayerDependencyRule();
 
-            var dependency = MoqProvider.GetDependencyMoq(otherValidType);
-
-            var moq = new Mock<IArchRuleExampleTypeRepository>();
-
-            moq.Setup(m => m.GetTypeRepresentation("ValidType")).Returns(new ArchRuleExampleTypes(null,null,new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.BusinessLogic), true));
-            moq.Setup(m => m.GetTypeRepresentation("OtherValidType")).Returns(new ArchRuleExampleTypes(null,null,new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.BusinessLogic), true));
-
-            var sut = new OnlyAccessTypesOnOwnOrLowerTechnicalLayerDependencyRule(moq.Object);
-
-            var result = sut.Apply(type, dependency);
+            var result = sut.Apply(type, new ArchRuleExampleDependency(otherValidType));
 
             Assert.That(result, Is.EqualTo(DependencyRuleResult.Approve));
         }
@@ -55,20 +38,13 @@ namespace YADA.Test
         [Test]
         public void Apply_ValidDependencyOnLowerLevel_Approve() 
         {
-             var type = MoqProvider.GetTypeDescriptionMoq("ValidType");
+            var type = new ArchRuleExampleType(null,null,new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.UI), true);
 
-            var otherValidType = MoqProvider.GetTypeDescriptionMoq("OtherValidType");
+            var otherValidType = new ArchRuleExampleType(null,null,new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.Data), true);
 
-            var dependency = MoqProvider.GetDependencyMoq(otherValidType);
+            var sut = new OnlyAccessTypesOnOwnOrLowerTechnicalLayerDependencyRule();
 
-            var moq = new Mock<IArchRuleExampleTypeRepository>();
-
-            moq.Setup(m => m.GetTypeRepresentation("ValidType")).Returns(new ArchRuleExampleTypes(null,null,new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.UI), true));
-            moq.Setup(m => m.GetTypeRepresentation("OtherValidType")).Returns(new ArchRuleExampleTypes(null,null,new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.Data), true));
-
-            var sut = new OnlyAccessTypesOnOwnOrLowerTechnicalLayerDependencyRule(moq.Object);
-
-            var result = sut.Apply(type, dependency);
+            var result = sut.Apply(type, new ArchRuleExampleDependency(otherValidType));
 
             Assert.That(result, Is.EqualTo(DependencyRuleResult.Approve));
         }

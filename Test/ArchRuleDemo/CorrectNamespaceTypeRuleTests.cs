@@ -6,21 +6,16 @@ using YADA.Core;
 
 namespace YADA.Test
 {
+
     [TestFixture]
     public class CorrectNamespaceTypeRuleTests 
     {
         [Test]
         public void Apply_ValidType_Approve() 
         {
-            var type = MoqProvider.GetTypeDescriptionMoq("ValidType");
+            var sut = new CorrectNamespaceTypeRule();
 
-            var moq = new Mock<IArchRuleExampleTypeRepository>();
-
-            moq.Setup(m => m.GetTypeRepresentation("ValidType")).Returns(new ArchRuleExampleTypes(null,null,null, true));
-
-            var sut = new CorrectNamespaceTypeRule(moq.Object);
-
-            var result = sut.Apply(type);
+            var result = sut.Apply(new ArchRuleExampleType(null,null,null, true));
 
             Assert.That(result, Is.EqualTo(DependencyRuleResult.Approve));
         }
@@ -28,17 +23,10 @@ namespace YADA.Test
         [Test]
         public void Apply_InValidType_Reject() 
         {
-             
-            var invalidType = MoqProvider.GetTypeDescriptionMoq("InValidType");
 
-            var moq = new Mock<IArchRuleExampleTypeRepository>();
+            var sut = new CorrectNamespaceTypeRule();
 
-            moq.Setup(m => m.GetTypeRepresentation("InValidType")).Returns(new ArchRuleExampleTypes(null,null,null, false));
-
-
-            var sut = new CorrectNamespaceTypeRule(moq.Object);
-
-            var result = sut.Apply(invalidType);
+            var result = sut.Apply(new ArchRuleExampleType(null,null,null, false));
 
             Assert.That(result, Is.EqualTo(DependencyRuleResult.Reject));
         }

@@ -12,43 +12,25 @@ namespace YADA.Test
         [Test]
         public void Apply_DependencyWithoutValidType_Ignore()
         {
-            var type = MoqProvider.GetTypeDescriptionMoq("ValidType");
+            var type = new ArchRuleExampleType(null, null, null, true);
+            var dependencyType = new ArchRuleExampleType(null,null,null, false);
 
-            var invalidType = MoqProvider.GetTypeDescriptionMoq("InValidType");
+            var sut = new CrossComponentAccessOnlyOnSameTechnicalLayerDependencyRule();
 
-            var dependency = MoqProvider.GetDependencyMoq(invalidType);
-
-            var moq = new Mock<IArchRuleExampleTypeRepository>();
-
-            moq.Setup(m => m.GetTypeRepresentation("ValidType")).Returns(new ArchRuleExampleTypes(null,null,null, true));
-            moq.Setup(m => m.GetTypeRepresentation("InValidType")).Returns(new ArchRuleExampleTypes(null,null,null, false));
-
-            var sut = new CrossComponentAccessOnlyOnSameTechnicalLayerDependencyRule(moq.Object);
-
-            var result = sut.Apply(type, dependency);
+            var result = sut.Apply(type, new ArchRuleExampleDependency(dependencyType));
 
             Assert.That(result, Is.EqualTo(DependencyRuleResult.Ignore));
-
-       
         }
 
         [Test]
         public void Apply_DependencyInSameComponent_Approve()
         {
-            var type = MoqProvider.GetTypeDescriptionMoq("ValidType");
+            var type = new ArchRuleExampleType(null,new ArchRuleModule("Module"),null, true);
+            var dependencyType = new ArchRuleExampleType(null, new ArchRuleModule("Module"), null, true);
 
-            var otherType = MoqProvider.GetTypeDescriptionMoq("OtherType");
+            var sut = new CrossComponentAccessOnlyOnSameTechnicalLayerDependencyRule();
 
-            var dependency = MoqProvider.GetDependencyMoq(otherType);
-
-            var moq = new Mock<IArchRuleExampleTypeRepository>();
-
-            moq.Setup(m => m.GetTypeRepresentation(type.FullName)).Returns(new ArchRuleExampleTypes(null,new ArchRuleModule("Module"),null, true));
-            moq.Setup(m => m.GetTypeRepresentation(otherType.FullName)).Returns(new ArchRuleExampleTypes(null,new ArchRuleModule("Module"),null, true));
-
-            var sut = new CrossComponentAccessOnlyOnSameTechnicalLayerDependencyRule(moq.Object);
-
-            var result = sut.Apply(type, dependency);
+            var result = sut.Apply(type, new ArchRuleExampleDependency(dependencyType));
 
             Assert.That(result, Is.EqualTo(DependencyRuleResult.Approve));
 
@@ -57,20 +39,12 @@ namespace YADA.Test
         [Test]
         public void Apply_DependencyDifferentModulesSameLayer_Approve()
         {
-            var type = MoqProvider.GetTypeDescriptionMoq("ValidType");
+            var type = new ArchRuleExampleType(null, new ArchRuleModule("Module"), new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.BusinessLogic), true);
+            var dependencyType = new ArchRuleExampleType(null, new ArchRuleModule("OtherModule"), new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.BusinessLogic), true);
 
-            var otherType = MoqProvider.GetTypeDescriptionMoq("OtherType");
+            var sut = new CrossComponentAccessOnlyOnSameTechnicalLayerDependencyRule();
 
-            var dependency = MoqProvider.GetDependencyMoq(otherType);
-
-            var moq = new Mock<IArchRuleExampleTypeRepository>();
-
-            moq.Setup(m => m.GetTypeRepresentation(type.FullName)).Returns(new ArchRuleExampleTypes(null,new ArchRuleModule("Module"),new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.BusinessLogic), true));
-            moq.Setup(m => m.GetTypeRepresentation(otherType.FullName)).Returns(new ArchRuleExampleTypes(null,new ArchRuleModule("OtherModule"),new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.BusinessLogic), true));
-
-            var sut = new CrossComponentAccessOnlyOnSameTechnicalLayerDependencyRule(moq.Object);
-
-            var result = sut.Apply(type, dependency);
+            var result = sut.Apply(type, new ArchRuleExampleDependency(dependencyType));
 
             Assert.That(result, Is.EqualTo(DependencyRuleResult.Approve));
 
@@ -79,20 +53,12 @@ namespace YADA.Test
          [Test]
         public void Apply_DependencyDifferentModulesDifferentLayer_Approve()
         {
-            var type = MoqProvider.GetTypeDescriptionMoq("ValidType");
+            var type = new ArchRuleExampleType(null,new ArchRuleModule("Module"),new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.BusinessLogic), true);
+            var dependencyType = new ArchRuleExampleType(null, new ArchRuleModule("OtherModule"), new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.Data), true);
 
-            var otherType = MoqProvider.GetTypeDescriptionMoq("OtherType");
+            var sut = new CrossComponentAccessOnlyOnSameTechnicalLayerDependencyRule();
 
-            var dependency = MoqProvider.GetDependencyMoq(otherType);
-
-            var moq = new Mock<IArchRuleExampleTypeRepository>();
-
-            moq.Setup(m => m.GetTypeRepresentation(type.FullName)).Returns(new ArchRuleExampleTypes(null,new ArchRuleModule("Module"),new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.BusinessLogic), true));
-            moq.Setup(m => m.GetTypeRepresentation(otherType.FullName)).Returns(new ArchRuleExampleTypes(null,new ArchRuleModule("OtherModule"),new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.Data), true));
-
-            var sut = new CrossComponentAccessOnlyOnSameTechnicalLayerDependencyRule(moq.Object);
-
-            var result = sut.Apply(type, dependency);
+            var result = sut.Apply(type, new ArchRuleExampleDependency(dependencyType));
 
             Assert.That(result, Is.EqualTo(DependencyRuleResult.Reject));
 
