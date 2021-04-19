@@ -10,14 +10,18 @@ namespace YADA.Test
     //ArchRuleExample.Infrastructure.Module1.Data.SubComponentHelper
     public class ArchRuleExampleType
     {
-        public ArchRuleExampleType(ArchRuleDomainLayer dl, ArchRuleModule module, ArchRuleTechnicalLayer tl, bool valid)
+
+        public ArchRuleExampleType(string fullName, ArchRuleDomainLayer dl, ArchRuleModule module, ArchRuleTechnicalLayer tl, bool valid)
         {
+            FullName = fullName;
             DomainLayer = dl;
             Module = module;
             TechnicalLayer = tl;
             Valid = valid;
+
         }
 
+        public string FullName { get; }
         public ArchRuleDomainLayer DomainLayer {get;}
         public ArchRuleTechnicalLayer TechnicalLayer{get;}
 
@@ -25,5 +29,10 @@ namespace YADA.Test
 
 
         public bool Valid { get; }
+
+        public override string ToString()
+        {
+            return FullName;
+        }
     }
 }

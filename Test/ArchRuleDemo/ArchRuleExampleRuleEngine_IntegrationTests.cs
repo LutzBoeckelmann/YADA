@@ -45,7 +45,7 @@ namespace YADA.Test
             
             typ2.Add(typ1);
 
-            var result = sut.Analyse(new ITypeDescription[]{typ1,typ2});
+            var result = sut.Analyse(new ITypeDescription[]{typ1,typ2}, new SimpleStringCollectionFeedbackSet());
 
             Assert.That(result, Is.True);
         }
@@ -61,7 +61,7 @@ namespace YADA.Test
             
             typ2.Add(typ1);
 
-            var result = sut.Analyse(new ITypeDescription[]{typ1,typ2});
+            var result = sut.Analyse(new ITypeDescription[]{typ1,typ2}, new SimpleStringCollectionFeedbackSet());
 
             Assert.That(result, Is.False);
         }
@@ -76,7 +76,7 @@ namespace YADA.Test
             typ2.Add(typ1);
             var typ3 = new TypeMock("MySystem.Core.Module.Data.Class3");
 
-            var result = sut.Analyse(new ITypeDescription[]{typ1,typ2, typ3});
+            var result = sut.Analyse(new ITypeDescription[]{typ1,typ2, typ3}, new SimpleStringCollectionFeedbackSet());
 
             Assert.That(result, Is.False);
         }

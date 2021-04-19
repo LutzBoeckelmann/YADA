@@ -32,7 +32,7 @@ namespace YADA.Test
 
                 var tl = new ArchRuleTechnicalLayer(namespaceParts[3]);
                 isValid &= tl.Valid;
-                result = new ArchRuleExampleType(dl, module, tl, isValid);
+                result = new ArchRuleExampleType(fullqualifiedType, dl, module, tl, isValid);
 
                 m_Types.Add(fullqualifiedType, result);
             }

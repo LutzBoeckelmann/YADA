@@ -6,7 +6,7 @@ namespace YADA.Test
 {
     public class CrossComponentAccessOnlyOnSameTechnicalLayerDependencyRule : IDependencyRule<ArchRuleExampleType, ArchRuleExampleDependency>
     {
-        public DependencyRuleResult Apply(ArchRuleExampleType type, ArchRuleExampleDependency dependency)
+        public DependencyRuleResult Apply(ArchRuleExampleType type, ArchRuleExampleDependency dependency, IFeedbackSet feedback)
         {
             if(!dependency.Valid) 
             {

@@ -12,12 +12,12 @@ namespace YADA.Test
         [Test]
         public void Apply_DependencyWithoutValidType_Ignore() 
         {
-            var type = new ArchRuleExampleType(null,null,null, true);
-            var invalidType = new ArchRuleExampleType(null,null,null, false);
+            var type = new ArchRuleExampleType("",null,null,null, true);
+            var invalidType = new ArchRuleExampleType("",null,null,null, false);
 
             var sut = new OnlyAccessTypesOnOwnOrLowerTechnicalLayerDependencyRule();
 
-            var result = sut.Apply(type, new ArchRuleExampleDependency(invalidType));
+            var result = sut.Apply(type, new ArchRuleExampleDependency(invalidType), new SimpleStringCollectionFeedbackSet());
 
             Assert.That(result, Is.EqualTo(DependencyRuleResult.Ignore));
         }
@@ -25,12 +25,12 @@ namespace YADA.Test
         [Test]
         public void Apply_ValidDependencyInSameLevel_Approve() 
         {
-            var type = new ArchRuleExampleType(null,null,new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.BusinessLogic), true);
-            var otherValidType = new ArchRuleExampleType(null, null, new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.BusinessLogic), true);
+            var type = new ArchRuleExampleType("",null,null,new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.BusinessLogic), true);
+            var otherValidType = new ArchRuleExampleType("",null, null, new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.BusinessLogic), true);
 
             var sut = new OnlyAccessTypesOnOwnOrLowerTechnicalLayerDependencyRule();
 
-            var result = sut.Apply(type, new ArchRuleExampleDependency(otherValidType));
+            var result = sut.Apply(type, new ArchRuleExampleDependency(otherValidType), new SimpleStringCollectionFeedbackSet());
 
             Assert.That(result, Is.EqualTo(DependencyRuleResult.Approve));
         }
@@ -38,13 +38,13 @@ namespace YADA.Test
         [Test]
         public void Apply_ValidDependencyOnLowerLevel_Approve() 
         {
-            var type = new ArchRuleExampleType(null,null,new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.UI), true);
+            var type = new ArchRuleExampleType("",null,null,new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.UI), true);
 
-            var otherValidType = new ArchRuleExampleType(null,null,new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.Data), true);
+            var otherValidType = new ArchRuleExampleType("",null,null,new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.Data), true);
 
             var sut = new OnlyAccessTypesOnOwnOrLowerTechnicalLayerDependencyRule();
 
-            var result = sut.Apply(type, new ArchRuleExampleDependency(otherValidType));
+            var result = sut.Apply(type, new ArchRuleExampleDependency(otherValidType), new SimpleStringCollectionFeedbackSet());
 
             Assert.That(result, Is.EqualTo(DependencyRuleResult.Approve));
         }

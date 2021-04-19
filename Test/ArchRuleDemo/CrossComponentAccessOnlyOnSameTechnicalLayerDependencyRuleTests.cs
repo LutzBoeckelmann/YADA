@@ -12,12 +12,12 @@ namespace YADA.Test
         [Test]
         public void Apply_DependencyWithoutValidType_Ignore()
         {
-            var type = new ArchRuleExampleType(null, null, null, true);
-            var dependencyType = new ArchRuleExampleType(null,null,null, false);
+            var type = new ArchRuleExampleType("",null, null, null, true);
+            var dependencyType = new ArchRuleExampleType("",null,null,null, false);
 
             var sut = new CrossComponentAccessOnlyOnSameTechnicalLayerDependencyRule();
 
-            var result = sut.Apply(type, new ArchRuleExampleDependency(dependencyType));
+            var result = sut.Apply(type, new ArchRuleExampleDependency(dependencyType), new SimpleStringCollectionFeedbackSet());
 
             Assert.That(result, Is.EqualTo(DependencyRuleResult.Ignore));
         }
@@ -25,12 +25,12 @@ namespace YADA.Test
         [Test]
         public void Apply_DependencyInSameComponent_Approve()
         {
-            var type = new ArchRuleExampleType(null,new ArchRuleModule("Module"),null, true);
-            var dependencyType = new ArchRuleExampleType(null, new ArchRuleModule("Module"), null, true);
+            var type = new ArchRuleExampleType("",null,new ArchRuleModule("Module"),null, true);
+            var dependencyType = new ArchRuleExampleType("",null, new ArchRuleModule("Module"), null, true);
 
             var sut = new CrossComponentAccessOnlyOnSameTechnicalLayerDependencyRule();
 
-            var result = sut.Apply(type, new ArchRuleExampleDependency(dependencyType));
+            var result = sut.Apply(type, new ArchRuleExampleDependency(dependencyType), new SimpleStringCollectionFeedbackSet());
 
             Assert.That(result, Is.EqualTo(DependencyRuleResult.Approve));
 
@@ -39,12 +39,12 @@ namespace YADA.Test
         [Test]
         public void Apply_DependencyDifferentModulesSameLayer_Approve()
         {
-            var type = new ArchRuleExampleType(null, new ArchRuleModule("Module"), new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.BusinessLogic), true);
-            var dependencyType = new ArchRuleExampleType(null, new ArchRuleModule("OtherModule"), new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.BusinessLogic), true);
+            var type = new ArchRuleExampleType("",null, new ArchRuleModule("Module"), new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.BusinessLogic), true);
+            var dependencyType = new ArchRuleExampleType("",null, new ArchRuleModule("OtherModule"), new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.BusinessLogic), true);
 
             var sut = new CrossComponentAccessOnlyOnSameTechnicalLayerDependencyRule();
 
-            var result = sut.Apply(type, new ArchRuleExampleDependency(dependencyType));
+            var result = sut.Apply(type, new ArchRuleExampleDependency(dependencyType), new SimpleStringCollectionFeedbackSet());
 
             Assert.That(result, Is.EqualTo(DependencyRuleResult.Approve));
 
@@ -53,12 +53,12 @@ namespace YADA.Test
          [Test]
         public void Apply_DependencyDifferentModulesDifferentLayer_Approve()
         {
-            var type = new ArchRuleExampleType(null,new ArchRuleModule("Module"),new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.BusinessLogic), true);
-            var dependencyType = new ArchRuleExampleType(null, new ArchRuleModule("OtherModule"), new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.Data), true);
+            var type = new ArchRuleExampleType("",null,new ArchRuleModule("Module"),new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.BusinessLogic), true);
+            var dependencyType = new ArchRuleExampleType("",null, new ArchRuleModule("OtherModule"), new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.Data), true);
 
             var sut = new CrossComponentAccessOnlyOnSameTechnicalLayerDependencyRule();
 
-            var result = sut.Apply(type, new ArchRuleExampleDependency(dependencyType));
+            var result = sut.Apply(type, new ArchRuleExampleDependency(dependencyType), new SimpleStringCollectionFeedbackSet());
 
             Assert.That(result, Is.EqualTo(DependencyRuleResult.Reject));
 

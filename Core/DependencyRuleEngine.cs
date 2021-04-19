@@ -1,5 +1,6 @@
 // Copyright (c) Lutz Boeckelmann and Contributors. MIT License - see LICENSE.txt
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,12 +15,12 @@ namespace YADA.Core
 
     public interface ITypeRule <T>
     {
-        DependencyRuleResult Apply(T type);
+        DependencyRuleResult Apply(T type, IFeedbackSet feedback);
     }
 
     public interface IDependencyRule<T,K>
     {
-        DependencyRuleResult Apply(T type, K dependency);
+        DependencyRuleResult Apply(T type, K dependency, IFeedbackSet feedback);
     }
 
 
@@ -80,6 +81,57 @@ namespace YADA.Core
         T MapTypeDescription(ITypeDescription type);
     } 
 
+    public interface IViolatedRuleFeedback :IDisposable
+    {
+        void Add(string message);
+
+        
+    }
+
+    public interface IFeedbackSet 
+    {
+        void AddFeedback(string violatedRule, string type, string message);
+        IViolatedRuleFeedback AddViolatedRuleFeedback(string violatedRule, string type, string message);
+    }
+
+    public class SimpleStringCollectionFeedbackSet : IFeedbackSet
+    {
+        private class ViolatedRuleFeedback : IViolatedRuleFeedback
+        {
+            private readonly SimpleStringCollectionFeedbackSet m_Owner;
+            private int m_Position;
+
+            public ViolatedRuleFeedback(SimpleStringCollectionFeedbackSet owner, int position)
+            {
+                m_Owner = owner;
+                m_Position = position;
+            }
+
+
+            public void Add(string message)
+            {
+                if (m_Position == -1) { throw new ObjectDisposedException(nameof(IViolatedRuleFeedback)); }
+                m_Owner.m_Results.Insert(m_Position++,$"  {message}");
+            }
+
+            public void Dispose()
+            {
+                m_Position = -1;
+            }
+        }
+        private List<string> m_Results = new List<string>();
+
+        public void AddFeedback(string violatedRule, string type, string message)
+        {
+            m_Results.Add($"{violatedRule} at type {type} {message}");
+        }
+
+        public IViolatedRuleFeedback AddViolatedRuleFeedback(string violatedRule, string type, string message)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     public abstract class BaseDependencyRuleEngine<T, K> 
     {
         /*
@@ -104,36 +156,36 @@ namespace YADA.Core
             m_Mapper = mapper;
         }
 
-        public bool Analyse(IEnumerable<ITypeDescription> types) 
+        public bool Analyse(IEnumerable<ITypeDescription> types, IFeedbackSet feedback) 
         {
             bool result = false;
             bool allDependenciesOk = true;
             foreach(var type in types) 
             {
-                var typeAccepted = CheckType(type);
+                var typeAccepted = CheckType(type, feedback);
                 result |= typeAccepted;
 
                 if (typeAccepted)
                 {
-                    allDependenciesOk &= CheckDependencies(type);
+                    allDependenciesOk &= CheckDependencies(type, feedback);
                 }
             }
             return result && allDependenciesOk;
         }
 
-        private bool CheckType(ITypeDescription type) 
+        private bool CheckType(ITypeDescription type, IFeedbackSet feedback) 
         {
             DependencyRuleResultResultSet result = new DependencyRuleResultResultSet();
 
             foreach (var typeRule in m_TypeRules) 
             {
-                result.Add(typeRule.Apply(m_Mapper.MapTypeDescription(type)));
+                result.Add(typeRule.Apply(m_Mapper.MapTypeDescription(type), feedback));
             }
 
             return result.Approved();
         }
 
-        private bool CheckDependencies(ITypeDescription type) 
+        private bool CheckDependencies(ITypeDescription type, IFeedbackSet feedback) 
         {
             DependencyRuleResultResultSet result = new DependencyRuleResultResultSet();
             bool hasNoDependencies = true;
@@ -142,7 +194,7 @@ namespace YADA.Core
                 hasNoDependencies = false;
                 foreach (var rule in m_DependencyRules)
                 {
-                    result.Add(rule.Apply(m_Mapper.MapTypeDescription(type), m_Mapper.MapDependency(dependency)));
+                    result.Add(rule.Apply(m_Mapper.MapTypeDescription(type), m_Mapper.MapDependency(dependency), feedback));
                 }
             }
 
@@ -150,3 +202,4 @@ namespace YADA.Core
         }
     }
 }
+
