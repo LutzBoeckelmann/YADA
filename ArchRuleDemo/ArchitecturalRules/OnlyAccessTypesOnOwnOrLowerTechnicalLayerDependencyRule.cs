@@ -17,7 +17,8 @@ namespace YADA.Test
             {
                 return DependencyRuleResult.Approve;
             }
-
+            
+            feedback.AddFeedback(nameof(OnlyAccessTypesOnOwnOrLowerTechnicalLayerDependencyRule), type.FullName, $"to {dependency.DependencyType.FullName}");
             return DependencyRuleResult.Reject;
         }
     }

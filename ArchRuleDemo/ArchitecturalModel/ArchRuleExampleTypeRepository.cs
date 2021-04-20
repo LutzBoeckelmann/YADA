@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace YADA.Test
 {
-    //MySystem.DomainLayer.Module.TechnicalLayer.Non.Architectural.Stuff
+    //ArchRuleExample.DomainLayer.Module.TechnicalLayer.Non.Architectural.Stuff
 
 
     //TechnicalLayer : Data | BusinessLogic | UI
@@ -21,16 +21,21 @@ namespace YADA.Test
             {
                 var isValid = true;
                 var namespaceParts = fullqualifiedType.Split('.');
-                if (namespaceParts[0] != "MySystem")
+                
+
+                if (namespaceParts[0] != "ArchRuleExample")
                 {
                     isValid = false;
                 }
-
-                var dl = new ArchRuleDomainLayer(namespaceParts[1]);
+                var domainLayerName = namespaceParts.Length > 1 ? namespaceParts[1] : "";
+                var dl = new ArchRuleDomainLayer(domainLayerName);
                 isValid &= dl.Valid;
-                var module = new ArchRuleModule(namespaceParts[2]);
 
-                var tl = new ArchRuleTechnicalLayer(namespaceParts[3]);
+                var moduleName = namespaceParts.Length > 2 ? namespaceParts[2] : "";
+                var module = new ArchRuleModule(moduleName);
+
+                var technicalLayerName = namespaceParts.Length > 3 ? namespaceParts[3] : "";
+                var tl = new ArchRuleTechnicalLayer(technicalLayerName);
                 isValid &= tl.Valid;
                 result = new ArchRuleExampleType(fullqualifiedType, dl, module, tl, isValid);
 

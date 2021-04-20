@@ -34,7 +34,7 @@ namespace YADA.Test
         }
         
         [Test]
-        public void Apply_InValidType_Reject() 
+        public void Apply_InValidType_ExpectedFeedback() 
         {
             var violationFeedback = new Mock<IViolatedRuleFeedback>();
             var feedback = new Mock<IFeedbackSet>();
@@ -48,6 +48,21 @@ namespace YADA.Test
             feedback.Verify(s => s.AddViolatedRuleFeedback(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
             violationFeedback.Verify(s => s.Add(It.IsAny<string>()), Times.Exactly(2));
             violationFeedback.Verify(s => s.Dispose(), Times.Once);
+        }
+
+        [Test]
+        public void Apply_InValidType_Reject() 
+        {
+            var violationFeedback = new Mock<IViolatedRuleFeedback>();
+            var feedback = new Mock<IFeedbackSet>();
+  
+            feedback.Setup(s => s.AddViolatedRuleFeedback(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(violationFeedback.Object);
+          
+            var sut = new CorrectNamespaceTypeRule();
+
+            var result = sut.Apply(new ArchRuleExampleType("",new ArchRuleDomainLayer(""),null,new ArchRuleTechnicalLayer(""), false), feedback.Object);
+
+            Assert.That(result, Is.EqualTo(DependencyRuleResult.Reject));
         }
     }
 }

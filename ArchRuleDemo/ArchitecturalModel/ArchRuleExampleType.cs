@@ -2,7 +2,8 @@
 
 namespace YADA.Test
 {
-    //MySystem.DomainLayer.Module.TechnicalLayer.Non.Architectural.Stuff
+ 
+    //ArchRuleExample.DomainLayer.Module.TechnicalLayer.Non.Architectural.Stuff
 
 
     //TechnicalLayer : Data | BusinessLogic | UI

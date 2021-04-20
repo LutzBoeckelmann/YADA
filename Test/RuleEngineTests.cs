@@ -122,6 +122,7 @@ namespace YADA.Test
 
 
     }
+
     public class TypeMock : ITypeDescription
     {
         private readonly List<IDependency> m_Dependencies;

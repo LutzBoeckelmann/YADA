@@ -11,7 +11,7 @@ namespace YADA.Test
         public void GetTypeRepresentation_AnyImport_NotNull() 
         {
             ArchRuleExampleTypeRepository sut = new ArchRuleExampleTypeRepository();
-            var result = sut.GetTypeRepresentation("MySystem.Infrastructure.Module.TechnicalLayer.Non.Architectural.Stuff");
+            var result = sut.GetTypeRepresentation("ArchRuleExample.Infrastructure.Module.TechnicalLayer.Non.Architectural.Stuff");
 
             Assert.That(result, Is.Not.Null);
         }
@@ -20,7 +20,7 @@ namespace YADA.Test
         public void GetTypeRepresentation_CorrectInput_ValidResult() 
         {
             ArchRuleExampleTypeRepository sut = new ArchRuleExampleTypeRepository();
-            var result = sut.GetTypeRepresentation("MySystem.Infrastructure.Module.Data.Non.Architectural.Stuff");
+            var result = sut.GetTypeRepresentation("ArchRuleExample.Infrastructure.Module.Data.Non.Architectural.Stuff");
 
             Assert.That(result.Valid, Is.True);
         }
@@ -39,7 +39,7 @@ namespace YADA.Test
         public void GetTypeRepresentation_CorrectInput_CorrectDomainLayer() 
         {
             ArchRuleExampleTypeRepository sut = new ArchRuleExampleTypeRepository();
-            var result = sut.GetTypeRepresentation("MySystem.Infrastructure.Module.TechnicalLayer.Non.Architectural.Stuff");
+            var result = sut.GetTypeRepresentation("ArchRuleExample.Infrastructure.Module.TechnicalLayer.Non.Architectural.Stuff");
 
             Assert.That(result.DomainLayer.Layer, Is.EqualTo("Infrastructure"));
         }
@@ -48,7 +48,7 @@ namespace YADA.Test
         public void GetTypeRepresentation_UnknownDomainLayer_InValidResult() 
         {
             ArchRuleExampleTypeRepository sut = new ArchRuleExampleTypeRepository();
-            var result = sut.GetTypeRepresentation("MySystem.UnknownDomainLayer.Module.Data.Non.Architectural.Stuff");
+            var result = sut.GetTypeRepresentation("ArchRuleExample.UnknownDomainLayer.Module.Data.Non.Architectural.Stuff");
 
             Assert.That(result.Valid, Is.False);
             Assert.That(result.DomainLayer.Valid, Is.False);
@@ -59,7 +59,7 @@ namespace YADA.Test
         public void GetTypeRepresentation_CorrectInput_CorrectTechnicalLayer() 
         {
             ArchRuleExampleTypeRepository sut = new ArchRuleExampleTypeRepository();
-            var result = sut.GetTypeRepresentation("MySystem.Infrastructure.Module.Data.Non.Architectural.Stuff");
+            var result = sut.GetTypeRepresentation("ArchRuleExample.Infrastructure.Module.Data.Non.Architectural.Stuff");
 
             Assert.That(result.TechnicalLayer.Layer, Is.EqualTo("Data"));
         }
@@ -68,7 +68,7 @@ namespace YADA.Test
         public void GetTypeRepresentation_UnknownTechnicalLayer_InValidResult() 
         {
             ArchRuleExampleTypeRepository sut = new ArchRuleExampleTypeRepository();
-            var result = sut.GetTypeRepresentation("MySystem.Infrastructure.Module.UnknownTechnicalLayer.Non.Architectural.Stuff");
+            var result = sut.GetTypeRepresentation("ArchRuleExample.Infrastructure.Module.UnknownTechnicalLayer.Non.Architectural.Stuff");
 
             Assert.That(result.Valid, Is.False);
             Assert.That(result.TechnicalLayer.Valid, Is.False);

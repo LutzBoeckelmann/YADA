@@ -22,6 +22,7 @@ namespace YADA.Test
             {
                 return DependencyRuleResult.Approve;
             }
+            feedback.AddFeedback(nameof(CrossComponentAccessOnlyOnSameTechnicalLayerDependencyRule), type.FullName, $"to {dependency.DependencyType.FullName}");
 
             return DependencyRuleResult.Reject;
         }

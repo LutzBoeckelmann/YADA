@@ -17,6 +17,7 @@
     <ProjectReference Include="..\Core\Core.csproj" />
     <ProjectReference Include="..\Example\Example.csproj" />
     <ProjectReference Include="..\ArchRuleDemo\ArchRuleDemo.csproj" />
+    <ProjectReference Include="..\ArchRuleExample\ArchRuleExample.csproj" />
   </ItemGroup>
 
 </Project>

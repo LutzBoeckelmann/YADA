@@ -121,6 +121,8 @@ namespace YADA.Core
         }
         private List<string> m_Results = new List<string>();
 
+        public IEnumerable<string> Messages => m_Results;
+
         public void AddFeedback(string violatedRule, string type, string message)
         {
             m_Results.Add($"{violatedRule} at type {type} {message}");
@@ -128,7 +130,8 @@ namespace YADA.Core
 
         public IViolatedRuleFeedback AddViolatedRuleFeedback(string violatedRule, string type, string message)
         {
-            throw new NotImplementedException();
+            AddFeedback(violatedRule, type, message);
+            return new ViolatedRuleFeedback(this, m_Results.Count);
         }
     }
 

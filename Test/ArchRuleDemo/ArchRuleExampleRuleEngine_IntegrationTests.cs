@@ -8,7 +8,7 @@ namespace YADA.Test
     [TestFixture]
     public class ArchRuleExampleRuleEngine_IntegrationTests
     {
-        //MySystem.DomainLayer.Module.TechnicalLayer.Non.Architectural.Stuff
+        //.DomainLayer.Module.TechnicalLayer.Non.Architectural.Stuff
 
 
         //TechnicalLayer : Data | BusinessLogic | UI
@@ -40,8 +40,8 @@ namespace YADA.Test
         {
             var sut = CreateSut();
             
-            var typ1 = new TypeMock("MySystem.Infrastructure.Module.Data.Class1");
-            var typ2 = new TypeMock("MySystem.Infrastructure.Module.Data.Class2");
+            var typ1 = new TypeMock("ArchRuleExample.Infrastructure.Module.Data.Class1");
+            var typ2 = new TypeMock("ArchRuleExample.Infrastructure.Module.Data.Class2");
             
             typ2.Add(typ1);
 
@@ -55,9 +55,9 @@ namespace YADA.Test
         {
             var sut = CreateSut();
             
-            var typ1 = new TypeMock("MySystem.Core.Module.Data.Class1");
+            var typ1 = new TypeMock("ArchRuleExample.Core.Module.Data.Class1");
             
-            var typ2 = new TypeMock("MySystem.Infrastructure.Module.Data.Class2");
+            var typ2 = new TypeMock("ArchRuleExample.Infrastructure.Module.Data.Class2");
             
             typ2.Add(typ1);
 
@@ -71,10 +71,10 @@ namespace YADA.Test
         {
             var sut = CreateSut();
           
-            var typ1 = new TypeMock("MySystem.Core.Module.Data.Class1");
-            var typ2 = new TypeMock("MySystem.Infrastructure.Module.Data.Class2");
+            var typ1 = new TypeMock("ArchRuleExample.Core.Module.Data.Class1");
+            var typ2 = new TypeMock("ArchRuleExample.Infrastructure.Module.Data.Class2");
             typ2.Add(typ1);
-            var typ3 = new TypeMock("MySystem.Core.Module.Data.Class3");
+            var typ3 = new TypeMock("ArchRuleExample.Core.Module.Data.Class3");
 
             var result = sut.Analyse(new ITypeDescription[]{typ1,typ2, typ3}, new SimpleStringCollectionFeedbackSet());
 
