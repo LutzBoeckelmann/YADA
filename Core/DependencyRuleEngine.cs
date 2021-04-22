@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace YADA.Core
 {
@@ -15,12 +16,12 @@ namespace YADA.Core
 
     public interface ITypeRule <T>
     {
-        DependencyRuleResult Apply(T type, IFeedbackSet feedback);
+        DependencyRuleResult Apply(T type, IFeedbackCollector feedback);
     }
 
     public interface IDependencyRule<T,K>
     {
-        DependencyRuleResult Apply(T type, K dependency, IFeedbackSet feedback);
+        DependencyRuleResult Apply(T type, K dependency, IFeedbackCollector feedback);
     }
 
 
@@ -81,57 +82,132 @@ namespace YADA.Core
         T MapTypeDescription(ITypeDescription type);
     } 
 
-    public interface IViolatedRuleFeedback :IDisposable
+    public interface IFeedbackCollector 
     {
-        void Add(string message);
-
-        
+        ITypeFeedback AddFeedbackForType(string type);
     }
 
-    public interface IFeedbackSet 
+    public interface ITypeFeedback 
     {
-        void AddFeedback(string violatedRule, string type, string message);
-        IViolatedRuleFeedback AddViolatedRuleFeedback(string violatedRule, string type, string message);
+        IRuleFeedback ViolatesRule(string nameOfRule);
     }
 
-    public class SimpleStringCollectionFeedbackSet : IFeedbackSet
+    public interface IRuleFeedback 
     {
-        private class ViolatedRuleFeedback : IViolatedRuleFeedback
+        IRuleFeedback AddInfo(string name);
+        IDependencyFeedback ForbiddenDependency(string dependency);
+    }
+
+    public interface IDependencyFeedback 
+    {
+        IDependencyFeedback At(string context);
+    }
+
+    public class FeedbackCollector : IFeedbackCollector
+    {
+        private readonly IDictionary<string, TypeFeedback> m_Feedbacks = new Dictionary<string, TypeFeedback>();
+        public ITypeFeedback AddFeedbackForType(string type)
         {
-            private readonly SimpleStringCollectionFeedbackSet m_Owner;
-            private int m_Position;
-
-            public ViolatedRuleFeedback(SimpleStringCollectionFeedbackSet owner, int position)
+            if(!m_Feedbacks.ContainsKey(type)) 
             {
-                m_Owner = owner;
-                m_Position = position;
+                m_Feedbacks.Add(type, new TypeFeedback());
             }
 
-
-            public void Add(string message)
-            {
-                if (m_Position == -1) { throw new ObjectDisposedException(nameof(IViolatedRuleFeedback)); }
-                m_Owner.m_Results.Insert(m_Position++,$"  {message}");
-            }
-
-            public void Dispose()
-            {
-                m_Position = -1;
-            }
-        }
-        private List<string> m_Results = new List<string>();
-
-        public IEnumerable<string> Messages => m_Results;
-
-        public void AddFeedback(string violatedRule, string type, string message)
-        {
-            m_Results.Add($"{violatedRule} at type {type} {message}");
+            return m_Feedbacks[type];
         }
 
-        public IViolatedRuleFeedback AddViolatedRuleFeedback(string violatedRule, string type, string message)
+        public StringBuilder Print() 
         {
-            AddFeedback(violatedRule, type, message);
-            return new ViolatedRuleFeedback(this, m_Results.Count);
+            StringBuilder result = new StringBuilder();
+
+            foreach(var pair in m_Feedbacks)
+            {
+                result.AppendLine(pair.Key);
+                pair.Value.Print(result);
+            }
+
+            return result;
+        }
+    }
+
+    public class TypeFeedback : ITypeFeedback
+    {
+   
+        private Dictionary<string, RuleFeedback> m_RuleViolations = new Dictionary<string, RuleFeedback>();
+   
+       
+        public IRuleFeedback ViolatesRule(string nameOfRule)
+        {
+           if(!m_RuleViolations.ContainsKey(nameOfRule)) 
+            {
+                m_RuleViolations.Add(nameOfRule, new RuleFeedback());
+            }
+            
+            return m_RuleViolations[nameOfRule];
+        }
+        public void Print(StringBuilder result)
+        {
+            foreach(var pair in m_RuleViolations)
+            {
+                result.AppendLine($"  ViolatesRule: {pair.Key}");
+                pair.Value.Print(result);
+            }
+        }
+
+     
+    }
+
+    public class RuleFeedback : IRuleFeedback
+    {
+        private readonly List<string> m_Infos = new List<string>();
+        private readonly Dictionary<string, DependencyFeedback> m_ViolatedDependency = new Dictionary<string, DependencyFeedback>();
+
+        public IRuleFeedback AddInfo(string name)
+        {
+            m_Infos.Add(name);
+            return this;
+        }
+
+        public IDependencyFeedback ForbiddenDependency(string dependency)
+        {
+            if (!m_ViolatedDependency.ContainsKey(dependency))
+            {
+                m_ViolatedDependency.Add(dependency, new DependencyFeedback());
+            }
+
+            return m_ViolatedDependency[dependency];
+        }
+
+        internal void Print(StringBuilder result)
+        {
+            foreach(var msg in m_Infos) 
+            {
+                result.AppendLine($"    Info: {msg}");
+            }
+
+            foreach(var dependency in m_ViolatedDependency) 
+            {
+                result.AppendLine($"    ForbiddenDependency {dependency.Key}");
+                dependency.Value.Print(result);
+            }
+        }
+    }
+
+    public class DependencyFeedback : IDependencyFeedback
+    {
+        private readonly List< string> m_Contexted = new List<string>();
+        public IDependencyFeedback At(string context)
+        {
+            m_Contexted.Add(context);
+            return this;
+        }
+
+        internal void Print(StringBuilder result)
+        {
+            foreach(var context in m_Contexted) 
+            {
+                result.AppendLine($"    At: {context}");
+            }
         }
     }
 
@@ -159,7 +235,7 @@ namespace YADA.Core
             m_Mapper = mapper;
         }
 
-        public bool Analyse(IEnumerable<ITypeDescription> types, IFeedbackSet feedback) 
+        public bool Analyse(IEnumerable<ITypeDescription> types, IFeedbackCollector feedback) 
         {
             bool result = false;
             bool allDependenciesOk = true;
@@ -176,7 +252,7 @@ namespace YADA.Core
             return result && allDependenciesOk;
         }
 
-        private bool CheckType(ITypeDescription type, IFeedbackSet feedback) 
+        private bool CheckType(ITypeDescription type, IFeedbackCollector feedback) 
         {
             DependencyRuleResultResultSet result = new DependencyRuleResultResultSet();
 
@@ -188,7 +264,7 @@ namespace YADA.Core
             return result.Approved();
         }
 
-        private bool CheckDependencies(ITypeDescription type, IFeedbackSet feedback) 
+        private bool CheckDependencies(ITypeDescription type, IFeedbackCollector feedback) 
         {
             DependencyRuleResultResultSet result = new DependencyRuleResultResultSet();
             bool hasNoDependencies = true;

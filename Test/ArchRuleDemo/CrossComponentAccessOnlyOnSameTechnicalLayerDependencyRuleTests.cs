@@ -1,7 +1,5 @@
 // Copyright (c) Lutz Boeckelmann and Contributors. MIT License - see LICENSE.txt
 
-using System.Linq;
-using Moq;
 using NUnit.Framework;
 using YADA.Core;
 
@@ -18,7 +16,7 @@ namespace YADA.Test
 
             var sut = new CrossComponentAccessOnlyOnSameTechnicalLayerDependencyRule();
 
-            var result = sut.Apply(type, new ArchRuleExampleDependency(dependencyType), new SimpleStringCollectionFeedbackSet());
+            var result = sut.Apply(type, new ArchRuleExampleDependency(dependencyType), new TestFeedbackCollector());
 
             Assert.That(result, Is.EqualTo(DependencyRuleResult.Ignore));
         }
@@ -31,7 +29,7 @@ namespace YADA.Test
 
             var sut = new CrossComponentAccessOnlyOnSameTechnicalLayerDependencyRule();
 
-            var result = sut.Apply(type, new ArchRuleExampleDependency(dependencyType), new SimpleStringCollectionFeedbackSet());
+            var result = sut.Apply(type, new ArchRuleExampleDependency(dependencyType), new TestFeedbackCollector());
 
             Assert.That(result, Is.EqualTo(DependencyRuleResult.Approve));
 
@@ -45,7 +43,7 @@ namespace YADA.Test
 
             var sut = new CrossComponentAccessOnlyOnSameTechnicalLayerDependencyRule();
   
-            var result = sut.Apply(type, new ArchRuleExampleDependency(dependencyType), new SimpleStringCollectionFeedbackSet());
+            var result = sut.Apply(type, new ArchRuleExampleDependency(dependencyType), new TestFeedbackCollector());
 
             Assert.That(result, Is.EqualTo(DependencyRuleResult.Approve));
 
@@ -56,12 +54,12 @@ namespace YADA.Test
         {
             var type = new ArchRuleExampleType("",null,new ArchRuleModule("Module"),null, true);
             var dependencyType = new ArchRuleExampleType("",null, new ArchRuleModule("Module"), null, true);
-            var feedback = new SimpleStringCollectionFeedbackSet();
+            var feedback = new TestFeedbackCollector();
             var sut = new CrossComponentAccessOnlyOnSameTechnicalLayerDependencyRule();
 
             var result = sut.Apply(type, new ArchRuleExampleDependency(dependencyType), feedback);
 
-            Assert.That(feedback.Messages, Is.Empty);
+            Assert.That(feedback.AddFeedbackForTypeCalls,Is.Empty);
 
         }
 
@@ -70,12 +68,12 @@ namespace YADA.Test
         {
             var type = new ArchRuleExampleType("",null, new ArchRuleModule("Module"), new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.BusinessLogic), true);
             var dependencyType = new ArchRuleExampleType("",null, new ArchRuleModule("OtherModule"), new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.BusinessLogic), true);
-            var feedback = new SimpleStringCollectionFeedbackSet();
+            var feedback = new TestFeedbackCollector();
             var sut = new CrossComponentAccessOnlyOnSameTechnicalLayerDependencyRule();
   
-            var result = sut.Apply(type, new ArchRuleExampleDependency(dependencyType), feedback);
+            sut.Apply(type, new ArchRuleExampleDependency(dependencyType), feedback);
 
-            Assert.That(feedback.Messages, Is.Empty);
+            Assert.That(feedback.AddFeedbackForTypeCalls, Is.Empty);
 
         }
       
@@ -87,7 +85,7 @@ namespace YADA.Test
 
             var sut = new CrossComponentAccessOnlyOnSameTechnicalLayerDependencyRule();
 
-            var result = sut.Apply(type, new ArchRuleExampleDependency(dependencyType), new SimpleStringCollectionFeedbackSet());
+            var result = sut.Apply(type, new ArchRuleExampleDependency(dependencyType), new TestFeedbackCollector());
 
             Assert.That(result, Is.EqualTo(DependencyRuleResult.Reject));
         }
@@ -99,13 +97,17 @@ namespace YADA.Test
             var dependencyType = new ArchRuleExampleType("OtherType.OtherModule",null, new ArchRuleModule("OtherModule"), new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.Data), true);
 
             var sut = new CrossComponentAccessOnlyOnSameTechnicalLayerDependencyRule();
-            var feeback = new SimpleStringCollectionFeedbackSet();
-            sut.Apply(type, new ArchRuleExampleDependency(dependencyType), feeback);
+            var feedback = new TestFeedbackCollector();
+            sut.Apply(type, new ArchRuleExampleDependency(dependencyType), feedback);
 
-            var result = feeback.Messages.ToArray();
-            Assert.That(result, Has.Exactly(1).Items);
-            var t = result[0];
-            Assert.That(result[0], Contains.Substring("CrossComponentAccessOnlyOnSameTechnicalLayerDependencyRule").And.Contains("My.Module").And.Contains("OtherType.OtherModule"));
+            Assert.That(feedback.AddFeedbackForTypeCalls, Has.Exactly(1).EqualTo("My.Module"));
+            Assert.That(feedback.ViolatesRuleCalls, Has.Exactly(1).EqualTo(nameof(CrossComponentAccessOnlyOnSameTechnicalLayerDependencyRule)));
+            Assert.That(feedback.ForbiddenDependencyCalls, Has.Exactly(1).EqualTo("OtherType.OtherModule"));
+            Assert.That(feedback.AddInfoCalls, Is.Empty);
+            Assert.That(feedback.AtCalls, Is.Empty);
+
+
+
         }
     }
 }

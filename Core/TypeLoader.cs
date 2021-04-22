@@ -57,7 +57,10 @@ namespace YADA.Core
             {
                 foreach (var type in module.GetTypes())
                 {
-                    yield return type;
+                    if (type.FullName != "<Module>")
+                    {
+                        yield return type;
+                    }
                 }
             }
         }

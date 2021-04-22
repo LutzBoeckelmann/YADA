@@ -18,7 +18,7 @@ namespace YADA.Test
 
             var sut = new OnlyAccessTypesOnOwnOrLowerTechnicalLayerDependencyRule();
 
-            var result = sut.Apply(type, new ArchRuleExampleDependency(invalidType), new SimpleStringCollectionFeedbackSet());
+            var result = sut.Apply(type, new ArchRuleExampleDependency(invalidType), new TestFeedbackCollector());
 
             Assert.That(result, Is.EqualTo(DependencyRuleResult.Ignore));
         }
@@ -31,7 +31,7 @@ namespace YADA.Test
 
             var sut = new OnlyAccessTypesOnOwnOrLowerTechnicalLayerDependencyRule();
 
-            var result = sut.Apply(type, new ArchRuleExampleDependency(otherValidType), new SimpleStringCollectionFeedbackSet());
+            var result = sut.Apply(type, new ArchRuleExampleDependency(otherValidType), new TestFeedbackCollector());
 
             Assert.That(result, Is.EqualTo(DependencyRuleResult.Approve));
         }
@@ -43,11 +43,11 @@ namespace YADA.Test
             var otherValidType = new ArchRuleExampleType("",null, null, new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.BusinessLogic), true);
 
             var sut = new OnlyAccessTypesOnOwnOrLowerTechnicalLayerDependencyRule();
-            var feedback = new SimpleStringCollectionFeedbackSet();
+            var feedback = new TestFeedbackCollector();
 
             sut.Apply(type, new ArchRuleExampleDependency(otherValidType), feedback);
 
-            Assert.That(feedback.Messages, Is.Empty);
+            Assert.That(feedback.AddFeedbackForTypeCalls, Is.Empty);
         }
 
         [Test]
@@ -59,7 +59,7 @@ namespace YADA.Test
 
             var sut = new OnlyAccessTypesOnOwnOrLowerTechnicalLayerDependencyRule();
 
-            var result = sut.Apply(type, new ArchRuleExampleDependency(otherValidType), new SimpleStringCollectionFeedbackSet());
+            var result = sut.Apply(type, new ArchRuleExampleDependency(otherValidType), new TestFeedbackCollector());
 
             Assert.That(result, Is.EqualTo(DependencyRuleResult.Approve));
         }
@@ -72,11 +72,11 @@ namespace YADA.Test
             var otherValidType = new ArchRuleExampleType("",null,null,new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.Data), true);
 
             var sut = new OnlyAccessTypesOnOwnOrLowerTechnicalLayerDependencyRule();
-            var feedback = new SimpleStringCollectionFeedbackSet();
+            var feedback = new TestFeedbackCollector();
 
             sut.Apply(type, new ArchRuleExampleDependency(otherValidType), feedback);
 
-            Assert.That(feedback.Messages, Is.Empty);
+            Assert.That(feedback.AddFeedbackForTypeCalls, Is.Empty);
         }
 
         [Test]
@@ -88,7 +88,7 @@ namespace YADA.Test
 
             var sut = new OnlyAccessTypesOnOwnOrLowerTechnicalLayerDependencyRule();
 
-            var result = sut.Apply(type, new ArchRuleExampleDependency(inaccessibleType), new SimpleStringCollectionFeedbackSet());
+            var result = sut.Apply(type, new ArchRuleExampleDependency(inaccessibleType), new TestFeedbackCollector());
 
             Assert.That(result, Is.EqualTo(DependencyRuleResult.Reject));
         }
@@ -101,10 +101,14 @@ namespace YADA.Test
             var inaccessibleType = new ArchRuleExampleType(ArchRuleTechnicalLayer.UI,null,null,new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.UI), true);
 
             var sut = new OnlyAccessTypesOnOwnOrLowerTechnicalLayerDependencyRule();
-            var feedback = new SimpleStringCollectionFeedbackSet();
+            var feedback = new TestFeedbackCollector();
             var result = sut.Apply(type, new ArchRuleExampleDependency(inaccessibleType), feedback);
-            Assert.That(feedback.Messages, Has.Exactly(1).Items);
-            Assert.That(feedback.Messages.First(), Contains.Substring("OnlyAccessTypesOnOwnOrLowerTechnicalLayerDependencyRule").And.Contains(ArchRuleTechnicalLayer.Data).And.Contains(ArchRuleTechnicalLayer.UI));
+
+            Assert.That(feedback.AddFeedbackForTypeCalls, Has.Exactly(1).EqualTo(ArchRuleTechnicalLayer.Data));
+            Assert.That(feedback.ViolatesRuleCalls, Has.Exactly(1).EqualTo(nameof(OnlyAccessTypesOnOwnOrLowerTechnicalLayerDependencyRule)));
+            Assert.That(feedback.ForbiddenDependencyCalls, Has.Exactly(1).EqualTo(ArchRuleTechnicalLayer.UI));
+            Assert.That(feedback.AddInfoCalls, Is.Empty);
+            Assert.That(feedback.AtCalls, Is.Empty);
         }
     }
 }

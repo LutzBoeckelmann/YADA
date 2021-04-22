@@ -1,5 +1,6 @@
 // Copyright (c) Lutz Boeckelmann and Contributors. MIT License - see LICENSE.txt
 
+using System.Linq;
 using YADA.Core;
 
 namespace YADA.Test
@@ -17,7 +18,7 @@ namespace YADA.Test
         public ArchRuleExampleDependency MapDependency(IDependency dependency)
         {
             var dependencyType = m_TypeMapper.GetTypeRepresentation(dependency.Type.FullName);
-            return new ArchRuleExampleDependency(dependencyType);
+            return new ArchRuleExampleDependency(dependencyType, dependency.Contexts.Select(t=>t.ToString()).ToList());
         }
 
         public ArchRuleExampleType MapTypeDescription(ITypeDescription type)

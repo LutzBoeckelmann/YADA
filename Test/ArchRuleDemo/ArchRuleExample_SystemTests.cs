@@ -13,13 +13,15 @@ namespace YADA.Test
             var types = sut.GetTypes();
 
             var engine = CreateSut();
-            var feedback = new SimpleStringCollectionFeedbackSet();
+            var feedback = new FeedbackCollector();
             var result = engine.Analyse(types, feedback);
 
+
+            TestContext.WriteLine("--------------------------------------------");
+            TestContext.WriteLine(feedback.Print().ToString());
+            
             Assert.That(result, Is.False);
-
         }
-
 
         private ArchRuleExampleRuleEngine CreateSut()
         {

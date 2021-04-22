@@ -21,7 +21,7 @@ namespace YADA.Test
                 m_Function = function;
             }
 
-            public DependencyRuleResult Apply(ITypeDescription type, IDependency dependency, IFeedbackSet feedback)
+            public DependencyRuleResult Apply(ITypeDescription type, IDependency dependency, IFeedbackCollector feedback)
             {
                 return m_Function(type, dependency);
             }
@@ -36,7 +36,7 @@ namespace YADA.Test
                 m_Function = function;
             }
 
-            public DependencyRuleResult Apply(ITypeDescription type, IFeedbackSet feedback)
+            public DependencyRuleResult Apply(ITypeDescription type, IFeedbackCollector feedback)
             {
                 return m_Function(type);
             }
@@ -57,7 +57,7 @@ namespace YADA.Test
 
             var sut = new DependencyRuleEngine(new[] { new Filter2(_ => DependencyRuleResult.Approve) }, new[] { new Filter((s, d) => DependencyRuleResult.Approve) });
 
-            var result = sut.Analyse(input, new SimpleStringCollectionFeedbackSet());
+            var result = sut.Analyse(input, new FeedbackCollector());
 
             Assert.That(result, Is.True);
         }
@@ -69,7 +69,7 @@ namespace YADA.Test
 
             var sut = new DependencyRuleEngine(new[] { new Filter2(_ => DependencyRuleResult.Approve) }, new IDependencyRule<ITypeDescription, IDependency>[0] { });
 
-            var result = sut.Analyse(input, new SimpleStringCollectionFeedbackSet());
+            var result = sut.Analyse(input, new FeedbackCollector());
 
             Assert.That(result, Is.True);
         }
@@ -84,7 +84,7 @@ namespace YADA.Test
 
             var sut = new DependencyRuleEngine(new[] { new Filter2(t => { list.Add(t); return DependencyRuleResult.Approve; }) }, new[] { new Filter((s, d) => DependencyRuleResult.Approve) });
 
-            var result = sut.Analyse(input, new SimpleStringCollectionFeedbackSet());
+            var result = sut.Analyse(input, new FeedbackCollector());
 
             Assert.That(list, Is.EquivalentTo(input));
         }
@@ -101,7 +101,7 @@ namespace YADA.Test
                 new[] { new Filter2(_ => DependencyRuleResult.Approve) },
                 new[] { new Filter((s, d) => { dependencyFilterCall = true; return DependencyRuleResult.Approve; }) });
 
-            var result = sut.Analyse(input, new SimpleStringCollectionFeedbackSet());
+            var result = sut.Analyse(input, new FeedbackCollector());
 
             Assert.That(dependencyFilterCall, Is.False);
         }
@@ -115,7 +115,7 @@ namespace YADA.Test
             var calls = new List<Tuple<ITypeDescription, IDependency>>();
             var sut = new DependencyRuleEngine(new[] { new Filter2(_ => DependencyRuleResult.Approve) }, new[] { new Filter((s, d) => { calls.Add(new Tuple<ITypeDescription, IDependency>(s, d)); return DependencyRuleResult.Approve; }) });
 
-            var result = sut.Analyse(input, new SimpleStringCollectionFeedbackSet());
+            var result = sut.Analyse(input, new FeedbackCollector());
 
             Assert.That(calls, Is.EquivalentTo(new[] { new Tuple<ITypeDescription, IDependency>(input[0], input[0].Dependencies.First()) }));
         }
@@ -154,6 +154,6 @@ namespace YADA.Test
 
         public int Occurrence { get; }
 
-        public IEnumerable<IDependencyContext> Contexts => throw new NotImplementedException();
+        public IEnumerable<IDependencyContext> Contexts {get { yield break; } }
     }
 }

@@ -1,7 +1,10 @@
 // Copyright (c) Lutz Boeckelmann and Contributors. MIT License - see LICENSE.txt
 
+using System.Collections.Generic;
+
 namespace YADA.Test
 {
+
 
     public class ArchRuleExampleDependency
     {
@@ -14,6 +17,14 @@ namespace YADA.Test
         public ArchRuleExampleDependency(ArchRuleExampleType dependencyType)
         {
             DependencyType = dependencyType;
+            Context = new List<string>();
         }
+
+        public ArchRuleExampleDependency(ArchRuleExampleType dependencyType, List<string> context )
+        {
+            DependencyType = dependencyType;
+            Context = context;
+        }
+        public List<string> Context;
     }
 }

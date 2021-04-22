@@ -4,7 +4,7 @@ namespace ArchRuleExample
     //DomainLayer: Infrastructure | Core | Extentions
     //TechnicalLayer : Data | BusinessLogic | UI
     //ArchRuleExample.Infrastructure.Module1.Data.SubComponentHelper
-    public class Class1
+    public class ClassWithoutCorrectNamespace
     {
         
     }

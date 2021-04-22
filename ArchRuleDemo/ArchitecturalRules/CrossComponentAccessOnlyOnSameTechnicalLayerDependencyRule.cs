@@ -6,7 +6,7 @@ namespace YADA.Test
 {
     public class CrossComponentAccessOnlyOnSameTechnicalLayerDependencyRule : IDependencyRule<ArchRuleExampleType, ArchRuleExampleDependency>
     {
-        public DependencyRuleResult Apply(ArchRuleExampleType type, ArchRuleExampleDependency dependency, IFeedbackSet feedback)
+        public DependencyRuleResult Apply(ArchRuleExampleType type, ArchRuleExampleDependency dependency, IFeedbackCollector feedback)
         {
             if(!dependency.Valid) 
             {
@@ -22,7 +22,15 @@ namespace YADA.Test
             {
                 return DependencyRuleResult.Approve;
             }
-            feedback.AddFeedback(nameof(CrossComponentAccessOnlyOnSameTechnicalLayerDependencyRule), type.FullName, $"to {dependency.DependencyType.FullName}");
+            var dependencyFeedback = feedback.AddFeedbackForType(type.FullName).ViolatesRule(nameof(CrossComponentAccessOnlyOnSameTechnicalLayerDependencyRule)).ForbiddenDependency(dependency.DependencyType.FullName);
+
+            foreach (var item in dependency.Context)
+            {
+                dependencyFeedback.At(item);
+            }
+
+                
+             
 
             return DependencyRuleResult.Reject;
         }

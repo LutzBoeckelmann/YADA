@@ -6,7 +6,7 @@ namespace YADA.Test
 {
     public class OnlyAccessTypesOnOwnOrLowerTechnicalLayerDependencyRule : IDependencyRule<ArchRuleExampleType, ArchRuleExampleDependency>
     {
-        public DependencyRuleResult Apply(ArchRuleExampleType type, ArchRuleExampleDependency dependency, IFeedbackSet feedback)
+        public DependencyRuleResult Apply(ArchRuleExampleType type, ArchRuleExampleDependency dependency, IFeedbackCollector feedback)
         {
             if(!dependency.Valid) 
             {
@@ -17,8 +17,16 @@ namespace YADA.Test
             {
                 return DependencyRuleResult.Approve;
             }
-            
-            feedback.AddFeedback(nameof(OnlyAccessTypesOnOwnOrLowerTechnicalLayerDependencyRule), type.FullName, $"to {dependency.DependencyType.FullName}");
+                        
+            var dependencyFeedback = feedback.AddFeedbackForType(type.FullName)
+                .ViolatesRule(nameof(OnlyAccessTypesOnOwnOrLowerTechnicalLayerDependencyRule))
+                .ForbiddenDependency(dependency.DependencyType.FullName);
+
+            foreach(var context in dependency.Context) 
+            {
+                dependencyFeedback.At(context);
+            }
+                        
             return DependencyRuleResult.Reject;
         }
     }

@@ -339,7 +339,16 @@ namespace YADA.Test
                 TestContext.WriteLine("--------------------------------------------------------------");
             }
         }
+        
+        [Test]
+        public void TypeLoader_GetTypes_Does_Not_Contain_Module() 
+        {
+            var sut = new Core.TypeLoader(new[] { @"./Example.dll" });
+            var types = sut.GetTypes();
+            var t = types.Select(r => r.FullName).ToList();
+            Assert.That(types.Select(r => r.FullName), Does.Not.Contain("<Module>"));
 
+        }
 
         private void PrintType(Core.ITypeDescription type)
         {
