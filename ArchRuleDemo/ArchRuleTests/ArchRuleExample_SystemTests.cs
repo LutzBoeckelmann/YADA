@@ -1,6 +1,7 @@
 using NUnit.Framework;
-using YADA.Core;
-
+using YADA.Core.Analyser.Impl;
+using YADA.Core.DependencyRuleEngine.Impl;
+using YADA.Core.DependencyRuleEngine;
 namespace YADA.Test
 {
     [TestFixture]
@@ -9,7 +10,7 @@ namespace YADA.Test
         [Test]
         public void Test()
         {
-            var sut = new Core.TypeLoader(new[] { @"./ArchRuleExample.dll" });
+            var sut = new TypeLoader(new[] { @"./ArchRuleExample.dll" });
             var types = sut.GetTypes();
 
             var engine = CreateSut();

@@ -1,6 +1,6 @@
 using NUnit.Framework;
 using YADA.Core;
-
+using YADA.Core.DependencyRuleEngine.Impl;
 namespace YADA.Test
 {
     [TestFixture]
@@ -9,7 +9,7 @@ namespace YADA.Test
         [Test]
         public void Approved_NoApproveResultAdded_False() 
         {
-            DependencyRuleResultResultSet sut = new DependencyRuleResultResultSet();
+            DependencyRuleResultSet sut = new DependencyRuleResultSet();
 
             sut.Add(DependencyRuleResult.Ignore);
             sut.Add(DependencyRuleResult.Ignore);
@@ -22,7 +22,7 @@ namespace YADA.Test
         [Test]
         public void Approved_OneApproveResultAddedNoReject_True() 
         {
-            DependencyRuleResultResultSet sut = new DependencyRuleResultResultSet();
+            DependencyRuleResultSet sut = new DependencyRuleResultSet();
 
             sut.Add(DependencyRuleResult.Ignore);
             sut.Add(DependencyRuleResult.Ignore);
@@ -35,7 +35,7 @@ namespace YADA.Test
         [Test]
         public void Approved_SeveralApprovedButOneRejects_False() 
         {
-            DependencyRuleResultResultSet sut = new DependencyRuleResultResultSet();
+            DependencyRuleResultSet sut = new DependencyRuleResultSet();
 
             sut.Add(DependencyRuleResult.Ignore);
             sut.Add(DependencyRuleResult.Approve);
@@ -49,7 +49,7 @@ namespace YADA.Test
         [Test]
         public void Approved_NothingAdded_False() 
         {
-            DependencyRuleResultResultSet sut = new DependencyRuleResultResultSet();
+            DependencyRuleResultSet sut = new DependencyRuleResultSet();
 
         
             Assert.That(sut.Approved, Is.False);
@@ -58,7 +58,7 @@ namespace YADA.Test
         [Test]
         public void Ignored_NothingAdded_False() 
         {
-            DependencyRuleResultResultSet sut = new DependencyRuleResultResultSet();
+            DependencyRuleResultSet sut = new DependencyRuleResultSet();
         
             Assert.That(sut.Ignore, Is.False);
         }
@@ -66,7 +66,7 @@ namespace YADA.Test
         [Test]
         public void Ignored_NotASingledIgnoredResultAdded_False() 
         {
-            DependencyRuleResultResultSet sut = new DependencyRuleResultResultSet();
+            DependencyRuleResultSet sut = new DependencyRuleResultSet();
         
             sut.Add(DependencyRuleResult.Reject);
             sut.Add(DependencyRuleResult.Approve);
@@ -80,7 +80,7 @@ namespace YADA.Test
            [Test]
         public void Ignored_AtLeastOneIgnoredResultAdded_True() 
         {
-            DependencyRuleResultResultSet sut = new DependencyRuleResultResultSet();
+            DependencyRuleResultSet sut = new DependencyRuleResultSet();
         
             sut.Add(DependencyRuleResult.Reject);
             sut.Add(DependencyRuleResult.Approve);

@@ -4,7 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-
+using YADA.Core.Analyser.Impl;
+using YADA.Core.Analyser;
 
 namespace YADA.Test
 {
@@ -321,7 +322,7 @@ namespace YADA.Test
         [Test]
         public void TypeLoader_Can_Load_Assembly_Specified_By_FileName() 
         {
-            var sut = new Core.TypeLoader(new[] { @"./Example.dll" });
+            var sut = new TypeLoader(new[] { @"./YADA.Example.dll" });
             var types = sut.GetTypes();
             Assert.NotNull(types);
         }
@@ -330,7 +331,7 @@ namespace YADA.Test
         [Test]
         public void TypeLoader_Can_Analyse_Assembly() 
         {
-            var sut = new Core.TypeLoader(new[] { @"./Example.dll" });
+            var sut = new TypeLoader(new[] { @"./YADA.Example.dll" });
             var types = sut.GetTypes();
             
             foreach(var type in types) 
@@ -343,14 +344,14 @@ namespace YADA.Test
         [Test]
         public void TypeLoader_GetTypes_Does_Not_Contain_Module() 
         {
-            var sut = new Core.TypeLoader(new[] { @"./Example.dll" });
+            var sut = new TypeLoader(new[] { @"./YADA.Example.dll" });
             var types = sut.GetTypes();
             var t = types.Select(r => r.FullName).ToList();
             Assert.That(types.Select(r => r.FullName), Does.Not.Contain("<Module>"));
 
         }
 
-        private void PrintType(Core.ITypeDescription type)
+        private void PrintType(ITypeDescription type)
         {
             TestContext.WriteLine(type.FullName);
             foreach (var dependency in type.Dependencies)
@@ -365,17 +366,17 @@ namespace YADA.Test
 
         class DependencyAssertion 
         {
-            private readonly Core.TypeDescription m_Type;
+            private readonly TypeDescription m_Type;
             private int m_ExpectedReferences;
             private bool m_IgnoreSystemDotObject;
             private bool m_CountOccurrences = true;
             private readonly List<Action> m_Assertions = new List<Action>();
 
-            public static DependencyAssertion ForType(Core.TypeDescription type) 
+            public static DependencyAssertion ForType(TypeDescription type) 
             {
                 return new DependencyAssertion(type);
             }
-            private DependencyAssertion(Core.TypeDescription type) 
+            private DependencyAssertion(TypeDescription type) 
             {
                 m_Type = type;
             }
@@ -459,9 +460,9 @@ namespace YADA.Test
 
         }
 
-        private Core.TypeDescription FetchType<T>() 
+        private TypeDescription FetchType<T>() 
         {
-            return YADA.Core.TypeLoader.GetType(typeof(T).FullName, typeof(T).Assembly.Location);
+            return TypeLoader.GetType(typeof(T).FullName, typeof(T).Assembly.Location);
         }
     }
 

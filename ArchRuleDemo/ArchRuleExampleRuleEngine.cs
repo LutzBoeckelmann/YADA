@@ -1,7 +1,8 @@
 // Copyright (c) Lutz Boeckelmann and Contributors. MIT License - see LICENSE.txt
 
 using System.Collections.Generic;
-using YADA.Core;
+using YADA.Core.DependencyRuleEngine;
+using YADA.Core.DependencyRuleEngine.Impl;
 
 namespace YADA.Test
 {

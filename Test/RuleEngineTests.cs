@@ -5,6 +5,10 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using YADA.Core;
+using YADA.Core.Analyser;
+using YADA.Core.DependencyRuleEngine.Impl;
+using YADA.Core.DependencyRuleEngine;
+using Core.DependencyRuleEngine;
 
 namespace YADA.Test
 {
@@ -121,39 +125,5 @@ namespace YADA.Test
         }
 
 
-    }
-
-    public class TypeMock : ITypeDescription
-    {
-        private readonly List<IDependency> m_Dependencies;
-
-        public TypeMock(string fullName)
-        {
-            FullName = fullName;
-            m_Dependencies = new List<IDependency>();
-        }
-
-        public string FullName { get; }
-
-        public IEnumerable<IDependency> Dependencies => m_Dependencies;
-
-        public void Add(TypeMock dependency, int occurrence = 1)
-        {
-            m_Dependencies.Add(new DependencyMock(dependency, occurrence));
-        }
-    }
-
-    public class DependencyMock : IDependency
-    {
-        public DependencyMock(ITypeDescription type, int occurrence)
-        {
-            Type = type;
-            Occurrence = occurrence;
-        }
-        public ITypeDescription Type { get; }
-
-        public int Occurrence { get; }
-
-        public IEnumerable<IDependencyContext> Contexts {get { yield break; } }
     }
 }

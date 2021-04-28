@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using YADA.Core;
+using YADA.Core.DependencyRuleEngine;
 
 namespace YADA.Test
 {

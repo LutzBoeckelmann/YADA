@@ -2,24 +2,8 @@
 
 using System.Collections.Generic;
 
-namespace YADA.Core
+namespace YADA.Core.Analyser.Impl
 {
-
-    public interface IDependency 
-    {
-        
-        ITypeDescription Type { get; }
-        int Occurrence { get; }
-
-        IEnumerable<IDependencyContext> Contexts { get; }
-    }
-
-    public interface IDependencyContext 
-    {
-
-    }
-
-
     public class Dependency : IDependency
     {
         private readonly List<IDependencyContext> m_Contexts = new List<IDependencyContext>();

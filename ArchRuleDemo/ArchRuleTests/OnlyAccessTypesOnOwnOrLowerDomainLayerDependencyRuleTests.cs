@@ -4,6 +4,7 @@ using System.Linq;
 using Moq;
 using NUnit.Framework;
 using YADA.Core;
+using YADA.Core.DependencyRuleEngine.Impl;
 
 namespace YADA.Test
 {

@@ -2,7 +2,7 @@
 
 using System.Collections.Generic;
 
-namespace YADA.Core
+namespace YADA.Core.Analyser.Impl
 {
     public class TypeDescription : ITypeDescription
     {

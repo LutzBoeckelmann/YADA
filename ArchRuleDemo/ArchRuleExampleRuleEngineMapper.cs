@@ -2,6 +2,7 @@
 
 using System.Linq;
 using YADA.Core;
+using YADA.Core.Analyser;
 
 namespace YADA.Test
 {

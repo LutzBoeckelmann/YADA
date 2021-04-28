@@ -4,18 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Mono.Cecil;
 
-namespace YADA.Core
+namespace YADA.Core.Analyser.Impl
 {
-
-    public interface ITypeDescription
-    {
-
-        string FullName { get; }
-
-        IEnumerable<IDependency> Dependencies { get; }
-
-    }
-
     public class TypeLoader
     {
 

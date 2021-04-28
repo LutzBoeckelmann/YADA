@@ -1,9 +1,9 @@
 // Copyright (c) Lutz Boeckelmann and Contributors. MIT License - see LICENSE.txt
 
-using System.Linq;
+
 using System.Text;
 using NUnit.Framework;
-using YADA.Core;
+using YADA.Core.DependencyRuleEngine.Impl;
 
 namespace YADA.Test
 {   

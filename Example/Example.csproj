@@ -1,6 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <RootNamespace>YADA.Example</RootNamespace> <!-- Your project namespace stays the same -->
+    <AssemblyName>YADA.Example</AssemblyName>
+  
+
     <TargetFramework>netstandard2.0</TargetFramework>
     <Optimize>false</Optimize>
   </PropertyGroup>

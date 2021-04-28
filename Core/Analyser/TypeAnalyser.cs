@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using System.Text;
 using Mono.Cecil;
 
-namespace YADA.Core
+
+namespace YADA.Core.Analyser.Impl
 {
     /// <summary>
     /// The base idea of IDependencyConext is to provide information about  

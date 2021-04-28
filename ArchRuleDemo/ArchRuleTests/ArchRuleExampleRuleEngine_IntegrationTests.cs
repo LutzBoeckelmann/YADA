@@ -1,7 +1,10 @@
 // Copyright (c) Lutz Boeckelmann and Contributors. MIT License - see LICENSE.txt
 
 using NUnit.Framework;
-using YADA.Core;
+using YADA.Core.Analyser;
+using YADA.Core.DependencyRuleEngine.Impl;
+using YADA.Core.DependencyRuleEngine;
+using Core.DependencyRuleEngine;
 
 namespace YADA.Test
 {

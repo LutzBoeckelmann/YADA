@@ -2,10 +2,17 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj" />
+ <ProjectReference Include="..\ArchRuleExample\ArchRuleExample.csproj" />
+    
+    <PackageReference Include="moq" Version="4.16.1" />
+    <PackageReference Include="nunit" Version="3.12.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.15.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
   </ItemGroup>
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
 </Project>
