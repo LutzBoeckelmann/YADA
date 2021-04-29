@@ -2,8 +2,8 @@
 
 using System.Collections.Generic;
 using ArchRuleDemo.ArchitecturalModel;
+using YADA.Core.DependencyRuleEngine.Rules;
 using YADA.Core.DependencyRuleEngine;
-using YADA.Core.DependencyRuleEngine.Impl;
 
 namespace ArchRuleDemo.DependencyRuleEngine
 {

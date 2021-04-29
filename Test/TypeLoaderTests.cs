@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using YADA.Core.Analyser.Impl;
 using YADA.Core.Analyser;
 
 namespace YADA.Test
@@ -366,17 +365,17 @@ namespace YADA.Test
 
         class DependencyAssertion 
         {
-            private readonly TypeDescription m_Type;
+            private readonly ITypeDescription m_Type;
             private int m_ExpectedReferences;
             private bool m_IgnoreSystemDotObject;
             private bool m_CountOccurrences = true;
             private readonly List<Action> m_Assertions = new List<Action>();
 
-            public static DependencyAssertion ForType(TypeDescription type) 
+            public static DependencyAssertion ForType(ITypeDescription type) 
             {
                 return new DependencyAssertion(type);
             }
-            private DependencyAssertion(TypeDescription type) 
+            private DependencyAssertion(ITypeDescription type) 
             {
                 m_Type = type;
             }
@@ -460,7 +459,7 @@ namespace YADA.Test
 
         }
 
-        private TypeDescription FetchType<T>() 
+        private ITypeDescription FetchType<T>() 
         {
             return TypeLoader.GetType(typeof(T).FullName, typeof(T).Assembly.Location);
         }

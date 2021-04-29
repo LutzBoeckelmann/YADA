@@ -3,8 +3,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using YADA.Core.Analyser;
+using YADA.Core.DependencyRuleEngine.Feedback;
+using YADA.Core.DependencyRuleEngine.Rules;
 
-namespace YADA.Core.DependencyRuleEngine.Impl
+namespace YADA.Core.DependencyRuleEngine
 {
     public abstract class BaseDependencyRuleEngine<T, K> 
     {

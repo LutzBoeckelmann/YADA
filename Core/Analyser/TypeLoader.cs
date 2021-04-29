@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Mono.Cecil;
 
-namespace YADA.Core.Analyser.Impl
+namespace YADA.Core.Analyser
 {
     public class TypeLoader
     {
@@ -62,7 +62,7 @@ namespace YADA.Core.Analyser.Impl
         /// </summary>
         /// <param name="fullName">The full qualified name of the type</param>
         /// <returns>The description of the type</returns>
-        public static TypeDescription GetType(string fullName, string assemblyLocation)
+        public static ITypeDescription GetType(string fullName, string assemblyLocation)
         {
             var type = GetTypesFromAssembly(assemblyLocation).First(t => t.FullName == fullName);
             return TypeAnalyser.AnalyseType(type);

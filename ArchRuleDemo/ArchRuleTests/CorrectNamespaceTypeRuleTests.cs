@@ -5,6 +5,7 @@ using NUnit.Framework;
 using YADA.Core.DependencyRuleEngine;
 using ArchRuleDemo.ArchitecturalModel;
 using ArchRuleDemo.ArchitecturalRules;
+using YADA.Core.DependencyRuleEngine.Feedback;
 
 namespace ArchRuleDemo.ArchRuleTests
 {

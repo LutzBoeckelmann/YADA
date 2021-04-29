@@ -2,9 +2,9 @@
 
 using System.Collections.Generic;
 
-namespace YADA.Core.Analyser.Impl
+namespace YADA.Core.Analyser
 {
-    public class TypeDescription : ITypeDescription
+    internal class TypeDescription : ITypeDescription
     {
         private readonly Dictionary<string, Dependency> m_Dependencies = new Dictionary<string, Dependency>();
         public TypeDescription(string fullName) 

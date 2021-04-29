@@ -2,11 +2,11 @@
 
 
 using System.Text;
+using YADA.Core.DependencyRuleEngine.Feedback;
 using NUnit.Framework;
-using YADA.Core.DependencyRuleEngine.Impl;
 
 namespace YADA.Test
-{   
+{
     [TestFixture]
     public class TypeFeedbackTests
     {
@@ -71,7 +71,7 @@ namespace YADA.Test
             sut.AddFeedbackForType("OtherType");
 
             var result = sut.Print().ToString();
-            Assert.That(result, Contains.Substring("Type").And.ContainsSubstring("OtherType"));
+            Assert.That(result, Does.Contain("Type").And.ContainsSubstring("OtherType"));
         }
     }
 }

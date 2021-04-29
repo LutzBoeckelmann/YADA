@@ -5,13 +5,13 @@ using System.Text;
 using Mono.Cecil;
 
 
-namespace YADA.Core.Analyser.Impl
+namespace YADA.Core.Analyser
 {
     /// <summary>
     /// The base idea of IDependencyConext is to provide information about  
     /// where the current type is coupled to the dependency.
     /// </summary>
-    public abstract class BaseContext : IDependencyContext 
+    internal abstract class BaseContext : IDependencyContext 
     {
         public string Name { get; }
 
@@ -35,7 +35,7 @@ namespace YADA.Core.Analyser.Impl
         }
     }
 
-    public class FieldContext : BaseContext
+    internal class FieldContext : BaseContext
     {
         public FieldContext(string fieldName) : base(fieldName) {        }
 
@@ -45,7 +45,7 @@ namespace YADA.Core.Analyser.Impl
         }
     }
 
-    public class InheritesContext : BaseContext
+    internal class InheritesContext : BaseContext
     {
         
 
@@ -57,14 +57,14 @@ namespace YADA.Core.Analyser.Impl
         }
     }
 
-    public enum MethodDependencyUsageType
+    internal enum MethodDependencyUsageType
     {
         Parameter,
         ReturnType,
         LocalVariable
     }
 
-    public class MethodDefinitionContext : BaseContext
+    internal class MethodDefinitionContext : BaseContext
     {
         public MethodDependencyUsageType m_UsageType;
 
@@ -79,7 +79,7 @@ namespace YADA.Core.Analyser.Impl
         }
     }
 
-    public enum MethodDependencyAccessType 
+    internal enum MethodDependencyAccessType 
     {
         CallToMethodDefintion,
         AccessFields,
@@ -91,7 +91,7 @@ namespace YADA.Core.Analyser.Impl
         TypeAccess
     }
 
-    public class MethodBodyContext : BaseContext
+    internal class MethodBodyContext : BaseContext
     {
        
         public MethodDependencyAccessType m_UsageType;

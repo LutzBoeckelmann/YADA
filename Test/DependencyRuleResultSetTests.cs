@@ -1,6 +1,5 @@
 using NUnit.Framework;
 using YADA.Core.DependencyRuleEngine;
-using YADA.Core.DependencyRuleEngine.Impl;
 
 namespace YADA.Test
 {

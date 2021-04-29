@@ -3,7 +3,8 @@
 using YADA.Core.DependencyRuleEngine;
 using ArchRuleDemo.ArchitecturalModel;
 using ArchRuleDemo.DependencyRuleEngine;
-
+using YADA.Core.DependencyRuleEngine.Rules;
+using YADA.Core.DependencyRuleEngine.Feedback;
 
 namespace ArchRuleDemo.ArchitecturalRules
 {

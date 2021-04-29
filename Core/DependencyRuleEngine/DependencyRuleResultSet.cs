@@ -3,7 +3,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace YADA.Core.DependencyRuleEngine.Impl
+namespace YADA.Core.DependencyRuleEngine
 {
     internal class DependencyRuleResultSet
     {

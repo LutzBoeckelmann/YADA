@@ -1,10 +1,10 @@
 using NUnit.Framework;
-using YADA.Core.Analyser.Impl;
-using YADA.Core.DependencyRuleEngine.Impl;
-using YADA.Core.DependencyRuleEngine;
-using ArchRuleDemo.DependencyRuleEngine;
 using ArchRuleDemo.ArchitecturalModel;
 using ArchRuleDemo.ArchitecturalRules;
+using YADA.Core.DependencyRuleEngine.Rules;
+using YADA.Core.DependencyRuleEngine.Feedback;
+using ArchRuleDemo.DependencyRuleEngine;
+using YADA.Core.Analyser;
 
 namespace ArchRuleDemo.ArchRuleTests
 {

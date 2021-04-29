@@ -4,11 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using YADA.Core;
 using YADA.Core.Analyser;
-using YADA.Core.DependencyRuleEngine.Impl;
 using YADA.Core.DependencyRuleEngine;
-using Core.DependencyRuleEngine;
+using YADA.Core.DependencyRuleEngine.Rules;
+using YADA.Core.DependencyRuleEngine.Feedback;
 
 namespace YADA.Test
 {
@@ -57,7 +56,7 @@ namespace YADA.Test
         [Test]
         public void Analyse_AnyFilterDeliversTrue_Success()
         {
-            var input = new List<ITypeDescription>() { new TypeMock("Type1"), new TypeMock("Type2") };
+            var input = new List<ITypeDescription>() { new TypeDescriptionFake("Type1"), new TypeDescriptionFake("Type2") };
 
             var sut = new DependencyRuleEngine(new[] { new Filter2(_ => DependencyRuleResult.Approve) }, new[] { new Filter((s, d) => DependencyRuleResult.Approve) });
 
@@ -69,7 +68,7 @@ namespace YADA.Test
         [Test]
         public void Analyse_ValidTypesWithoutDependency_Success()
         {
-            var input = new List<ITypeDescription>() { new TypeMock("Type1") };
+            var input = new List<ITypeDescription>() { new TypeDescriptionFake("Type1") };
 
             var sut = new DependencyRuleEngine(new[] { new Filter2(_ => DependencyRuleResult.Approve) }, new IDependencyRule<ITypeDescription, IDependency>[0] { });
 
@@ -82,7 +81,7 @@ namespace YADA.Test
         public void Analyse_SetOfTypes_TypeFilterCalledForAnyType()
 
         {
-            var input = new List<ITypeDescription>() { new TypeMock("Type1"), new TypeMock("Type2") };
+            var input = new List<ITypeDescription>() { new TypeDescriptionFake("Type1"), new TypeDescriptionFake("Type2") };
 
             var list = new List<ITypeDescription>();
 
@@ -97,7 +96,7 @@ namespace YADA.Test
         public void Analyse_SetOfTypesWithoutDependency_DependencyFiltersNotCalled()
 
         {
-            var input = new List<ITypeDescription>() { new TypeMock("Type1"), new TypeMock("Type2") };
+            var input = new List<ITypeDescription>() { new TypeDescriptionFake("Type1"), new TypeDescriptionFake("Type2") };
 
             bool dependencyFilterCall = false;
 
@@ -113,7 +112,7 @@ namespace YADA.Test
         [Test]
         public void Analyse_SetOfTypesOneWithExactlyDependency_DependencyFiltersCalled()
         {
-            var input = new List<TypeMock>() { new TypeMock("Type1"), new TypeMock("Type2") };
+            var input = new List<TypeDescriptionFake>() { new TypeDescriptionFake("Type1"), new TypeDescriptionFake("Type2") };
             input[0].Add(input[1]);
 
             var calls = new List<Tuple<ITypeDescription, IDependency>>();

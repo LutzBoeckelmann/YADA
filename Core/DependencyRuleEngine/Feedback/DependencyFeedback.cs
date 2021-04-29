@@ -3,11 +3,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace YADA.Core.DependencyRuleEngine.Impl
+namespace YADA.Core.DependencyRuleEngine.Feedback
 {
-    public class DependencyFeedback : IDependencyFeedback
+    internal class DependencyFeedback : IDependencyFeedback
     {
-        private readonly List< string> m_Contexted = new List<string>();
+        private readonly List<string> m_Contexted = new List<string>();
         public IDependencyFeedback At(string context)
         {
             m_Contexted.Add(context);
@@ -16,7 +16,7 @@ namespace YADA.Core.DependencyRuleEngine.Impl
 
         internal void Print(StringBuilder result)
         {
-            foreach(var context in m_Contexted) 
+            foreach (var context in m_Contexted)
             {
                 result.AppendLine($"    At: {context}");
             }

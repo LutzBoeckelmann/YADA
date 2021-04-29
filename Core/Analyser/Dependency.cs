@@ -2,9 +2,9 @@
 
 using System.Collections.Generic;
 
-namespace YADA.Core.Analyser.Impl
+namespace YADA.Core.Analyser
 {
-    public class Dependency : IDependency
+    internal class Dependency : IDependency
     {
         private readonly List<IDependencyContext> m_Contexts = new List<IDependencyContext>();
         public Dependency(TypeDescription type) 

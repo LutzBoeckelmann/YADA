@@ -3,31 +3,31 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace YADA.Core.DependencyRuleEngine.Impl
+namespace YADA.Core.DependencyRuleEngine.Feedback
 {
-    public class TypeFeedback : ITypeFeedback
-    {   
+    internal class TypeFeedback : ITypeFeedback
+    {
         private Dictionary<string, RuleFeedback> m_RuleViolations = new Dictionary<string, RuleFeedback>();
-       
+
         public IRuleFeedback ViolatesRule(string nameOfRule)
         {
-           if(!m_RuleViolations.ContainsKey(nameOfRule)) 
+            if (!m_RuleViolations.ContainsKey(nameOfRule))
             {
                 m_RuleViolations.Add(nameOfRule, new RuleFeedback());
             }
-            
+
             return m_RuleViolations[nameOfRule];
         }
         public void Print(StringBuilder result)
         {
-            foreach(var pair in m_RuleViolations)
+            foreach (var pair in m_RuleViolations)
             {
                 result.AppendLine($"  ViolatesRule: {pair.Key}");
                 pair.Value.Print(result);
             }
         }
 
-     
+
     }
 }
 

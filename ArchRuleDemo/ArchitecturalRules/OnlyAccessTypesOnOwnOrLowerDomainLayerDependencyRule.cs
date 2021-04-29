@@ -1,9 +1,10 @@
 // Copyright (c) Lutz Boeckelmann and Contributors. MIT License - see LICENSE.txt
 
 using YADA.Core.DependencyRuleEngine;
-using YADA.Core.DependencyRuleEngine.Impl;
 using ArchRuleDemo.ArchitecturalModel;
 using ArchRuleDemo.DependencyRuleEngine;
+using YADA.Core.DependencyRuleEngine.Rules;
+using YADA.Core.DependencyRuleEngine.Feedback;
 
 namespace ArchRuleDemo.ArchitecturalRules
 {

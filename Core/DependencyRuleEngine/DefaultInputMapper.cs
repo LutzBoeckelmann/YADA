@@ -2,9 +2,9 @@
 
 using YADA.Core.Analyser;
 
-namespace YADA.Core.DependencyRuleEngine.Impl
+namespace YADA.Core.DependencyRuleEngine
 {
-    public class DefaultInputMapper : IDependencyRuleInputMapper<ITypeDescription, IDependency>
+    internal class DefaultInputMapper : IDependencyRuleInputMapper<ITypeDescription, IDependency>
     {
         public IDependency MapDependency(IDependency dependency)
         {

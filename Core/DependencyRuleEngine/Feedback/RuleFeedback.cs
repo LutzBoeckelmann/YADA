@@ -3,9 +3,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace YADA.Core.DependencyRuleEngine.Impl
+namespace YADA.Core.DependencyRuleEngine.Feedback
 {
-    public class RuleFeedback : IRuleFeedback
+    internal class RuleFeedback : IRuleFeedback
     {
         private readonly List<string> m_Infos = new List<string>();
         private readonly Dictionary<string, DependencyFeedback> m_ViolatedDependency = new Dictionary<string, DependencyFeedback>();
@@ -28,12 +28,12 @@ namespace YADA.Core.DependencyRuleEngine.Impl
 
         internal void Print(StringBuilder result)
         {
-            foreach(var msg in m_Infos) 
+            foreach (var msg in m_Infos)
             {
                 result.AppendLine($"    Info: {msg}");
             }
 
-            foreach(var dependency in m_ViolatedDependency) 
+            foreach (var dependency in m_ViolatedDependency)
             {
                 result.AppendLine($"    ForbiddenDependency {dependency.Key}");
                 dependency.Value.Print(result);
