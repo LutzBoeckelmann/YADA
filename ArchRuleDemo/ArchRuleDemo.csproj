@@ -2,7 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj" />
- <ProjectReference Include="..\ArchRuleExample\ArchRuleExample.csproj" />
+    <ProjectReference Include="..\ArchRuleExample\ArchRuleExample.csproj" />
     
     <PackageReference Include="moq" Version="4.16.1" />
     <PackageReference Include="nunit" Version="3.12.0" />

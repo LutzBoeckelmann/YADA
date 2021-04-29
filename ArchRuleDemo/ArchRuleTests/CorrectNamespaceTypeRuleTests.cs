@@ -3,9 +3,10 @@
 using Moq;
 using NUnit.Framework;
 using YADA.Core.DependencyRuleEngine;
-using YADA.Core.DependencyRuleEngine.Impl;
+using ArchRuleDemo.ArchitecturalModel;
+using ArchRuleDemo.ArchitecturalRules;
 
-namespace YADA.Test
+namespace ArchRuleDemo.ArchRuleTests
 {
 
     [TestFixture]
@@ -41,8 +42,8 @@ namespace YADA.Test
 
             var result = sut.Apply(new ArchRuleExampleType("Fullname", new ArchRuleDomainLayer(""), null, new ArchRuleTechnicalLayer(""), false), feedback);
 
-            Assert.That(feedback.AddFeedbackForTypeCalls, Is.All.Contains("Fullname") );
-            Assert.That(feedback.ViolatesRuleCalls, Is.All.Contains(nameof(CorrectNamespaceTypeRule) ));
+            Assert.That(feedback.AddFeedbackForTypeCalls, Is.All.Contains("Fullname"));
+            Assert.That(feedback.ViolatesRuleCalls, Is.All.Contains(nameof(CorrectNamespaceTypeRule)));
 
         }
 

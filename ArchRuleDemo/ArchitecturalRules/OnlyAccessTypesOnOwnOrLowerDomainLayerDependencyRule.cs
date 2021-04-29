@@ -2,19 +2,21 @@
 
 using YADA.Core.DependencyRuleEngine;
 using YADA.Core.DependencyRuleEngine.Impl;
+using ArchRuleDemo.ArchitecturalModel;
+using ArchRuleDemo.DependencyRuleEngine;
 
-namespace YADA.Test
+namespace ArchRuleDemo.ArchitecturalRules
 {
     public class OnlyAccessTypesOnOwnOrLowerDomainLayerDependencyRule : IDependencyRule<ArchRuleExampleType, ArchRuleExampleDependency>
     {
         public DependencyRuleResult Apply(ArchRuleExampleType type, ArchRuleExampleDependency dependency, IFeedbackCollector feedback)
         {
-            if(!dependency.Valid) 
+            if (!dependency.Valid)
             {
                 return DependencyRuleResult.Ignore;
             }
-            
-            if(dependency.DomainLayer.MayBeAccessedFrom(type.DomainLayer))
+
+            if (dependency.DomainLayer.MayBeAccessedFrom(type.DomainLayer))
             {
                 return DependencyRuleResult.Approve;
             }
@@ -23,12 +25,12 @@ namespace YADA.Test
                 .ViolatesRule(nameof(OnlyAccessTypesOnOwnOrLowerDomainLayerDependencyRule))
                 .ForbiddenDependency(dependency.DependencyType.FullName);
 
-            foreach(var context in dependency.Context) 
+            foreach (var context in dependency.Context)
             {
                 dependencyFeedback.At(context);
             }
 
-            
+
             return DependencyRuleResult.Reject;
         }
     }

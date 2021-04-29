@@ -1,8 +1,8 @@
 // Copyright (c) Lutz Boeckelmann and Contributors. MIT License - see LICENSE.txt
 
-namespace YADA.Test
+namespace ArchRuleDemo.ArchitecturalModel
 {
- 
+
     //ArchRuleExample.DomainLayer.Module.TechnicalLayer.Non.Architectural.Stuff
 
 
@@ -23,8 +23,8 @@ namespace YADA.Test
         }
 
         public string FullName { get; }
-        public ArchRuleDomainLayer DomainLayer {get;}
-        public ArchRuleTechnicalLayer TechnicalLayer{get;}
+        public ArchRuleDomainLayer DomainLayer { get; }
+        public ArchRuleTechnicalLayer TechnicalLayer { get; }
 
         public ArchRuleModule Module { get; }
 

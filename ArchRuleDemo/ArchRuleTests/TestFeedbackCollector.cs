@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using YADA.Core;
 using YADA.Core.DependencyRuleEngine;
 
-namespace YADA.Test
+namespace ArchRuleDemo.ArchRuleTests
 {
     public class TestFeedbackCollector : IFeedbackCollector, ITypeFeedback, IRuleFeedback, IDependencyFeedback
     {

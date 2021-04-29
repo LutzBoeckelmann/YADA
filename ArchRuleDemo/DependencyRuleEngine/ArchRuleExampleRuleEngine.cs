@@ -1,10 +1,11 @@
 // Copyright (c) Lutz Boeckelmann and Contributors. MIT License - see LICENSE.txt
 
 using System.Collections.Generic;
+using ArchRuleDemo.ArchitecturalModel;
 using YADA.Core.DependencyRuleEngine;
 using YADA.Core.DependencyRuleEngine.Impl;
 
-namespace YADA.Test
+namespace ArchRuleDemo.DependencyRuleEngine
 {
     public class ArchRuleExampleRuleEngine : BaseDependencyRuleEngine<ArchRuleExampleType, ArchRuleExampleDependency>
     {

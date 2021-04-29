@@ -2,11 +2,11 @@
 
 using System.Collections.Generic;
 
-namespace YADA.Test
+namespace ArchRuleDemo.ArchitecturalModel
 {
     public class ArchRuleDomainLayer : ArchRuleLayer<ArchRuleDomainLayer>
     {
-        
+
         public static string Infrastructure => "Infrastructure";
         public static string Core => "Core";
         public static string Extentions => "Extentions";

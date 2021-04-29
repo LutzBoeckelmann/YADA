@@ -2,7 +2,6 @@
 
 using System.Collections.Generic;
 using System.Text;
-using YADA.Core.DependencyRuleEngine;
 
 namespace YADA.Core.DependencyRuleEngine.Impl
 {

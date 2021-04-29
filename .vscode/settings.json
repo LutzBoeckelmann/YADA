@@ -1,4 +1,9 @@
 {
     "dotnet-test-explorer.testProjectPath": "**/*Test.csproj",
-    "dotnet-test-explorer.autoWatch" : true
+    "dotnet-test-explorer.autoWatch" : true,
+    "files.exclude": {
+            "**/obj/**": true,
+            "**/bin/**": true
+        }
+    
 }

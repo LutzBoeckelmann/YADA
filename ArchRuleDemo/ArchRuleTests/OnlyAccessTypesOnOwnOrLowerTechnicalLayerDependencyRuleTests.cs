@@ -1,21 +1,21 @@
 // Copyright (c) Lutz Boeckelmann and Contributors. MIT License - see LICENSE.txt
 
-using System.Linq;
-using Moq;
 using NUnit.Framework;
-using YADA.Core;
-using YADA.Core.DependencyRuleEngine.Impl;
+using YADA.Core.DependencyRuleEngine;
+using ArchRuleDemo.DependencyRuleEngine;
+using ArchRuleDemo.ArchitecturalModel;
+using ArchRuleDemo.ArchitecturalRules;
 
-namespace YADA.Test
+namespace ArchRuleDemo.ArchRuleTests
 {
     [TestFixture]
-    public class OnlyAccessTypesOnOwnOrLowerTechnicalLayerDependencyRuleTests 
+    public class OnlyAccessTypesOnOwnOrLowerTechnicalLayerDependencyRuleTests
     {
         [Test]
-        public void Apply_DependencyWithoutValidType_Ignore() 
+        public void Apply_DependencyWithoutValidType_Ignore()
         {
-            var type = new ArchRuleExampleType("",null,null,null, true);
-            var invalidType = new ArchRuleExampleType("",null,null,null, false);
+            var type = new ArchRuleExampleType("", null, null, null, true);
+            var invalidType = new ArchRuleExampleType("", null, null, null, false);
 
             var sut = new OnlyAccessTypesOnOwnOrLowerTechnicalLayerDependencyRule();
 
@@ -25,10 +25,10 @@ namespace YADA.Test
         }
 
         [Test]
-        public void Apply_ValidDependencyInSameLevel_Approve() 
+        public void Apply_ValidDependencyInSameLevel_Approve()
         {
-            var type = new ArchRuleExampleType("",null,null,new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.BusinessLogic), true);
-            var otherValidType = new ArchRuleExampleType("",null, null, new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.BusinessLogic), true);
+            var type = new ArchRuleExampleType("", null, null, new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.BusinessLogic), true);
+            var otherValidType = new ArchRuleExampleType("", null, null, new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.BusinessLogic), true);
 
             var sut = new OnlyAccessTypesOnOwnOrLowerTechnicalLayerDependencyRule();
 
@@ -38,10 +38,10 @@ namespace YADA.Test
         }
 
         [Test]
-        public void Apply_ValidDependencyInSameLevel_NoFeedback() 
+        public void Apply_ValidDependencyInSameLevel_NoFeedback()
         {
-            var type = new ArchRuleExampleType("",null,null,new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.BusinessLogic), true);
-            var otherValidType = new ArchRuleExampleType("",null, null, new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.BusinessLogic), true);
+            var type = new ArchRuleExampleType("", null, null, new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.BusinessLogic), true);
+            var otherValidType = new ArchRuleExampleType("", null, null, new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.BusinessLogic), true);
 
             var sut = new OnlyAccessTypesOnOwnOrLowerTechnicalLayerDependencyRule();
             var feedback = new TestFeedbackCollector();
@@ -52,11 +52,11 @@ namespace YADA.Test
         }
 
         [Test]
-        public void Apply_ValidDependencyOnLowerLevel_Approve() 
+        public void Apply_ValidDependencyOnLowerLevel_Approve()
         {
-            var type = new ArchRuleExampleType("",null,null,new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.UI), true);
+            var type = new ArchRuleExampleType("", null, null, new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.UI), true);
 
-            var otherValidType = new ArchRuleExampleType("",null,null,new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.Data), true);
+            var otherValidType = new ArchRuleExampleType("", null, null, new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.Data), true);
 
             var sut = new OnlyAccessTypesOnOwnOrLowerTechnicalLayerDependencyRule();
 
@@ -66,11 +66,11 @@ namespace YADA.Test
         }
 
         [Test]
-        public void Apply_ValidDependencyOnLowerLevel_NoFeedback() 
+        public void Apply_ValidDependencyOnLowerLevel_NoFeedback()
         {
-            var type = new ArchRuleExampleType("",null,null,new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.UI), true);
+            var type = new ArchRuleExampleType("", null, null, new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.UI), true);
 
-            var otherValidType = new ArchRuleExampleType("",null,null,new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.Data), true);
+            var otherValidType = new ArchRuleExampleType("", null, null, new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.Data), true);
 
             var sut = new OnlyAccessTypesOnOwnOrLowerTechnicalLayerDependencyRule();
             var feedback = new TestFeedbackCollector();
@@ -81,11 +81,11 @@ namespace YADA.Test
         }
 
         [Test]
-        public void Apply_ValidDependencyOnLowerLevel_Reject() 
+        public void Apply_ValidDependencyOnLowerLevel_Reject()
         {
-            var type = new ArchRuleExampleType("",null,null,new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.Data), true);
+            var type = new ArchRuleExampleType("", null, null, new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.Data), true);
 
-            var inaccessibleType = new ArchRuleExampleType("",null,null,new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.UI), true);
+            var inaccessibleType = new ArchRuleExampleType("", null, null, new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.UI), true);
 
             var sut = new OnlyAccessTypesOnOwnOrLowerTechnicalLayerDependencyRule();
 
@@ -94,12 +94,12 @@ namespace YADA.Test
             Assert.That(result, Is.EqualTo(DependencyRuleResult.Reject));
         }
 
-         [Test]
-        public void Apply_ValidDependencyOnLowerLevel_ExpectedFeedback() 
+        [Test]
+        public void Apply_ValidDependencyOnLowerLevel_ExpectedFeedback()
         {
-            var type = new ArchRuleExampleType(ArchRuleTechnicalLayer.Data,null,null,new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.Data), true);
+            var type = new ArchRuleExampleType(ArchRuleTechnicalLayer.Data, null, null, new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.Data), true);
 
-            var inaccessibleType = new ArchRuleExampleType(ArchRuleTechnicalLayer.UI,null,null,new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.UI), true);
+            var inaccessibleType = new ArchRuleExampleType(ArchRuleTechnicalLayer.UI, null, null, new ArchRuleTechnicalLayer(ArchRuleTechnicalLayer.UI), true);
 
             var sut = new OnlyAccessTypesOnOwnOrLowerTechnicalLayerDependencyRule();
             var feedback = new TestFeedbackCollector();

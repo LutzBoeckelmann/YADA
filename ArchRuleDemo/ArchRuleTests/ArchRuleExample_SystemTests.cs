@@ -2,7 +2,11 @@ using NUnit.Framework;
 using YADA.Core.Analyser.Impl;
 using YADA.Core.DependencyRuleEngine.Impl;
 using YADA.Core.DependencyRuleEngine;
-namespace YADA.Test
+using ArchRuleDemo.DependencyRuleEngine;
+using ArchRuleDemo.ArchitecturalModel;
+using ArchRuleDemo.ArchitecturalRules;
+
+namespace ArchRuleDemo.ArchRuleTests
 {
     [TestFixture]
     public class ArchRuleExample_SystemTests
@@ -20,7 +24,7 @@ namespace YADA.Test
 
             TestContext.WriteLine("--------------------------------------------");
             TestContext.WriteLine(feedback.Print().ToString());
-            
+
             Assert.That(result, Is.False);
         }
 

@@ -2,7 +2,7 @@
 
 using System.Collections.Generic;
 
-namespace YADA.Test
+namespace ArchRuleDemo.ArchitecturalModel
 {
     public abstract class ArchRuleLayer<T> where T : ArchRuleLayer<T>
     {

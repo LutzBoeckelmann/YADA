@@ -2,7 +2,7 @@
 
 using System.Collections.Generic;
 
-namespace YADA.Test
+namespace ArchRuleDemo.ArchitecturalModel
 {
     //ArchRuleExample.DomainLayer.Module.TechnicalLayer.Non.Architectural.Stuff
 
@@ -14,14 +14,14 @@ namespace YADA.Test
     public class ArchRuleExampleTypeRepository : IArchRuleExampleTypeRepository
     {
         private readonly Dictionary<string, ArchRuleExampleType> m_Types = new Dictionary<string, ArchRuleExampleType>();
-        
-        public ArchRuleExampleType GetTypeRepresentation(string fullqualifiedType) 
+
+        public ArchRuleExampleType GetTypeRepresentation(string fullqualifiedType)
         {
             if (!m_Types.TryGetValue(fullqualifiedType, out ArchRuleExampleType result))
             {
                 var isValid = true;
                 var namespaceParts = fullqualifiedType.Split('.');
-                
+
 
                 if (namespaceParts[0] != "ArchRuleExample")
                 {

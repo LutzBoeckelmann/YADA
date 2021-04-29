@@ -1,11 +1,10 @@
 // Copyright (c) Lutz Boeckelmann and Contributors. MIT License - see LICENSE.txt
 
 using System.Collections.Generic;
+using ArchRuleDemo.ArchitecturalModel;
 
-namespace YADA.Test
+namespace ArchRuleDemo.DependencyRuleEngine
 {
-
-
     public class ArchRuleExampleDependency
     {
         public ArchRuleExampleType DependencyType { get; }
@@ -20,7 +19,7 @@ namespace YADA.Test
             Context = new List<string>();
         }
 
-        public ArchRuleExampleDependency(ArchRuleExampleType dependencyType, List<string> context )
+        public ArchRuleExampleDependency(ArchRuleExampleType dependencyType, List<string> context)
         {
             DependencyType = dependencyType;
             Context = context;

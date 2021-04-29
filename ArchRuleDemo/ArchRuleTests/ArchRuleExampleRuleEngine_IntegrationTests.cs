@@ -5,8 +5,12 @@ using YADA.Core.Analyser;
 using YADA.Core.DependencyRuleEngine.Impl;
 using YADA.Core.DependencyRuleEngine;
 using Core.DependencyRuleEngine;
+using ArchRuleDemo.DependencyRuleEngine;
 
-namespace YADA.Test
+using ArchRuleDemo.ArchitecturalModel;
+using ArchRuleDemo.ArchitecturalRules;
+
+namespace ArchRuleDemo.ArchRuleTests
 {
     [TestFixture]
     public class ArchRuleExampleRuleEngine_IntegrationTests
@@ -18,8 +22,8 @@ namespace YADA.Test
         //DomainLayer: Infrastructure | Core | Extentions
         //ArchRuleExample.Infrastructure.Module1.Data.SubComponentHelper
 
-        private ArchRuleExampleRuleEngine CreateSut( )
-         {
+        private ArchRuleExampleRuleEngine CreateSut()
+        {
             var typeRepository = new ArchRuleExampleTypeRepository();
             var mapper = new ArchRuleExampleRuleEngineMapper(typeRepository);
 
@@ -42,13 +46,13 @@ namespace YADA.Test
         public void Analyse_ValidTypes_True()
         {
             var sut = CreateSut();
-            
+
             var typ1 = new TypeMock("ArchRuleExample.Infrastructure.Module.Data.Class1");
             var typ2 = new TypeMock("ArchRuleExample.Infrastructure.Module.Data.Class2");
-            
+
             typ2.Add(typ1);
 
-            var result = sut.Analyse(new ITypeDescription[]{typ1,typ2}, new FeedbackCollector());
+            var result = sut.Analyse(new ITypeDescription[] { typ1, typ2 }, new FeedbackCollector());
 
             Assert.That(result, Is.True);
         }
@@ -57,14 +61,14 @@ namespace YADA.Test
         public void Analyse_TypeWithLayerViolation_False()
         {
             var sut = CreateSut();
-            
+
             var typ1 = new TypeMock("ArchRuleExample.Core.Module.Data.Class1");
-            
+
             var typ2 = new TypeMock("ArchRuleExample.Infrastructure.Module.Data.Class2");
-            
+
             typ2.Add(typ1);
 
-            var result = sut.Analyse(new ITypeDescription[]{typ1,typ2}, new FeedbackCollector());
+            var result = sut.Analyse(new ITypeDescription[] { typ1, typ2 }, new FeedbackCollector());
 
             Assert.That(result, Is.False);
         }
@@ -73,13 +77,13 @@ namespace YADA.Test
         public void Analyse_SomeTypeWithLayerViolationCorrectAsLast_False()
         {
             var sut = CreateSut();
-          
+
             var typ1 = new TypeMock("ArchRuleExample.Core.Module.Data.Class1");
             var typ2 = new TypeMock("ArchRuleExample.Infrastructure.Module.Data.Class2");
             typ2.Add(typ1);
             var typ3 = new TypeMock("ArchRuleExample.Core.Module.Data.Class3");
 
-            var result = sut.Analyse(new ITypeDescription[]{typ1,typ2, typ3}, new FeedbackCollector());
+            var result = sut.Analyse(new ITypeDescription[] { typ1, typ2, typ3 }, new FeedbackCollector());
 
             Assert.That(result, Is.False);
         }
