@@ -59,7 +59,7 @@ namespace YADA.Core.DependencyRuleEngine
 
         private bool CheckDependencies(ITypeDescription type, IFeedbackCollector feedback) 
         {
-            DependencyRuleResultSet result = new DependencyRuleResultSet();
+            DependencyRuleResultAggregation result = new DependencyRuleResultAggregation();
             bool hasNoDependencies = true;
             foreach (var dependency in type.Dependencies)
             {
@@ -70,7 +70,7 @@ namespace YADA.Core.DependencyRuleEngine
                 }
             }
 
-            return hasNoDependencies || result.Approved();
+            return hasNoDependencies || result.AggregatedResult() == DependencyRuleResult.Approve;
         }
     }
 }
