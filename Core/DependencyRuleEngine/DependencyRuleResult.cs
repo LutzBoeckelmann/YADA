@@ -5,8 +5,16 @@ namespace YADA.Core.DependencyRuleEngine
     public enum DependencyRuleResult
     {
         Approve,
-        Ignore,
-        Reject
+        
+        /// <summary>
+        /// The rule does not apply to the checked value. Ignored will not affect the judgement
+        /// </summary>
+        Ignored,
+        Reject,
+        /// <summary>
+        /// The 
+        /// </summary>
+        Skip
     }
 }
 

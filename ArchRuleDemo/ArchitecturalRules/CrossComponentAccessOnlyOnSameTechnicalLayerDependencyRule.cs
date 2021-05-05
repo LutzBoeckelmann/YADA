@@ -34,7 +34,7 @@ namespace ArchRuleDemo.ArchitecturalRules
         {
             if (!dependency.Valid)
             {
-                return DependencyRuleResult.Ignore;
+                return DependencyRuleResult.Ignored;
             }
 
             if (type.Module.Name == dependency.Module.Name)

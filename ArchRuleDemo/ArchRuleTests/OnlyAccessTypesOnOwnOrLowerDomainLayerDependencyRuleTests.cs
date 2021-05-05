@@ -22,7 +22,7 @@ namespace ArchRuleDemo.ArchRuleTests
 
             var result = sut.Apply(type, new ArchRuleExampleDependency(dependencyInvalidType), new TestFeedbackCollector());
 
-            Assert.That(result, Is.EqualTo(DependencyRuleResult.Ignore));
+            Assert.That(result, Is.EqualTo(DependencyRuleResult.Ignored));
 
         }
 

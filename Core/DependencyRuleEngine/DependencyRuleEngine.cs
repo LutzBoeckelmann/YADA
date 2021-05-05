@@ -27,26 +27,34 @@ namespace YADA.Core.DependencyRuleEngine
             foreach(var type in types) 
             {
                 var typeAccepted = CheckType(type, feedback);
-                result |= typeAccepted;
 
-                if (typeAccepted)
+                result |= typeAccepted != DependencyRuleResult.Reject;
+
+                if (typeAccepted != DependencyRuleResult.Skip)
                 {
                     allDependenciesOk &= CheckDependencies(type, feedback);
                 }
             }
+            
             return result && allDependenciesOk;
         }
 
-        private bool CheckType(ITypeDescription type, IFeedbackCollector feedback) 
+        private DependencyRuleResult CheckType(ITypeDescription type, IFeedbackCollector feedback) 
         {
-            DependencyRuleResultSet result = new DependencyRuleResultSet();
-
+            DependencyRuleResultAggregation result = new DependencyRuleResultAggregation();
+            
             foreach (var typeRule in m_TypeRules) 
             {
-                result.Add(typeRule.Apply(type, feedback));
+                var ruleResult = typeRule.Apply(type, feedback);
+                
+                result.Add(ruleResult);
+                if(ruleResult == DependencyRuleResult.Skip) 
+                {
+                    break;
+                }
             }
 
-            return result.Approved();
+            return result.AggregatedResult();
         }
 
         private bool CheckDependencies(ITypeDescription type, IFeedbackCollector feedback) 

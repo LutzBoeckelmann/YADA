@@ -14,7 +14,7 @@ namespace ArchRuleDemo.ArchitecturalRules
         {
             if (!dependency.Valid)
             {
-                return DependencyRuleResult.Ignore;
+                return DependencyRuleResult.Ignored;
             }
 
             if (dependency.DomainLayer.MayBeAccessedFrom(type.DomainLayer))
