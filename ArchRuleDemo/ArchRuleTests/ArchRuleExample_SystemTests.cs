@@ -3,8 +3,9 @@ using ArchRuleDemo.ArchitecturalModel;
 using ArchRuleDemo.ArchitecturalRules;
 using YADA.Core.DependencyRuleEngine.Rules;
 using YADA.Core.DependencyRuleEngine.Feedback;
-using ArchRuleDemo.DependencyRuleEngine;
+using ArchRuleDemo.ArchRuleExampleDependencyRuleEngine;
 using YADA.Core.Analyser;
+using YADA.Core.DependencyRuleEngine;
 
 namespace ArchRuleDemo.ArchRuleTests
 {
@@ -28,24 +29,24 @@ namespace ArchRuleDemo.ArchRuleTests
             Assert.That(result, Is.False);
         }
 
-        private ArchRuleExampleRuleEngine CreateSut()
+        private DependencyRuleEngine CreateSut()
         {
             var typeRepository = new ArchRuleExampleTypeRepository();
             var mapper = new ArchRuleExampleRuleEngineMapper(typeRepository);
 
-            var typeRules = new ITypeRule<ArchRuleExampleType>[]
+            var typeRules = new ITypeRule<ITypeDescription>[]
             {
-                new CorrectNamespaceTypeRule()
+                new BaseTypeRule<ArchRuleExampleType, ArchRuleExampleDependency>( new CorrectNamespaceTypeRule(), mapper)
             };
 
-            var dependencyRules = new IDependencyRule<ArchRuleExampleType, ArchRuleExampleDependency>[]
+            var dependencyRules = new IDependencyRule<ITypeDescription, IDependency>[]
             {
-                new CrossComponentAccessOnlyOnSameTechnicalLayerDependencyRule(),
-                new OnlyAccessTypesOnOwnOrLowerTechnicalLayerDependencyRule(),
-                new OnlyAccessTypesOnOwnOrLowerDomainLayerDependencyRule()
+                new BaseDependencyRule<ArchRuleExampleType, ArchRuleExampleDependency>(new CrossComponentAccessOnlyOnSameTechnicalLayerDependencyRule(), mapper),
+                new BaseDependencyRule<ArchRuleExampleType, ArchRuleExampleDependency>(new OnlyAccessTypesOnOwnOrLowerTechnicalLayerDependencyRule(), mapper),
+                new BaseDependencyRule<ArchRuleExampleType, ArchRuleExampleDependency>(new OnlyAccessTypesOnOwnOrLowerDomainLayerDependencyRule(), mapper)
             };
 
-            return new ArchRuleExampleRuleEngine(typeRules, dependencyRules, mapper);
+            return new DependencyRuleEngine(typeRules, dependencyRules);
         }
 
 

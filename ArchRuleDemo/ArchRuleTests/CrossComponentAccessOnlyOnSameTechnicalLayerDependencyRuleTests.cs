@@ -3,7 +3,7 @@
 using NUnit.Framework;
 
 using YADA.Core.DependencyRuleEngine;
-using ArchRuleDemo.DependencyRuleEngine;
+using ArchRuleDemo.ArchRuleExampleDependencyRuleEngine;
 using ArchRuleDemo.ArchitecturalModel;
 using ArchRuleDemo.ArchitecturalRules;
 

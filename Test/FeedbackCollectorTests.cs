@@ -38,7 +38,7 @@ namespace YADA.Test
 
             var resultCollector = new StringBuilder();
             sut.Print(resultCollector);
-            Assert.That(resultCollector.ToString(), Contains.Substring("Rule").And.ContainsSubstring("OtherRule"));
+            Assert.That(resultCollector.ToString(), Does.Contain("Rule").And.Contain("OtherRule"));
         }
     }
 
@@ -71,7 +71,7 @@ namespace YADA.Test
             sut.AddFeedbackForType("OtherType");
 
             var result = sut.Print().ToString();
-            Assert.That(result, Does.Contain("Type").And.ContainsSubstring("OtherType"));
+            Assert.That(result, Does.Contain("Type").And.Contain("OtherType"));
         }
     }
 }

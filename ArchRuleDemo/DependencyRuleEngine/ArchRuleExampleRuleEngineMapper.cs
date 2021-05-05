@@ -5,7 +5,7 @@ using ArchRuleDemo.ArchitecturalModel;
 using YADA.Core.Analyser;
 using YADA.Core.DependencyRuleEngine;
 
-namespace ArchRuleDemo.DependencyRuleEngine
+namespace ArchRuleDemo.ArchRuleExampleDependencyRuleEngine
 {
     public class ArchRuleExampleRuleEngineMapper : IDependencyRuleInputMapper<ArchRuleExampleType, ArchRuleExampleDependency>
     {

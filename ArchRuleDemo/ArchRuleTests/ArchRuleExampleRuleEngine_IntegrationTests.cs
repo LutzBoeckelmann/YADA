@@ -2,12 +2,13 @@
 
 using NUnit.Framework;
 using YADA.Core.Analyser;
-using ArchRuleDemo.DependencyRuleEngine;
+using ArchRuleDemo.ArchRuleExampleDependencyRuleEngine;
 
 using ArchRuleDemo.ArchitecturalModel;
 using ArchRuleDemo.ArchitecturalRules;
 using YADA.Core.DependencyRuleEngine.Rules;
 using YADA.Core.DependencyRuleEngine.Feedback;
+using YADA.Core.DependencyRuleEngine;
 
 namespace ArchRuleDemo.ArchRuleTests
 {
@@ -21,26 +22,7 @@ namespace ArchRuleDemo.ArchRuleTests
         //DomainLayer: Infrastructure | Core | Extentions
         //ArchRuleExample.Infrastructure.Module1.Data.SubComponentHelper
 
-        private ArchRuleExampleRuleEngine CreateSut()
-        {
-            var typeRepository = new ArchRuleExampleTypeRepository();
-            var mapper = new ArchRuleExampleRuleEngineMapper(typeRepository);
-
-            var typeRules = new ITypeRule<ArchRuleExampleType>[]
-            {
-                new CorrectNamespaceTypeRule()
-            };
-
-            var dependencyRules = new IDependencyRule<ArchRuleExampleType, ArchRuleExampleDependency>[]
-            {
-                new CrossComponentAccessOnlyOnSameTechnicalLayerDependencyRule(),
-                new OnlyAccessTypesOnOwnOrLowerTechnicalLayerDependencyRule(),
-                new OnlyAccessTypesOnOwnOrLowerDomainLayerDependencyRule()
-            };
-
-            return new ArchRuleExampleRuleEngine(typeRules, dependencyRules, mapper);
-        }
-
+      
         [Test]
         public void Analyse_ValidTypes_True()
         {
@@ -85,6 +67,27 @@ namespace ArchRuleDemo.ArchRuleTests
             var result = sut.Analyse(new ITypeDescription[] { typ1, typ2, typ3 }, new FeedbackCollector());
 
             Assert.That(result, Is.False);
+        } 
+        
+        private DependencyRuleEngine CreateSut()
+        {
+            var typeRepository = new ArchRuleExampleTypeRepository();
+            var mapper = new ArchRuleExampleRuleEngineMapper(typeRepository);
+
+            var typeRules = new ITypeRule<ITypeDescription>[]
+            {
+                new BaseTypeRule<ArchRuleExampleType, ArchRuleExampleDependency>( new CorrectNamespaceTypeRule(), mapper)
+            };
+
+            var dependencyRules = new IDependencyRule<ITypeDescription, IDependency>[]
+            {
+                  new BaseDependencyRule<ArchRuleExampleType, ArchRuleExampleDependency>(new CrossComponentAccessOnlyOnSameTechnicalLayerDependencyRule(), mapper),
+                  new BaseDependencyRule<ArchRuleExampleType, ArchRuleExampleDependency>(new OnlyAccessTypesOnOwnOrLowerTechnicalLayerDependencyRule(), mapper),
+                  new BaseDependencyRule<ArchRuleExampleType, ArchRuleExampleDependency>(new OnlyAccessTypesOnOwnOrLowerDomainLayerDependencyRule(), mapper)
+             };
+
+            return new DependencyRuleEngine(typeRules, dependencyRules);
         }
+
     }
 }

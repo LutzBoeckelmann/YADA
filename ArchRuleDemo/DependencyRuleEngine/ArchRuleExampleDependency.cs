@@ -3,7 +3,7 @@
 using System.Collections.Generic;
 using ArchRuleDemo.ArchitecturalModel;
 
-namespace ArchRuleDemo.DependencyRuleEngine
+namespace ArchRuleDemo.ArchRuleExampleDependencyRuleEngine
 {
     public class ArchRuleExampleDependency
     {

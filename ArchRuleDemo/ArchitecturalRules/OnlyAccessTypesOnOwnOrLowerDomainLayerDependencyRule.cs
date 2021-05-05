@@ -2,7 +2,7 @@
 
 using YADA.Core.DependencyRuleEngine;
 using ArchRuleDemo.ArchitecturalModel;
-using ArchRuleDemo.DependencyRuleEngine;
+using ArchRuleDemo.ArchRuleExampleDependencyRuleEngine;
 using YADA.Core.DependencyRuleEngine.Rules;
 using YADA.Core.DependencyRuleEngine.Feedback;
 
