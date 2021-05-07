@@ -1,5 +1,6 @@
 // Copyright (c) Lutz Boeckelmann and Contributors. MIT License - see LICENSE.txt
 
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -16,6 +17,16 @@ namespace YADA.Core.DependencyRuleEngine.Feedback
             }
 
             return m_Feedbacks[type];
+        }
+
+        public IEnumerable<Tuple<string, string>> GetFeedback() 
+        {
+            foreach(var pair in m_Feedbacks) 
+            {
+                StringBuilder result = new StringBuilder();
+                pair.Value.Print(result);
+                yield return new Tuple<string, string>(pair.Key, result.ToString());
+            }
         }
 
         public StringBuilder Print()

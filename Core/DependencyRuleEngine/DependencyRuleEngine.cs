@@ -70,7 +70,7 @@ namespace YADA.Core.DependencyRuleEngine
                 }
             }
 
-            return hasNoDependencies || result.AggregatedResult() == DependencyRuleResult.Approve;
+            return hasNoDependencies || result.AggregatedResult() != DependencyRuleResult.Reject;
         }
     }
 }
