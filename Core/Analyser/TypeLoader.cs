@@ -8,13 +8,14 @@ namespace YADA.Core.Analyser
 {
     public class TypeLoader
     {
-
+        private readonly TypeAnalyser m_TypeAnalyser;
         private readonly List<string> m_AssemblyLocations;
         private List<ITypeDescription> m_Types;
 
         public TypeLoader(IEnumerable<string> locations)
         {
             m_AssemblyLocations = locations.ToList();
+            m_TypeAnalyser = new TypeAnalyser();
         }
 
         public IEnumerable<ITypeDescription> GetTypes()
@@ -31,11 +32,11 @@ namespace YADA.Core.Analyser
             return m_Types;
         }
 
-        private static IEnumerable<TypeDescription> GetTypesInternal(string location)
+        private IEnumerable<TypeDescription> GetTypesInternal(string location)
         {
             foreach (var type in GetTypesFromAssembly(location))
             {
-                yield return TypeAnalyser.AnalyseType(type);
+                yield return m_TypeAnalyser.AnalyseType(type);
             }
         }
 
@@ -65,10 +66,7 @@ namespace YADA.Core.Analyser
         public static ITypeDescription GetType(string fullName, string assemblyLocation)
         {
             var type = GetTypesFromAssembly(assemblyLocation).First(t => t.FullName == fullName);
-            return TypeAnalyser.AnalyseType(type);
+            return new TypeAnalyser().AnalyseType(type);
         }
-
-    
-
     }
 }

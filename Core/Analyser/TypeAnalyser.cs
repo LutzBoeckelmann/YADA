@@ -1,109 +1,209 @@
 // Copyright (c) Lutz Boeckelmann and Contributors. MIT License - see LICENSE.txt
 
 using System.Collections.Generic;
-using System.Text;
 using Mono.Cecil;
-
 
 namespace YADA.Core.Analyser
 {
-    /// <summary>
-    /// The base idea of IDependencyConext is to provide information about  
-    /// where the current type is coupled to the dependency.
-    /// </summary>
-    internal abstract class BaseContext : IDependencyContext 
+    internal class FieldContext : IDependencyContext
     {
-        public string Name { get; }
-
-        protected BaseContext(string name) { 
-            Name = name;
-            AdditionalInfomation = new Dictionary<string, string>();
+        private readonly string m_Name;
+        public FieldContext(string fieldName) 
+        {   
+            m_Name = fieldName;
+        }
+        public void Visit(IDependencyContextVisitor visitor)
+        {
+            visitor.FieldDefinition(m_Name);
         }
 
-        public Dictionary<string, string> AdditionalInfomation { get; }
-
-        protected string PrintAdditionalInformation() 
+        public T Visit<T>(IDependencyContextVisitor<T> visitor) 
         {
-            StringBuilder result = new StringBuilder();
-            foreach(var pair in AdditionalInfomation)
-             {
-                result.Append($"{pair.Key} - {pair.Value}");
-
-            }
-
-            return result.ToString();
+            return visitor.FieldDefinition(m_Name);
         }
     }
 
-    internal class FieldContext : BaseContext
+    internal class InheritesContext : IDependencyContext
     {
-        public FieldContext(string fieldName) : base(fieldName) {        }
+        private readonly string m_Name;
 
-        public override string ToString()
+        public InheritesContext(string dependencyName) 
+        {   
+            m_Name = dependencyName;
+        }
+        public  void Visit(IDependencyContextVisitor visitor)
         {
-            return $"FieldContext {Name}";
+            visitor.BaseClassDefinition(m_Name);
+        }
+
+        public T Visit<T>(IDependencyContextVisitor<T> visitor) 
+        {
+            return visitor.BaseClassDefinition(m_Name);
         }
     }
 
-    internal class InheritesContext : BaseContext
+    internal class MethodDefinitionParameterContext : IDependencyContext
     {
+        private readonly string m_Name;
+
+        public MethodDefinitionParameterContext(string name) 
+        {
+            m_Name = name;
+        }
+
+        public void Visit(IDependencyContextVisitor visitor)
+        {
+            visitor.MethodDefinitionParameter(m_Name);
+        }
+
+        public T Visit<T>(IDependencyContextVisitor<T> visitor) 
+        {
+            return visitor.MethodDefinitionParameter(m_Name);
+        }
+    }
+
+    internal class MethodDefinitionReturnTypeContext : IDependencyContext
+    {
+        private readonly string m_Name;
+        public MethodDefinitionReturnTypeContext(string name)   
+        {
+            m_Name = name;
+        }
+
+        public void Visit(IDependencyContextVisitor visitor)
+        {
+            visitor.MethodDefinitionReturnType(m_Name);
+        }
+
+        public T Visit<T>(IDependencyContextVisitor<T> visitor) 
+        {
+            return visitor.MethodDefinitionReturnType(m_Name);
+        }
+    }
+
+    internal class MethodDefinitionLocalVariableContext : IDependencyContext
+    {
+        private readonly string m_Name;
+        public MethodDefinitionLocalVariableContext(string name)   
+        {
+            m_Name = name;
+        }
         
-
-        public InheritesContext(string dependencyName) : base(dependencyName)  { }
-
-         public override string ToString()
+        public void Visit(IDependencyContextVisitor visitor)
         {
-            return $"InheritesContext {Name}";
+            visitor.MethodDefinitionLocalVariable(m_Name);
+        }
+
+        public T Visit<T>(IDependencyContextVisitor<T> visitor) 
+        {
+            return visitor.MethodDefinitionLocalVariable(m_Name);
         }
     }
 
-    internal enum MethodDependencyUsageType
+    internal class MethodBodyFieldReferenceContext : IDependencyContext 
     {
-        Parameter,
-        ReturnType,
-        LocalVariable
-    }
-
-    internal class MethodDefinitionContext : BaseContext
-    {
-        public MethodDependencyUsageType m_UsageType;
-
-        public MethodDefinitionContext(string methodName, MethodDependencyUsageType dependencyAccessType): base(methodName)  
+        private readonly string m_MethodName;
+        private readonly string m_FieldName;
+        
+        public MethodBodyFieldReferenceContext(string methodName, string fieldName)
         {
-            m_UsageType = dependencyAccessType;
+            m_MethodName = methodName;
+            m_FieldName = fieldName;
         }
 
-         public override string ToString()
+        public void Visit(IDependencyContextVisitor visitor)
         {
-            return $"MethodDefinitionContext {Name} as {m_UsageType}";
+            visitor.MethodBodyAccessedFieldType(m_MethodName, m_FieldName);
+        }
+
+        public T Visit<T>(IDependencyContextVisitor<T> visitor) 
+        {
+            return visitor.MethodBodyAccessedFieldType(m_MethodName, m_FieldName);
         }
     }
 
-    internal enum MethodDependencyAccessType 
+    internal class MethodBodyTypeReferenceContext : IDependencyContext
     {
-        CallToMethodDefintion,
-        AccessFields,
-
-        CalledMethodReturnValue,
-
-        CalledMethodParameter,
-
-        TypeAccess
-    }
-
-    internal class MethodBodyContext : BaseContext
-    {
-       
-        public MethodDependencyAccessType m_UsageType;
-
-        public MethodBodyContext(string methodName, MethodDependencyAccessType dependencyAccessType): base(methodName) 
-        {
-            m_UsageType = dependencyAccessType;
+        private readonly string m_MethodName;
+        public MethodBodyTypeReferenceContext(string name) {
+            m_MethodName = name;
         }
 
-        public override string ToString()
+        public  void Visit(IDependencyContextVisitor visitor)
         {
-            return $"MethodBodyContext {Name} as {m_UsageType} ({PrintAdditionalInformation()})";
+            visitor.MethodBodyReferencedType(m_MethodName);
+        }
+
+        public T Visit<T>(IDependencyContextVisitor<T> visitor) 
+        {
+            return visitor.MethodBodyReferencedType(m_MethodName);
+        }
+    }
+
+    internal class MethodBodyCallMethodAtType : IDependencyContext
+    {
+        private readonly string m_MethodName;
+
+        private readonly string m_CalledMethodFullName;
+
+        public MethodBodyCallMethodAtType(string name, string calledMethodFullName)
+        {
+            m_MethodName = name;
+            m_CalledMethodFullName = calledMethodFullName;
+        }
+
+        public  void Visit(IDependencyContextVisitor visitor)
+        {
+            visitor.MethodBodyCallMethodAtType(m_MethodName, m_CalledMethodFullName);
+        }
+
+        public T Visit<T>(IDependencyContextVisitor<T> visitor) 
+        {
+            return visitor.MethodBodyCallMethodAtType(m_MethodName, m_CalledMethodFullName);
+        }
+    }
+
+    internal class MethodBodyCalledMethodParameterContext : IDependencyContext
+    {
+        private readonly string m_MethodName;
+        private readonly string m_CalledMethodFullName;
+
+        public MethodBodyCalledMethodParameterContext(string name, string calledMethodFullName)
+        {
+            m_MethodName = name;
+            m_CalledMethodFullName = calledMethodFullName;
+        }
+
+        public void Visit(IDependencyContextVisitor visitor)
+        {
+            visitor.MethodBodyCalledMethodParameter(m_MethodName, m_CalledMethodFullName);
+        }
+
+        public T Visit<T>(IDependencyContextVisitor<T> visitor) 
+        {
+            return visitor.MethodBodyCalledMethodParameter(m_MethodName, m_CalledMethodFullName);
+        }
+    }
+
+    internal class MethodBodyCalledMethodReturnTypeContext : IDependencyContext
+    {
+        private readonly string m_MethodName;
+        private readonly string m_CalledMethodFullName;
+
+        public MethodBodyCalledMethodReturnTypeContext(string name, string calledMethodFullName) 
+        {
+            m_MethodName = name;
+            m_CalledMethodFullName = calledMethodFullName;
+        }
+
+        public void Visit(IDependencyContextVisitor visitor)
+        {
+            visitor.MethodBodyCalledMethodReturnType(m_MethodName, m_CalledMethodFullName);
+        }
+
+        public T Visit<T>(IDependencyContextVisitor<T> visitor) 
+        {
+            return visitor.MethodBodyCalledMethodReturnType(m_MethodName, m_CalledMethodFullName);
         }
     }
 
@@ -112,7 +212,7 @@ namespace YADA.Core.Analyser
     /// </summary>
     public class TypeAnalyser
     {
-        internal static TypeDescription AnalyseType(TypeDefinition typeDefinition)
+        internal TypeDescription AnalyseType(TypeDefinition typeDefinition)
         {
             var result = new TypeDescription(typeDefinition.FullName);
 
@@ -139,84 +239,65 @@ namespace YADA.Core.Analyser
             return result;
         }
 
-
-        private static void AnalyseMethod(TypeDescription result, TypeDefinition typeDefinition)
+        private void AnalyseMethod(TypeDescription result, TypeDefinition typeDefinition)
         {
-
-
             // method 
             foreach (var method in typeDefinition.Methods)
             {
                 foreach (var parameter in method.Parameters)
                 {
-                    AddDependency(result, parameter.ParameterType, new MethodDefinitionContext(method.Name, MethodDependencyUsageType.Parameter));
+                    AddDependency(result, parameter.ParameterType, new MethodDefinitionParameterContext(method.Name));
                 }
 
                 var returnValue = method.MethodReturnType.ReturnType;
 
                 if (returnValue.FullName != "System.Void")
                 {
-                    AddDependency(result, returnValue,  new MethodDefinitionContext(method.Name, MethodDependencyUsageType.ReturnType) );
+                    AddDependency(result, returnValue,  new MethodDefinitionReturnTypeContext(method.Name));
                 }
 
                 if (method.HasBody)
                 {
-                    //Console.WriteLine($"--- {method.FullName} ---");
                     foreach (var localVariable in method.Body.Variables)
                     {
-                        AddDependency(result, localVariable.VariableType, new MethodDefinitionContext(method.Name, MethodDependencyUsageType.LocalVariable));
+                        AddDependency(result, localVariable.VariableType, new MethodDefinitionLocalVariableContext(method.Name));
                     }
 
                     foreach (var line in method.Body.Instructions)
                     {
-                        //Console.WriteLine($"{line} ({line.Operand?.GetType().FullName})");
-
-                        if (line.OpCode == Mono.Cecil.Cil.OpCodes.Newobj)
+                        if (line.Operand is FieldDefinition fieldDefinition)
                         {
-                            MethodDefinition definition = line.Operand as MethodDefinition;
+                            // this may not be relevant for the dependency if its a local field, but may be used for deeper informations
+                            var context = new MethodBodyFieldReferenceContext(method.Name, fieldDefinition.FullName);
+                            AddDependency(result, fieldDefinition.FieldType, context);
+                        }
 
-                            //  AddDependency(result, definition.DeclaringType, repository);
+                        if (line.Operand is TypeDefinition accessTypeDefinition)
+                        {
+                            var context = new MethodBodyTypeReferenceContext(method.Name);
+                            AddDependency(result, accessTypeDefinition, context);
                         }
 
                         if (line.Operand is MethodDefinition methodDefinition)
                         {
-                            var context = new MethodBodyContext(method.Name, MethodDependencyAccessType.CallToMethodDefintion);
-                            AddDependency(result, methodDefinition.DeclaringType, context );
-                            //Console.WriteLine($"!! {methodDefinition.DeclaringType.FullName}");
+                            var context = new MethodBodyCallMethodAtType(method.Name, methodDefinition.FullName);
+                            AddDependency(result, methodDefinition.DeclaringType, context);
                         }
-
-                        if (line.Operand is FieldDefinition fieldDefinition)
-                        {
-                            // this may not be relevant for the dependency if its a local field, but may be used for deeper informations
-                            var context = new MethodBodyContext(method.Name, MethodDependencyAccessType.AccessFields);
-                            AddDependency(result, fieldDefinition.FieldType, context);
-
-                            //Console.WriteLine($"!! {fieldDefinition.FieldType.FullName}");
-                        }
-                        if (line.Operand is TypeDefinition typeDefinition1)
-                        {
-                            var context = new MethodBodyContext(method.Name, MethodDependencyAccessType.TypeAccess);
-                            AddDependency(result, typeDefinition1, context);
-                            //Console.WriteLine($"!! {typeDefinition1.FullName}");
-                        }
+                        
                         if (line.Operand is MethodReference methodReference)
                         {
 
                             if (methodReference.ReturnType.FullName != "System.Void")
                             {
-                                var context = new MethodBodyContext(method.Name, MethodDependencyAccessType.CalledMethodReturnValue);
-                                context.AdditionalInfomation.Add("CalledMethod", methodReference.FullName);
+                                var context = new MethodBodyCalledMethodReturnTypeContext(method.Name, methodReference.FullName);
                                 AddDependency(result, methodReference.ReturnType, context);
                             }
 
                             foreach (var t in methodReference.Parameters)
                             {
-                                var context = new MethodBodyContext(method.Name, MethodDependencyAccessType.CalledMethodParameter);
-                                context.AdditionalInfomation.Add("CalledMethod", methodReference.FullName);
+                                var context = new MethodBodyCalledMethodParameterContext(method.Name, methodReference.FullName);
                                 AddDependency(result, t.ParameterType, context);
-                                //Console.WriteLine("References to Parameter " + t.ParameterType.FullName);
                             }
-
                         }
                     }
                 }

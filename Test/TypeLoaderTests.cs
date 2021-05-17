@@ -422,7 +422,6 @@ namespace YADA.Test
             
             private void InternalEnsureNoOtherReferences() 
             {
-
                 var count = 0;
                 foreach(var d in m_Type.Dependencies) 
                 {
@@ -435,7 +434,6 @@ namespace YADA.Test
                 Assert.That(count, Is.EqualTo(m_ExpectedReferences), $"At type {m_Type.FullName} are {m_ExpectedReferences} expected but {count} are available");
             }
 
-         
             private void InternalAssertDependsOn( Type dependency, int? times = null) 
             {
                 Assert.That(DependsOn(dependency), Is.True, $"The type {m_Type.FullName} should depend on {dependency.FullName}", times);
@@ -456,7 +454,6 @@ namespace YADA.Test
 
                 return result;
             }
-
         }
 
         private ITypeDescription FetchType<T>() 
@@ -464,6 +461,4 @@ namespace YADA.Test
             return TypeLoader.GetType(typeof(T).FullName, typeof(T).Assembly.Location);
         }
     }
-
-
 }

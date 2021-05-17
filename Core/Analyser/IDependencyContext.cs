@@ -4,6 +4,7 @@ namespace YADA.Core.Analyser
 {
     public interface IDependencyContext 
     {
-
+        void Visit(IDependencyContextVisitor visitor);
+        T Visit<T>(IDependencyContextVisitor<T> visitor);
     }
 }
