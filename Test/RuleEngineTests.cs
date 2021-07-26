@@ -8,6 +8,7 @@ using YADA.Core.Analyser;
 using YADA.Core.DependencyRuleEngine;
 using YADA.Core.DependencyRuleEngine.Rules;
 using YADA.Core.DependencyRuleEngine.Feedback;
+using Moq;
 
 namespace YADA.Test
 {
@@ -79,7 +80,6 @@ namespace YADA.Test
 
         [Test]
         public void Analyse_SetOfTypes_TypeFilterCalledForAnyType()
-
         {
             var input = new List<ITypeDescription>() { new TypeDescriptionFake("Type1"), new TypeDescriptionFake("Type2") };
 
@@ -94,7 +94,6 @@ namespace YADA.Test
 
         [Test]
         public void Analyse_SetOfTypesWithoutDependency_DependencyFiltersNotCalled()
-
         {
             var input = new List<ITypeDescription>() { new TypeDescriptionFake("Type1"), new TypeDescriptionFake("Type2") };
 
@@ -138,6 +137,7 @@ namespace YADA.Test
         {
             var input = new List<TypeDescriptionFake>() { new TypeDescriptionFake("Type1"), new TypeDescriptionFake("Type2") };
 
+            
             var sut = new DependencyRuleEngine(new[] { new TypeRule(_ => DependencyRuleResult.Skip), new TypeRule(_ => throw new NotImplementedException()) }, new[] { new DependencyRule((s, d) => { throw new NotImplementedException(); }) });
 
             var result = sut.Analyse(input, new FeedbackCollector());
@@ -145,5 +145,117 @@ namespace YADA.Test
             Assert.That(result, Is.EqualTo(true));
         }
 
+        [Test]
+        public void Analyse_RejectType_Failed()
+        {
+            var input = new List<TypeDescriptionFake>() { new TypeDescriptionFake("Type1"), new TypeDescriptionFake("Type2") };
+
+            var sut = new DependencyRuleEngine(new[] { new TypeRule(_ => DependencyRuleResult.Reject) }, new[] { new DependencyRule((s,v) =>  DependencyRuleResult.Ignored )});
+            var result = sut.Analyse(input, new FeedbackCollector());
+
+            Assert.That(result, Is.EqualTo(false));
+        }
+
+        [Test]
+        public void Analyse_RejectType_NoOtherTypeRuleExecutedForThisType()
+        {
+            var input = new List<TypeDescriptionFake>() { new TypeDescriptionFake("Type1"), new TypeDescriptionFake("Type2") };
+
+            var typeRejectingRule = new Mock<ITypeRule<ITypeDescription>>();
+            typeRejectingRule.Setup(t => t.Apply(input[0], It.IsAny<IFeedbackCollector>())).Returns(DependencyRuleResult.Reject);
+            typeRejectingRule.Setup(t => t.Apply(input[1], It.IsAny<IFeedbackCollector>())).Returns(DependencyRuleResult.Approve);
+
+            var additionalTypeRule = new Mock<ITypeRule<ITypeDescription>>();
+
+            var sut = new DependencyRuleEngine(new[] { typeRejectingRule.Object, additionalTypeRule.Object }, new[] { Mock.Of<IDependencyRule<ITypeDescription, IDependency>>() });
+            var result = sut.Analyse(input, new FeedbackCollector());
+
+            additionalTypeRule.Verify(c => c.Apply(input[0], It.IsAny<IFeedbackCollector>()), Times.Never);
+        }
+
+        [Test]
+        public void Analyse_OneRejectOneApprovedType_ApplyCalledAtAllRulesForApprovedType()
+        {
+            var type1 = new TypeDescriptionBuilder("Type1").DependsOn("Dependency1").Create();
+            var type2 = new TypeDescriptionBuilder("Type2").DependsOn("Dependency2").Create();
+            var input = new List<ITypeDescription>() { type1, type2 };
+
+            var typeRejectingRule = new Mock<ITypeRule<ITypeDescription>>();
+            typeRejectingRule.Setup(t => t.Apply(input[0], It.IsAny<IFeedbackCollector>())).Returns(DependencyRuleResult.Reject);
+            typeRejectingRule.Setup(t => t.Apply(input[1], It.IsAny<IFeedbackCollector>())).Returns(DependencyRuleResult.Approve);
+
+            var additionalTypeRule = new Mock<ITypeRule<ITypeDescription>>();
+            var dependencyRule = new Mock<IDependencyRule<ITypeDescription, IDependency>>();
+
+            var sut = new DependencyRuleEngine(new[] { typeRejectingRule.Object, additionalTypeRule.Object }, new[] {dependencyRule.Object});
+            var result = sut.Analyse(input, new FeedbackCollector());
+
+            additionalTypeRule.Verify(c => c.Apply(input[1], It.IsAny<IFeedbackCollector>()), Times.Once);
+            dependencyRule.Verify(c => c.Apply(input[1], input[1].Dependencies.First(), It.IsAny<IFeedbackCollector>()), Times.Once);
+            dependencyRule.Verify(c => c.Apply(input[0], input[0].Dependencies.First(), It.IsAny<IFeedbackCollector>()), Times.Never);
+        }
+
+        [Test]
+        public void Analyse_RejectType_NoOtherDependencyRuleExecutedForThisType()
+        {
+            var type1 = new TypeDescriptionBuilder("Type1").DependsOn("DependencyType").Create();
+
+            var input = new List<ITypeDescription>() { type1, new TypeDescriptionFake("Type2") };
+
+            var sut = new DependencyRuleEngine(new[] { new TypeRule(_ => DependencyRuleResult.Reject) }, new[] { new DependencyRule((s,v) =>  throw new NotImplementedException() )});
+            var result = sut.Analyse(input, new FeedbackCollector());
+
+            Assert.That(result, Is.EqualTo(false));
+        }
+
+        public class TypeDescriptionBuilder 
+        {
+            private string m_Fullname;
+
+            private List<TypeDescriptionFake> m_Dependencies;
+
+            public TypeDescriptionBuilder(string fullname)
+            {
+                m_Fullname = fullname;
+            }
+
+            public TypeDescriptionBuilder() 
+            {
+                m_Fullname = "SomeType";
+            }
+
+            public TypeDescriptionBuilder FullName(string fullName) 
+            {
+                m_Fullname = fullName;
+                return this;
+            }
+
+            public TypeDescriptionBuilder DependsOn(string dependencyTypeFullName) 
+            {
+                if(m_Dependencies == null) 
+                {
+                    m_Dependencies = new List<TypeDescriptionFake>();
+                }
+
+                m_Dependencies.Add(new TypeDescriptionFake(dependencyTypeFullName));
+
+                return this;
+            }
+
+            public ITypeDescription Create()
+            {
+                var result =  new TypeDescriptionFake(m_Fullname);
+
+                if(m_Dependencies!=null) 
+                {
+                    foreach (var dependencies in m_Dependencies)
+                    {
+                        result.Add(dependencies);
+                    }
+                }
+                
+                return result;
+            }
+       }
     }
 }
