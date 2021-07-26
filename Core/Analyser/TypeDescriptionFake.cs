@@ -11,15 +11,23 @@ namespace YADA.Core.Analyser
     {
         private readonly List<IDependency> m_Dependencies;
 
+        public TypeDescriptionFake(string fullName, string assemblyName)
+        {
+            FullName = fullName;
+            m_Dependencies = new List<IDependency>();
+        }
         public TypeDescriptionFake(string fullName)
         {
             FullName = fullName;
             m_Dependencies = new List<IDependency>();
         }
+        
 
         public string FullName { get; }
 
         public IEnumerable<IDependency> Dependencies => m_Dependencies;
+
+        public string AssemblyName { get; }
 
         public void Add(TypeDescriptionFake dependency, int occurrence = 1)
         {

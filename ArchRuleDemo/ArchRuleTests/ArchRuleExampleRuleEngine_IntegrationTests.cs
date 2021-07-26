@@ -28,8 +28,8 @@ namespace ArchRuleDemo.ArchRuleTests
         {
             var sut = CreateSut();
 
-            var typ1 = new TypeDescriptionFake("ArchRuleExample.Infrastructure.Module.Data.Class1");
-            var typ2 = new TypeDescriptionFake("ArchRuleExample.Infrastructure.Module.Data.Class2");
+            var typ1 = new TypeDescriptionFake("ArchRuleExample.Infrastructure.Module.Data.Class1", "ArchRuleExample");
+            var typ2 = new TypeDescriptionFake("ArchRuleExample.Infrastructure.Module.Data.Class2", "ArchRuleExample");
 
             typ2.Add(typ1);
 
@@ -43,9 +43,9 @@ namespace ArchRuleDemo.ArchRuleTests
         {
             var sut = CreateSut();
 
-            var typ1 = new TypeDescriptionFake("ArchRuleExample.Core.Module.Data.Class1");
+            var typ1 = new TypeDescriptionFake("ArchRuleExample.Core.Module.Data.Class1", "ArchRuleExample");
 
-            var typ2 = new TypeDescriptionFake("ArchRuleExample.Infrastructure.Module.Data.Class2");
+            var typ2 = new TypeDescriptionFake("ArchRuleExample.Infrastructure.Module.Data.Class2", "ArchRuleExample");
 
             typ2.Add(typ1);
 
@@ -59,10 +59,10 @@ namespace ArchRuleDemo.ArchRuleTests
         {
             var sut = CreateSut();
 
-            var typ1 = new TypeDescriptionFake("ArchRuleExample.Core.Module.Data.Class1");
-            var typ2 = new TypeDescriptionFake("ArchRuleExample.Infrastructure.Module.Data.Class2");
+            var typ1 = new TypeDescriptionFake("ArchRuleExample.Core.Module.Data.Class1", "ArchRuleExample");
+            var typ2 = new TypeDescriptionFake("ArchRuleExample.Infrastructure.Module.Data.Class2", "ArchRuleExample");
             typ2.Add(typ1);
-            var typ3 = new TypeDescriptionFake("ArchRuleExample.Core.Module.Data.Class3");
+            var typ3 = new TypeDescriptionFake("ArchRuleExample.Core.Module.Data.Class3", "ArchRuleExample");
 
             var result = sut.Analyse(new ITypeDescription[] { typ1, typ2, typ3 }, new FeedbackCollector());
 

@@ -7,15 +7,17 @@ namespace YADA.Core.Analyser
     internal class TypeDescription : ITypeDescription
     {
         private readonly Dictionary<string, Dependency> m_Dependencies = new Dictionary<string, Dependency>();
-        public TypeDescription(string fullName) 
+        public TypeDescription(string fullName, string assemblyName) 
         {
             FullName = fullName;
+            AssemblyName = assemblyName;
         }
-
 
         public string FullName { get; }
 
         public IEnumerable<IDependency> Dependencies => m_Dependencies.Values;
+
+        public string AssemblyName { get; }
 
         public void AddDependency(TypeDescription description, IDependencyContext context) 
         {

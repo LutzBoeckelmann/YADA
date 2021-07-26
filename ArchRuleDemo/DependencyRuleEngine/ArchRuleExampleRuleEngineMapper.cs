@@ -20,12 +20,12 @@ namespace ArchRuleDemo.ArchRuleExampleDependencyRuleEngine
 
         public ArchRuleExampleDependency MapDependency(IDependency dependency)
         {
-            var dependencyType = m_TypeMapper.GetTypeRepresentation(dependency.Type.FullName);
+            var dependencyType = m_TypeMapper.GetTypeRepresentation($"{dependency.Type.FullName} ({dependency.Type.AssemblyName})");
             return new ArchRuleExampleDependency(dependencyType, dependency.Contexts.Select(context=>context.Visit(m_Visitor)).ToList());
         }
         public ArchRuleExampleType MapTypeDescription(ITypeDescription type)
         {
-            return m_TypeMapper.GetTypeRepresentation(type.FullName);
+            return m_TypeMapper.GetTypeRepresentation($"{type.FullName} ({type.AssemblyName})");
         }
     }
 }

@@ -214,7 +214,7 @@ namespace YADA.Core.Analyser
     {
         internal TypeDescription AnalyseType(TypeDefinition typeDefinition)
         {
-            var result = new TypeDescription(typeDefinition.FullName);
+            var result = new TypeDescription(typeDefinition.FullName, typeDefinition.Module.Assembly.FullName);
 
             //Check fields
             foreach (var field in typeDefinition.Fields)
@@ -312,7 +312,8 @@ namespace YADA.Core.Analyser
 
             foreach (var type in dependencies)
             {
-                dependencyDescription = new TypeDescription(type.FullName);
+                var d = type.Module.Assembly.FullName;
+                dependencyDescription = new TypeDescription(type.FullName, d);
                 currentType.AddDependency(dependencyDescription, context);
             }
 

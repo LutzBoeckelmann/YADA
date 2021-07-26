@@ -350,6 +350,31 @@ namespace YADA.Test
 
         }
 
+        [Test]
+        public void TypeLoader_GetTypes_Does_Deliver_Also_The_Assembly_Of_The_Types()
+        {
+            var sut = new TypeLoader(new[] { @"./YADA.Example.dll" });
+            var types = sut.GetTypes();
+            
+            var assemblyNames = new List<string>(types.Select(t=>t.AssemblyName));
+
+            // also the dependencies must have a type
+            foreach(var type in types) 
+            {
+                foreach (var dependency in type.Dependencies)
+                {
+                    assemblyNames.Add(dependency.Type.AssemblyName);
+                }
+            }
+            
+            var assemblyName = assemblyNames.Distinct().ToList();
+
+            Assert.That(assemblyName.Count, Is.EqualTo(1));
+            var expectedName = typeof(Example.Example1).Assembly.FullName;
+            
+            Assert.That(assemblyName.First, Is.EqualTo(expectedName));
+        }
+
         private void PrintType(ITypeDescription type)
         {
             TestContext.WriteLine(type.FullName);

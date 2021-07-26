@@ -74,7 +74,7 @@ namespace ArchRuleDemo.ArchRuleTests
             Assert.That(result, Is.True);
         }
 
-
+    	
         private DependencyRuleEngine CreateWithWhiteListSut(IEnumerable<string> whiteList)
         {
             var typeRepository = new ArchRuleExampleTypeRepository();
