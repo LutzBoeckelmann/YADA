@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 namespace YADA.Core.Analyser
 {
+    /// <summary>
+    /// A type.
+    /// </summary>
     internal class TypeDescription : ITypeDescription
     {
         private readonly Dictionary<string, Dependency> m_Dependencies = new Dictionary<string, Dependency>();

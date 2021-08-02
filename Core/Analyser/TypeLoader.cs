@@ -6,18 +6,29 @@ using Mono.Cecil;
 
 namespace YADA.Core.Analyser
 {
+    /// <summary>
+    /// Analyses all types and there dependencies.
+    /// </summary>
     public class TypeLoader
     {
         private readonly TypeAnalyser m_TypeAnalyser;
         private readonly List<string> m_AssemblyLocations;
         private List<ITypeDescription> m_Types;
 
+        /// <summary>
+        /// Constructs a TypeLoader. 
+        /// </summary>
+        /// <param name="locations">Locations of the assemblies which should be analysed</param>
         public TypeLoader(IEnumerable<string> locations)
         {
             m_AssemblyLocations = locations.ToList();
             m_TypeAnalyser = new TypeAnalyser();
         }
 
+        /// <summary>
+        /// All types found in the given assemblies. The types are represented as
+        /// ITypeDescription. Startpoint of the analyse.
+        /// </summary>
         public IEnumerable<ITypeDescription> GetTypes()
         {
             if (m_Types == null)
