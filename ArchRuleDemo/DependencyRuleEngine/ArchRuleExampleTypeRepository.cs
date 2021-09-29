@@ -8,7 +8,7 @@ namespace ArchRuleDemo.ArchitecturalModel
 
 
     //TechnicalLayer : Data | BusinessLogic | UI
-    //DomainLayer: Infrastructure | Core | Extentions
+    //DomainLayer: Infrastructure | Core | Extensions
     //ArchRuleExample.Infrastructure.Module1.Data.SubComponentHelper
 
     public class ArchRuleExampleTypeRepository : IArchRuleExampleTypeRepository

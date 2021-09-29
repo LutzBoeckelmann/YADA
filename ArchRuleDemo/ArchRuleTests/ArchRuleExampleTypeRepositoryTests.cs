@@ -35,16 +35,6 @@ namespace ArchRuleDemo.ArchRuleTests
             Assert.That(result.Valid, Is.False);
         }
 
-
-        [Test]
-        public void GetTypeRepresentation_CorrectInput_CorrectDomainLayer()
-        {
-            ArchRuleExampleTypeRepository sut = new ArchRuleExampleTypeRepository();
-            var result = sut.GetTypeRepresentation("ArchRuleExample.Infrastructure.Module.TechnicalLayer.Non.Architectural.Stuff");
-
-            Assert.That(result.DomainLayer.Layer, Is.EqualTo("Infrastructure"));
-        }
-
         [Test]
         public void GetTypeRepresentation_UnknownDomainLayer_InValidResult()
         {
@@ -53,16 +43,6 @@ namespace ArchRuleDemo.ArchRuleTests
 
             Assert.That(result.Valid, Is.False);
             Assert.That(result.DomainLayer.Valid, Is.False);
-        }
-
-
-        [Test]
-        public void GetTypeRepresentation_CorrectInput_CorrectTechnicalLayer()
-        {
-            ArchRuleExampleTypeRepository sut = new ArchRuleExampleTypeRepository();
-            var result = sut.GetTypeRepresentation("ArchRuleExample.Infrastructure.Module.Data.Non.Architectural.Stuff");
-
-            Assert.That(result.TechnicalLayer.Layer, Is.EqualTo("Data"));
         }
 
         [Test]

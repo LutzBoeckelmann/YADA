@@ -57,7 +57,7 @@ namespace ArchRuleDemo.ArchRuleTests
         [Test]
         public void Apply_ValidDependencyOnLowerLevel_Approve()
         {
-            var type = new ArchRuleExampleType("", new ArchRuleDomainLayer(ArchRuleDomainLayer.Extentions), null, null, true);
+            var type = new ArchRuleExampleType("", new ArchRuleDomainLayer(ArchRuleDomainLayer.Extensions), null, null, true);
             var otherValidType = new ArchRuleExampleType("", new ArchRuleDomainLayer(ArchRuleDomainLayer.Infrastructure), null, null, true);
 
             var sut = new OnlyAccessTypesOnOwnOrLowerDomainLayerDependencyRule();
@@ -70,7 +70,7 @@ namespace ArchRuleDemo.ArchRuleTests
         [Test]
         public void Apply_ValidDependencyOnLowerLevel_NoFeedback()
         {
-            var type = new ArchRuleExampleType("", new ArchRuleDomainLayer(ArchRuleDomainLayer.Extentions), null, null, true);
+            var type = new ArchRuleExampleType("", new ArchRuleDomainLayer(ArchRuleDomainLayer.Extensions), null, null, true);
             var otherValidType = new ArchRuleExampleType("", new ArchRuleDomainLayer(ArchRuleDomainLayer.Infrastructure), null, null, true);
 
             var sut = new OnlyAccessTypesOnOwnOrLowerDomainLayerDependencyRule();
@@ -85,7 +85,7 @@ namespace ArchRuleDemo.ArchRuleTests
         public void Apply_ValidDependencyOnLowerLevel_Reject()
         {
             var type = new ArchRuleExampleType("ArchRuleDomainLayer.Infrastructure", new ArchRuleDomainLayer(ArchRuleDomainLayer.Infrastructure), null, null, true);
-            var inaccessibleType = new ArchRuleExampleType("ArchRuleDomainLayer.Extentions", new ArchRuleDomainLayer(ArchRuleDomainLayer.Extentions), null, null, true);
+            var inaccessibleType = new ArchRuleExampleType("ArchRuleDomainLayer.Extensions", new ArchRuleDomainLayer(ArchRuleDomainLayer.Extensions), null, null, true);
 
             var sut = new OnlyAccessTypesOnOwnOrLowerDomainLayerDependencyRule();
 
@@ -98,7 +98,7 @@ namespace ArchRuleDemo.ArchRuleTests
         public void Apply_ValidDependencyOnLowerLevel_ExpectedFeedback()
         {
             var type = new ArchRuleExampleType("ArchRuleDomainLayer.Infrastructure", new ArchRuleDomainLayer(ArchRuleDomainLayer.Infrastructure), null, null, true);
-            var inaccessibleType = new ArchRuleExampleType("ArchRuleDomainLayer.Extentions", new ArchRuleDomainLayer(ArchRuleDomainLayer.Extentions), null, null, true);
+            var inaccessibleType = new ArchRuleExampleType("ArchRuleDomainLayer.Extensions", new ArchRuleDomainLayer(ArchRuleDomainLayer.Extensions), null, null, true);
 
             var sut = new OnlyAccessTypesOnOwnOrLowerDomainLayerDependencyRule();
             var feedback = new TestFeedbackCollector();
@@ -107,7 +107,7 @@ namespace ArchRuleDemo.ArchRuleTests
 
             Assert.That(feedback.AddFeedbackForTypeCalls, Has.Exactly(1).EqualTo("ArchRuleDomainLayer.Infrastructure"));
             Assert.That(feedback.ViolatesRuleCalls, Has.Exactly(1).EqualTo(nameof(OnlyAccessTypesOnOwnOrLowerDomainLayerDependencyRule)));
-            Assert.That(feedback.ForbiddenDependencyCalls, Has.Exactly(1).EqualTo("ArchRuleDomainLayer.Extentions"));
+            Assert.That(feedback.ForbiddenDependencyCalls, Has.Exactly(1).EqualTo("ArchRuleDomainLayer.Extensions"));
             Assert.That(feedback.AddInfoCalls, Is.Empty);
             Assert.That(feedback.AtCalls, Is.Empty);
         }

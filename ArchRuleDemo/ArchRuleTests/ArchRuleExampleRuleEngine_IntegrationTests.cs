@@ -15,14 +15,6 @@ namespace ArchRuleDemo.ArchRuleTests
     [TestFixture]
     public class ArchRuleExampleRuleEngine_IntegrationTests
     {
-        //.DomainLayer.Module.TechnicalLayer.Non.Architectural.Stuff
-
-
-        //TechnicalLayer : Data | BusinessLogic | UI
-        //DomainLayer: Infrastructure | Core | Extentions
-        //ArchRuleExample.Infrastructure.Module1.Data.SubComponentHelper
-
-      
         [Test]
         public void Analyse_ValidTypes_True()
         {

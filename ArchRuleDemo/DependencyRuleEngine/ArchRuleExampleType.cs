@@ -1,14 +1,10 @@
 // Copyright (c) Lutz Boeckelmann and Contributors. MIT License - see LICENSE.txt
 
+using Core.DependencyRuleEngine.Rules;
+
 namespace ArchRuleDemo.ArchitecturalModel
 {
 
-    //ArchRuleExample.DomainLayer.Module.TechnicalLayer.Non.Architectural.Stuff
-
-
-    //TechnicalLayer : Data | BusinessLogic | UI
-    //DomainLayer: Infrastructure | Core | Extentions
-    //ArchRuleExample.Infrastructure.Module1.Data.SubComponentHelper
     public class ArchRuleExampleType
     {
 
