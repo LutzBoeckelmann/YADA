@@ -3,6 +3,7 @@ using YADA.Core.Analyser;
 
 namespace YADA.Core.DependencyRuleEngine
 {
+    // [KA] XML comments missing
     public interface IDependencyRuleInputMapper<T, K>
     {
         K MapDependency(IDependency dependency);

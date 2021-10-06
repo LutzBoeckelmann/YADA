@@ -20,6 +20,7 @@ The following rules checks if the found dependencies between any layering
 
 The following picture shows the structure of the example assembly.
 
+_[KA] extract plantuml in own file and reference exported png_
 ```plantuml
 package Core {
 class "ArchRuleExample.Core.CoreModule1.Data.Module1DataClass1" as md1

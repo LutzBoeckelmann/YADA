@@ -2,6 +2,7 @@ using System;
 using NUnit.Framework;
 using YADA.Core.Analyser;
 
+// [KA] wrong namespace
 namespace Test
 {
     [TestFixture]
