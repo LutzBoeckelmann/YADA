@@ -7,7 +7,6 @@ using ArchRuleDemo.ArchRuleExampleDependencyRuleEngine;
 using YADA.Core.Analyser;
 using YADA.Core.DependencyRuleEngine;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace ArchRuleDemo.ArchRuleTests
 {
