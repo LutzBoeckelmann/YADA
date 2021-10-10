@@ -2,21 +2,17 @@
 
 namespace YADA.Core.Analyser
 {
-    internal class FieldContext : IDependencyContext
+    internal class FieldContext : DependencyContextBase
     {
-        private readonly string m_Name;
-        public FieldContext(string fieldName) 
-        {   
-            m_Name = fieldName;
-        }
-        public void Visit(IDependencyContextVisitor visitor)
+        public FieldContext(string fieldName) : base(fieldName) { }
+        public override void Visit(IDependencyContextVisitor visitor)
         {
-            visitor.FieldDefinition(m_Name);
+            visitor.FieldDefinition(Name);
         }
 
-        public T Visit<T>(IDependencyContextVisitor<T> visitor) 
+        public override T Visit<T>(IDependencyContextVisitor<T> visitor) 
         {
-            return visitor.FieldDefinition(m_Name);
+            return visitor.FieldDefinition(Name);
         }
     }
 }

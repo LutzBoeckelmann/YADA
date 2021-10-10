@@ -2,18 +2,18 @@
 
 namespace YADA.Core.Analyser
 {
-    internal class MethodDefinitionReturnTypeContext : MethodContextBase
+    internal class MethodDefinitionReturnTypeContext : DependencyContextBase
     {
         public MethodDefinitionReturnTypeContext(string name)   : base (name) { }
 
         public override void Visit(IDependencyContextVisitor visitor)
         {
-            visitor.MethodDefinitionReturnType(MethodName);
+            visitor.MethodDefinitionReturnType(Name);
         }
 
         public override T Visit<T>(IDependencyContextVisitor<T> visitor) 
         {
-            return visitor.MethodDefinitionReturnType(MethodName);
+            return visitor.MethodDefinitionReturnType(Name);
         }
     }
 }

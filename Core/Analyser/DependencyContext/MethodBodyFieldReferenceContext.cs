@@ -2,7 +2,7 @@
 
 namespace YADA.Core.Analyser
 {
-    internal class MethodBodyFieldReferenceContext : MethodContextBase 
+    internal class MethodBodyFieldReferenceContext : DependencyContextBase 
     {
         private readonly string m_FieldName;
         
@@ -13,12 +13,12 @@ namespace YADA.Core.Analyser
 
         public override void Visit(IDependencyContextVisitor visitor)
         {
-            visitor.MethodBodyAccessedFieldType(MethodName, m_FieldName);
+            visitor.MethodBodyAccessedFieldType(Name, m_FieldName);
         }
 
         public override T Visit<T>(IDependencyContextVisitor<T> visitor) 
         {
-            return visitor.MethodBodyAccessedFieldType(MethodName, m_FieldName);
+            return visitor.MethodBodyAccessedFieldType(Name, m_FieldName);
         }
     }
 }

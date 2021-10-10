@@ -2,22 +2,17 @@
 
 namespace YADA.Core.Analyser
 {
-    internal class InheritesContext : IDependencyContext
+    internal class InheritesContext : DependencyContextBase
     {
-        private readonly string m_Name;
-
-        public InheritesContext(string dependencyName) 
-        {   
-            m_Name = dependencyName;
-        }
-        public  void Visit(IDependencyContextVisitor visitor)
+        public InheritesContext(string dependencyName) : base(dependencyName) { }
+        public override void Visit(IDependencyContextVisitor visitor)
         {
-            visitor.BaseClassDefinition(m_Name);
+            visitor.BaseClassDefinition(Name);
         }
 
-        public T Visit<T>(IDependencyContextVisitor<T> visitor) 
+        public override T Visit<T>(IDependencyContextVisitor<T> visitor) 
         {
-            return visitor.BaseClassDefinition(m_Name);
+            return visitor.BaseClassDefinition(Name);
         }
     }
 }

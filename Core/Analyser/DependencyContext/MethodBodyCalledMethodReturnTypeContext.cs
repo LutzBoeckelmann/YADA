@@ -2,7 +2,7 @@
 
 namespace YADA.Core.Analyser
 {
-    internal class MethodBodyCalledMethodReturnTypeContext : MethodContextBase
+    internal class MethodBodyCalledMethodReturnTypeContext : DependencyContextBase
     {
         private readonly string m_CalledMethodFullName;
 
@@ -13,12 +13,12 @@ namespace YADA.Core.Analyser
 
         public override void Visit(IDependencyContextVisitor visitor)
         {
-            visitor.MethodBodyCalledMethodReturnType(MethodName, m_CalledMethodFullName);
+            visitor.MethodBodyCalledMethodReturnType(Name, m_CalledMethodFullName);
         }
 
         public override T Visit<T>(IDependencyContextVisitor<T> visitor) 
         {
-            return visitor.MethodBodyCalledMethodReturnType(MethodName, m_CalledMethodFullName);
+            return visitor.MethodBodyCalledMethodReturnType(Name, m_CalledMethodFullName);
         }
     }
 }

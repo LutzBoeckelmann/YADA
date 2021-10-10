@@ -2,26 +2,23 @@
 
 namespace YADA.Core.Analyser
 {
-    internal class MethodBodyCallMethodAtType : IDependencyContext
+    internal class MethodBodyCallMethodAtType : DependencyContextBase
     {
-        private readonly string m_MethodName;
-
         private readonly string m_CalledMethodFullName;
 
-        public MethodBodyCallMethodAtType(string name, string calledMethodFullName)
+        public MethodBodyCallMethodAtType(string name, string calledMethodFullName) : base (name)
         {
-            m_MethodName = name;
             m_CalledMethodFullName = calledMethodFullName;
         }
 
-        public  void Visit(IDependencyContextVisitor visitor)
+        public override void Visit(IDependencyContextVisitor visitor)
         {
-            visitor.MethodBodyCallMethodAtType(m_MethodName, m_CalledMethodFullName);
+            visitor.MethodBodyCallMethodAtType(Name, m_CalledMethodFullName);
         }
 
-        public T Visit<T>(IDependencyContextVisitor<T> visitor) 
+        public override T Visit<T>(IDependencyContextVisitor<T> visitor) 
         {
-            return visitor.MethodBodyCallMethodAtType(m_MethodName, m_CalledMethodFullName);
+            return visitor.MethodBodyCallMethodAtType(Name, m_CalledMethodFullName);
         }
     }
 }

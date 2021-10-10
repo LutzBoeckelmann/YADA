@@ -5,15 +5,15 @@ namespace YADA.Core.Analyser
     /// <summary>
     /// An abstract base class for any Method based dependency context
     /// </summary>
-    public abstract class MethodContextBase : IDependencyContext
+    public abstract class DependencyContextBase : IDependencyContext
     {
-        private readonly string m_MethodName;
+        private readonly string m_Name;
 
-        protected string MethodName => m_MethodName;
+        protected string Name => m_Name;
         
-        protected MethodContextBase(string methodName)
+        protected DependencyContextBase(string name)
         {
-            m_MethodName = methodName;
+            m_Name = name;
         }
 
         public abstract void Visit(IDependencyContextVisitor visitor);

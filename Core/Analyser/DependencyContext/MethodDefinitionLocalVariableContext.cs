@@ -2,19 +2,19 @@
 
 namespace YADA.Core.Analyser
 {
-    internal class MethodDefinitionLocalVariableContext : MethodContextBase
+    internal class MethodDefinitionLocalVariableContext : DependencyContextBase
     {
         
         public MethodDefinitionLocalVariableContext(string name)   : base(name) {   }
         
         public override void Visit(IDependencyContextVisitor visitor)
         {
-            visitor.MethodDefinitionLocalVariable(MethodName);
+            visitor.MethodDefinitionLocalVariable(Name);
         }
 
         public override T Visit<T>(IDependencyContextVisitor<T> visitor) 
         {
-            return visitor.MethodDefinitionLocalVariable(MethodName);
+            return visitor.MethodDefinitionLocalVariable(Name);
         }
     }
 }
