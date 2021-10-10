@@ -61,52 +61,61 @@ namespace YADA.Core.Analyser
 
                 if (method.HasBody)
                 {
-                    foreach (var localVariable in method.Body.Variables)
-                    {
-                        AddDependency(result, localVariable.VariableType, new MethodDefinitionLocalVariableContext(method.Name));
-                    }
-
-                    foreach (var line in method.Body.Instructions)
-                    {
-                        if (line.Operand is FieldDefinition fieldDefinition)
-                        {
-                            // this may not be relevant for the dependency if its a local field, but may be used for deeper informations
-                            var context = new MethodBodyFieldReferenceContext(method.Name, fieldDefinition.FullName);
-                            AddDependency(result, fieldDefinition.FieldType, context);
-                        }
-
-                        if (line.Operand is TypeDefinition accessTypeDefinition)
-                        {
-                            var context = new MethodBodyTypeReferenceContext(method.Name);
-                            AddDependency(result, accessTypeDefinition, context);
-                        }
-
-                        if (line.Operand is MethodDefinition methodDefinition)
-                        {
-                            var context = new MethodBodyCallMethodAtType(method.Name, methodDefinition.FullName);
-                            AddDependency(result, methodDefinition.DeclaringType, context);
-                        }
-                        
-                        if (line.Operand is MethodReference methodReference)
-                        {
-
-                            if (methodReference.ReturnType.FullName != "System.Void")
-                            {
-                                var context = new MethodBodyCalledMethodReturnTypeContext(method.Name, methodReference.FullName);
-                                AddDependency(result, methodReference.ReturnType, context);
-                            }
-
-                            foreach (var t in methodReference.Parameters)
-                            {
-                                var context = new MethodBodyCalledMethodParameterContext(method.Name, methodReference.FullName);
-                                AddDependency(result, t.ParameterType, context);
-                            }
-                        }
-                    }
+                    AnalyseMethodBody(result, method);
                 }
-
             }
         }
+
+        private void AnalyseMethodBody(TypeDescription result, MethodDefinition method)
+        {
+            foreach (var localVariable in method.Body.Variables)
+            {
+                AddDependency(result, localVariable.VariableType, new MethodDefinitionLocalVariableContext(method.Name));
+            }
+
+            foreach (Mono.Cecil.Cil.Instruction line in method.Body.Instructions)
+            {
+                AnalyseMethodInstruction(result, method, line);
+            }
+        }
+
+        private void AnalyseMethodInstruction(TypeDescription result, MethodDefinition method, Mono.Cecil.Cil.Instruction line) 
+        {
+            if (line.Operand is FieldDefinition fieldDefinition)
+            {
+                // this may not be relevant for the dependency if its a local field, but may be used for deeper informations
+                var context = new MethodBodyFieldReferenceContext(method.Name, fieldDefinition.FullName);
+                AddDependency(result, fieldDefinition.FieldType, context);
+            }
+
+            if (line.Operand is TypeDefinition accessTypeDefinition)
+            {
+                var context = new MethodBodyTypeReferenceContext(method.Name);
+                AddDependency(result, accessTypeDefinition, context);
+            }
+
+            if (line.Operand is MethodDefinition methodDefinition)
+            {
+                var context = new MethodBodyCallMethodAtType(method.Name, methodDefinition.FullName);
+                AddDependency(result, methodDefinition.DeclaringType, context);
+            }
+            
+            if (line.Operand is MethodReference methodReference)
+            {
+                if (methodReference.ReturnType.FullName != "System.Void")
+                {
+                    var context = new MethodBodyCalledMethodReturnTypeContext(method.Name, methodReference.FullName);
+                    AddDependency(result, methodReference.ReturnType, context);
+                }
+
+                foreach (var t in methodReference.Parameters)
+                {
+                    var context = new MethodBodyCalledMethodParameterContext(method.Name, methodReference.FullName);
+                    AddDependency(result, t.ParameterType, context);
+                }
+            }
+        }
+
         private static void AddDependency(TypeDescription currentType, TypeReference dependency, IDependencyContext context)
         {
             TypeDescription dependencyDescription;
