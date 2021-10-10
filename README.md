@@ -1,3 +1,4 @@
+[![Maintainability](https://api.codeclimate.com/v1/badges/113627dff37e739515de/maintainability)](https://codeclimate.com/github/LutzBoeckelmann/YADA/maintainability)
 # YADA 
 
 **YADA - Yet Another Dependency Analyser**
