@@ -44,7 +44,6 @@ namespace YADA.Core.Analyser
 
         private void AnalyseMethod(TypeDescription result, TypeDefinition typeDefinition)
         {
-            // method 
             foreach (var method in typeDefinition.Methods)
             {
                 foreach (var parameter in method.Parameters)
@@ -102,17 +101,22 @@ namespace YADA.Core.Analyser
             
             if (line.Operand is MethodReference methodReference)
             {
-                if (methodReference.ReturnType.FullName != "System.Void")
-                {
-                    var context = new MethodBodyCalledMethodReturnTypeContext(method.Name, methodReference.FullName);
-                    AddDependency(result, methodReference.ReturnType, context);
-                }
+                AnalyseMethodReference(result, method, methodReference);
+            }
+        }
 
-                foreach (var t in methodReference.Parameters)
-                {
-                    var context = new MethodBodyCalledMethodParameterContext(method.Name, methodReference.FullName);
-                    AddDependency(result, t.ParameterType, context);
-                }
+        private void AnalyseMethodReference(TypeDescription result, MethodDefinition method, MethodReference methodReference)
+        { 
+            if (methodReference.ReturnType.FullName != "System.Void")
+            {
+                var context = new MethodBodyCalledMethodReturnTypeContext(method.Name, methodReference.FullName);
+                AddDependency(result, methodReference.ReturnType, context);
+            }
+
+            foreach (var t in methodReference.Parameters)
+            {
+                var context = new MethodBodyCalledMethodParameterContext(method.Name, methodReference.FullName);
+                AddDependency(result, t.ParameterType, context);
             }
         }
 
