@@ -11,7 +11,7 @@ namespace ArchRuleDemo.ArchRuleExampleDependencyRuleEngine
     public class ArchRuleExampleRuleEngineMapper : IDependencyRuleInputMapper<ArchRuleExampleType, ArchRuleExampleDependency>
     {
         private readonly IArchRuleExampleTypeRepository m_TypeMapper;
-        private IDependencyContextVisitor<string> m_Visitor = new SimplePrinterGenericDependencyContextVisitor();
+        private IDependencyContextVisitor<string> m_Visitor = new GenericDependencyContextVisitorSimplePrinter();
 
         public ArchRuleExampleRuleEngineMapper(IArchRuleExampleTypeRepository typeMapper)
         {

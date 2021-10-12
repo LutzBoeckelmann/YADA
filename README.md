@@ -1,4 +1,9 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/113627dff37e739515de/maintainability)](https://codeclimate.com/github/LutzBoeckelmann/YADA/maintainability)
+
+<a href="https://scan.coverity.com/projects/lutzboeckelmann-yada">
+  <img alt="Coverity Scan Build Status"
+       src="https://scan.coverity.com/projects/23841/badge.svg"/>
+</a>
 # YADA 
 
 **YADA - Yet Another Dependency Analyser**

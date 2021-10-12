@@ -19,28 +19,13 @@ namespace YADA.Core.DependencyRuleEngine.Feedback
             return m_Feedbacks[type];
         }
 
-        public IEnumerable<Tuple<string, string>> GetFeedback() 
+        public void Explore(IFeedbackVisitor collector) 
         {
             foreach(var pair in m_Feedbacks) 
             {
-                StringBuilder result = new StringBuilder();
-                pair.Value.Print(result);
-                yield return new Tuple<string, string>(pair.Key, result.ToString());
+                collector.Type(pair.Key);
+                pair.Value.Explore(collector);
             }
-        }
-
-        public StringBuilder Print()
-        {
-            StringBuilder result = new StringBuilder();
-
-            foreach (var pair in m_Feedbacks)
-            {
-                result.AppendLine(pair.Key);
-                pair.Value.Print(result);
-            }
-
-            return result;
         }
     }
 }
-

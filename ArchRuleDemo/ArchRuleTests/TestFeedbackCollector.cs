@@ -8,6 +8,10 @@ namespace ArchRuleDemo.ArchRuleTests
 {
     public class TestFeedbackCollector : IFeedbackCollector, ITypeFeedback, IRuleFeedback, IDependencyFeedback
     {
+        public TestFeedbackCollector()
+        {
+        }
+
         public List<string> AddFeedbackForTypeCalls { get; } = new List<string>();
         public List<string> ViolatesRuleCalls { get; } = new List<string>();
         public List<string> ForbiddenDependencyCalls { get; } = new List<string>();
@@ -45,6 +49,11 @@ namespace ArchRuleDemo.ArchRuleTests
         {
             AtCalls.Add(context);
             return this;
+        }
+
+        public void Explore(IFeedbackVisitor visitor)
+        {
+            
         }
     }
 

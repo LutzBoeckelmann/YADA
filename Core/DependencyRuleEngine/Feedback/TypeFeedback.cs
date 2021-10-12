@@ -1,7 +1,6 @@
 // Copyright (c) Lutz Boeckelmann and Contributors. MIT License - see LICENSE.txt
 
 using System.Collections.Generic;
-using System.Text;
 
 namespace YADA.Core.DependencyRuleEngine.Feedback
 {
@@ -18,16 +17,18 @@ namespace YADA.Core.DependencyRuleEngine.Feedback
 
             return m_RuleViolations[nameOfRule];
         }
-        public void Print(StringBuilder result)
+
+        public void Explore(IFeedbackVisitor visitor) 
         {
             foreach (var pair in m_RuleViolations)
             {
-                result.AppendLine($"  ViolatesRule: {pair.Key}");
-                pair.Value.Print(result);
+                visitor.ViolatedRule(pair.Key);
+                pair.Value.Explore(visitor);
+
             }
         }
 
-
+   
     }
 }
 

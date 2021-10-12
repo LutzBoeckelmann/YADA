@@ -5,7 +5,7 @@ namespace YADA.Core.DependencyRuleEngine.Feedback
     /// <summary>
     /// The root interface to add feedback.
     /// </summary>
-    public interface IFeedbackCollector
+    public interface IFeedbackCollector : IFeedback
     {
         /// <summary>
         /// Add feedback for a type.

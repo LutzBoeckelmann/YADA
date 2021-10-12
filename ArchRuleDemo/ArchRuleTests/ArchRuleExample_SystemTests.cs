@@ -7,12 +7,28 @@ using ArchRuleDemo.ArchRuleExampleDependencyRuleEngine;
 using YADA.Core.Analyser;
 using YADA.Core.DependencyRuleEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ArchRuleDemo.ArchRuleTests
 {
     [TestFixture]
     public class ArchRuleExample_SystemTests
     {
+        [Test]
+        public void Test()
+        {
+            var sut = new TypeLoader(new[] { @"./ArchRuleExample.dll" });
+            var types = sut.GetTypes();
+
+            var engine = CreateSut();
+            var feedback = new FeedbackCollector();
+            var result = engine.Analyse(types, feedback);
+
+//            TestContext.WriteLine(feedback.GetFeedback().Count());
+            
+            Assert.That(result, Is.False);
+        }
+
         [Test]
         public void Output_All_Violations_In_Example_Assembly()
         {
@@ -22,13 +38,20 @@ namespace ArchRuleDemo.ArchRuleTests
             var engine = CreateSut();
             var feedback = new FeedbackCollector();
             var result = engine.Analyse(types, feedback);
-            foreach (var pair in feedback.GetFeedback())
-            {
-                TestContext.WriteLine("--------------------------------------------");
-                TestContext.WriteLine($"Type: {pair.Item1}");
-                TestContext.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-                TestContext.WriteLine(pair.Item2);
-            }
+
+            ResultCollectorSimplePrinter printer = new ResultCollectorSimplePrinter();
+
+            feedback.Explore(printer);
+
+            TestContext.WriteLine(printer.GetFeedback());
+
+            // foreach (var pair in feedback.GetFeedback())
+            // {
+            //     TestContext.WriteLine("--------------------------------------------");
+            //     TestContext.WriteLine($"Type: {pair.Item1}");
+            //     TestContext.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            //     TestContext.WriteLine(pair.Item2);
+            // }
             
             Assert.That(result, Is.False);
         }
@@ -36,22 +59,28 @@ namespace ArchRuleDemo.ArchRuleTests
         [Test]
         public void Analyse_SingleTypeOnWhitelist_SingleTypeFails() 
         {
-              var sut = new TypeLoader(new[] { @"./ArchRuleExample.dll" });
+            var sut = new TypeLoader(new[] { @"./ArchRuleExample.dll" });
             var types = sut.GetTypes();
 
             var engine = CreateWithWhiteListSut(new []{"ArchRuleExample.Infrastructure.InfraModule1.UI.InfraModuleUIClass1"});
             var feedback = new FeedbackCollector();
             var result = engine.Analyse(types, feedback);
 
-            // var typeFeedback = feedback.GetFeedback().Select(t=>t.Item1).ToArray();
-                foreach (var pair in feedback.GetFeedback())
-            {
-                TestContext.WriteLine("--------------------------------------------");
-                TestContext.WriteLine($"Type: {pair.Item1}");
-                TestContext.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-                TestContext.WriteLine(pair.Item2);
-            }
-            // Assert.That(typeFeedback, Is.EquivalentTo(new[] { "ArchRuleExample.Core.CoreModule1.Data.Module1DataClass1" }));
+            ResultCollectorSimplePrinter printer = new ResultCollectorSimplePrinter();
+
+            feedback.Explore(printer);
+
+            TestContext.WriteLine(printer.GetFeedback());
+
+            // // var typeFeedback = feedback.GetFeedback().Select(t=>t.Item1).ToArray();
+            //     foreach (var pair in feedback.GetFeedback())
+            // {
+            //     TestContext.WriteLine("--------------------------------------------");
+            //     TestContext.WriteLine($"Type: {pair.Item1}");
+            //     TestContext.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            //     TestContext.WriteLine(pair.Item2);
+            // }
+            // // Assert.That(typeFeedback, Is.EquivalentTo(new[] { "ArchRuleExample.Core.CoreModule1.Data.Module1DataClass1" }));
 
             Assert.That(result, Is.False);
         }
@@ -66,9 +95,11 @@ namespace ArchRuleDemo.ArchRuleTests
             var engine = CreateWithWhiteListSut(new []{"ArchRuleExample.Core.CoreModule1.Data.Module1DataClass1"});
             var feedback = new FeedbackCollector();
             var result = engine.Analyse(types, feedback);
+            ResultCollectorSimplePrinter printer = new ResultCollectorSimplePrinter();
 
-            var typeFeedback = feedback.GetFeedback();
-            Assert.That(typeFeedback, Is.Empty);
+            feedback.Explore(printer);
+
+            Assert.That(printer.GetFeedback(), Is.Empty);
 
             Assert.That(result, Is.True);
         }

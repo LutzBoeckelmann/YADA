@@ -5,7 +5,7 @@ namespace YADA.Core.DependencyRuleEngine.Feedback
     /// <summary>
     /// An interface to provided additional feedback for a violated rule.
     /// </summary>
-    public interface IRuleFeedback
+    public interface IRuleFeedback : IFeedback
     {
         /// <summary>
         /// Additional information. Add more specific information what was violated if needed.

@@ -9,7 +9,7 @@ namespace YADA.Core.DependencyRuleEngine.Feedback
     /// for specific locations where dependencies where found. Primary for demonstation purposes,
     /// but fully usable if the messages fits for your usecase.
     /// </summary>
-    public class SimplePrinterGenericDependencyContextVisitor : IDependencyContextVisitor<string>
+    public class GenericDependencyContextVisitorSimplePrinter : IDependencyContextVisitor<string>
     {
         string IDependencyContextVisitor<string>.BaseClassDefinition(string name)
         {

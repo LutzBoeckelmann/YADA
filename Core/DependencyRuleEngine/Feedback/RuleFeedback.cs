@@ -26,17 +26,17 @@ namespace YADA.Core.DependencyRuleEngine.Feedback
             return m_ViolatedDependency[dependency];
         }
 
-        internal void Print(StringBuilder result)
+        public void Explore(IFeedbackVisitor visitor)
         {
             foreach (var msg in m_Infos)
             {
-                result.AppendLine($"    Info: {msg}");
+                visitor.Info(msg);
             }
 
             foreach (var dependency in m_ViolatedDependency)
             {
-                result.AppendLine($"    ForbiddenDependency {dependency.Key}");
-                dependency.Value.Print(result);
+                visitor.ForbiddenDependency(dependency.Key);
+                dependency.Value.Explore(visitor);
             }
         }
     }

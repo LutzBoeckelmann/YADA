@@ -35,10 +35,12 @@ namespace YADA.Test
             sut.ViolatesRule("Rule");
             sut.ViolatesRule("Rule");
             sut.ViolatesRule("OtherRule");
+            
+            var printer = new ResultCollectorSimplePrinter();
 
-            var resultCollector = new StringBuilder();
-            sut.Print(resultCollector);
-            Assert.That(resultCollector.ToString(), Does.Contain("Rule").And.Contain("OtherRule"));
+            sut.Explore(printer);
+
+            Assert.That(printer.GetFeedback(), Does.Contain("Rule").And.Contain("OtherRule"));
         }
     }
 
@@ -69,9 +71,11 @@ namespace YADA.Test
             sut.AddFeedbackForType("Type");
             sut.AddFeedbackForType("Type");
             sut.AddFeedbackForType("OtherType");
+            var printer = new ResultCollectorSimplePrinter();
 
-            var result = sut.Print().ToString();
-            Assert.That(result, Does.Contain("Type").And.Contain("OtherType"));
+            sut.Explore(printer);
+
+            Assert.That(printer.GetFeedback(), Does.Contain("Type").And.Contain("OtherType"));
         }
     }
 }

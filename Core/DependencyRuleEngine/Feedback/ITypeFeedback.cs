@@ -5,7 +5,7 @@ namespace YADA.Core.DependencyRuleEngine.Feedback
     /// <summary>
     /// Feedback interface a type level.
     /// </summary>
-    public interface ITypeFeedback
+    public interface ITypeFeedback : IFeedback
     {
         /// <summary>
         /// Add feedback for the current type. 
