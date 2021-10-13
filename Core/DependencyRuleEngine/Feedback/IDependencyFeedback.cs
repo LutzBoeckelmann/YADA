@@ -1,5 +1,7 @@
 // Copyright (c) Lutz Boeckelmann and Contributors. MIT License - see LICENSE.txt
 
+using YADA.Core.Analyser;
+
 namespace YADA.Core.DependencyRuleEngine.Feedback
 {
     /// <summary>
@@ -13,7 +15,7 @@ namespace YADA.Core.DependencyRuleEngine.Feedback
         /// </summary>
         /// <param name="context">Specific information of the location</param>
         /// <returns>This dependency feedback self, to support multiple information for a dependency</returns>
-        IDependencyFeedback At(string context);
+        IDependencyFeedback At(IDependencyContext context);
     }
 }
 

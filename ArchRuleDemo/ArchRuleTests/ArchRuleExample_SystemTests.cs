@@ -11,6 +11,26 @@ using System.Linq;
 
 namespace ArchRuleDemo.ArchRuleTests
 {
+    public class TestMapper : IDependencyRuleInputMapper<ArchRuleExampleType, ArchRuleExampleDependency>
+    {
+        private readonly IArchRuleExampleTypeRepository m_TypeMapper;
+        private IDependencyContextVisitor<string> m_Visitor = new DependencyContextRecorder();
+
+        public TestMapper(IArchRuleExampleTypeRepository typeMapper)
+        {
+            m_TypeMapper = typeMapper;
+        }
+
+        public ArchRuleExampleDependency MapDependency(IDependency dependency)
+        {
+            var dependencyType = m_TypeMapper.GetTypeRepresentation($"{dependency.Type.FullName} ({dependency.Type.AssemblyName})");
+            return new ArchRuleExampleDependency(dependencyType, dependency.Contexts .ToList());
+        }
+        public ArchRuleExampleType MapTypeDescription(ITypeDescription type)
+        {
+            return m_TypeMapper.GetTypeRepresentation($"{type.FullName} ({type.AssemblyName})");
+        }
+    }
     [TestFixture]
     public class ArchRuleExample_SystemTests
     {
@@ -19,13 +39,38 @@ namespace ArchRuleDemo.ArchRuleTests
         {
             var sut = new TypeLoader(new[] { @"./ArchRuleExample.dll" });
             var types = sut.GetTypes();
+            
+            var typeRepository = new ArchRuleExampleTypeRepository();
+            var mapper = new ArchRuleExampleRuleEngineMapper(typeRepository);
 
-            var engine = CreateSut();
+            var typeRules = new ITypeRule<ITypeDescription>[]
+            {
+                new BaseTypeRule<ArchRuleExampleType, ArchRuleExampleDependency>( new CorrectNamespaceTypeRule(), mapper)
+            };
+
+            var dependencyRules = new IDependencyRule<ITypeDescription, IDependency>[]
+            {
+                new BaseDependencyRule<ArchRuleExampleType, ArchRuleExampleDependency>(new CrossComponentAccessOnlyOnSameTechnicalLayerDependencyRule(), mapper),
+                new BaseDependencyRule<ArchRuleExampleType, ArchRuleExampleDependency>(new OnlyAccessTypesOnOwnOrLowerTechnicalLayerDependencyRule(), mapper),
+                new BaseDependencyRule<ArchRuleExampleType, ArchRuleExampleDependency>(new OnlyAccessTypesOnOwnOrLowerDomainLayerDependencyRule(), mapper)
+            };
+
+            var engine = new DependencyRuleEngine(typeRules, dependencyRules);
+            
             var feedback = new FeedbackCollector();
             var result = engine.Analyse(types, feedback);
-
-//            TestContext.WriteLine(feedback.GetFeedback().Count());
+            var visitor = new FeedbackRecorder();
+            feedback.Explore(visitor);
+            TestContext.WriteLine("");
+            TestContext.WriteLine("--------------------------------------------------------------------");
+            foreach(var msg in visitor.GetResult())
+            {
+                TestContext.WriteLine(msg);
+            }
             
+            TestContext.WriteLine("--------------------------------------------------------------------");
+            TestContext.WriteLine("");
+
             Assert.That(result, Is.False);
         }
 

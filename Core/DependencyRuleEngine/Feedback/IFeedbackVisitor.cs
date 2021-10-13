@@ -1,5 +1,8 @@
 // Copyright (c) Lutz Boeckelmann and Contributors. MIT License - see LICENSE.txt
 
+using System;
+using YADA.Core.Analyser;
+
 namespace YADA.Core.DependencyRuleEngine.Feedback
 {
     /// <summary>
@@ -13,6 +16,9 @@ namespace YADA.Core.DependencyRuleEngine.Feedback
     /// The order of the methods in this interface follows the logical 
     /// hierarchy of the feedback collection.
     /// 
+    /// Any method returns a Disposable which should be used to close
+    /// the current Block
+    /// 
     /// At the moment the feedback works string based.
     /// </summary>
     public interface IFeedbackVisitor
@@ -21,27 +27,32 @@ namespace YADA.Core.DependencyRuleEngine.Feedback
         /// The type containing any violations
         /// </summary>
         /// <param name="type">Type name</param>
-        void Type(string type);
+        IDisposable Type(string type);
+        
         /// <summary>
         /// The violated rule which has added this feedback.
         /// </summary>
         /// <param name="rule">Name of the rule</param>
-        void ViolatedRule(string rule);
+        IDisposable ViolatedRule(string rule);
+        
         /// <summary>
         /// An additional information added to a rule feedback
         /// </summary>
         /// <param name="msg">The information</param>
-        void Info(string msg);
+        IDisposable Info(string msg);
+        
         /// <summary>
         /// The dependency which violates a specific rule
         /// </summary>
         /// <param name="dependency">The dependency</param>
-        void ForbiddenDependency(string dependency);
+        IDisposable ForbiddenDependency(string dependency);
+        
         /// <summary>
-        /// The context in which a violating dependency was found
+        /// The context in which a violating dependency was found.
+        /// To retrieve the needed information the context must
+        /// be visited by an instance of IDependencyContextVisitor
         /// </summary>
         /// <param name="context">Context information</param>
-        void Context(string context);
-
+        IDisposable Context(IDependencyContext context);
     }
 }

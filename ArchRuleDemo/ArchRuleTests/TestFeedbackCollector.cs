@@ -1,6 +1,7 @@
 // Copyright (c) Lutz Boeckelmann and Contributors. MIT License - see LICENSE.txt
 
 using System.Collections.Generic;
+using YADA.Core.Analyser;
 using YADA.Core.DependencyRuleEngine.Feedback;
 
 
@@ -45,9 +46,9 @@ namespace ArchRuleDemo.ArchRuleTests
             return this;
         }
 
-        public IDependencyFeedback At(string context)
+        public IDependencyFeedback At(IDependencyContext context)
         {
-            AtCalls.Add(context);
+            AtCalls.Add(context.ToString());
             return this;
         }
 
@@ -56,5 +57,4 @@ namespace ArchRuleDemo.ArchRuleTests
             
         }
     }
-
 }

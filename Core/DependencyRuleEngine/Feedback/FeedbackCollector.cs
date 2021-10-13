@@ -23,8 +23,10 @@ namespace YADA.Core.DependencyRuleEngine.Feedback
         {
             foreach(var pair in m_Feedbacks) 
             {
-                collector.Type(pair.Key);
-                pair.Value.Explore(collector);
+                using (collector.Type(pair.Key))
+                {
+                    pair.Value.Explore(collector);
+                }
             }
         }
     }
