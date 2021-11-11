@@ -8,34 +8,15 @@ using YADA.Core.Analyser;
 using YADA.Core.DependencyRuleEngine;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 
 namespace ArchRuleDemo.ArchRuleTests
 {
-    public class TestMapper : IDependencyRuleInputMapper<ArchRuleExampleType, ArchRuleExampleDependency>
-    {
-        private readonly IArchRuleExampleTypeRepository m_TypeMapper;
-        private IDependencyContextVisitor<string> m_Visitor = new DependencyContextRecorder();
-
-        public TestMapper(IArchRuleExampleTypeRepository typeMapper)
-        {
-            m_TypeMapper = typeMapper;
-        }
-
-        public ArchRuleExampleDependency MapDependency(IDependency dependency)
-        {
-            var dependencyType = m_TypeMapper.GetTypeRepresentation($"{dependency.Type.FullName} ({dependency.Type.AssemblyName})");
-            return new ArchRuleExampleDependency(dependencyType, dependency.Contexts .ToList());
-        }
-        public ArchRuleExampleType MapTypeDescription(ITypeDescription type)
-        {
-            return m_TypeMapper.GetTypeRepresentation($"{type.FullName} ({type.AssemblyName})");
-        }
-    }
     [TestFixture]
     public class ArchRuleExample_SystemTests
     {
         [Test]
-        public void Test()
+        public void FeedbackRecorder_FeedbackReader_Roundtrip()
         {
             var sut = new TypeLoader(new[] { @"./ArchRuleExample.dll" });
             var types = sut.GetTypes();
@@ -57,22 +38,63 @@ namespace ArchRuleDemo.ArchRuleTests
 
             var engine = new DependencyRuleEngine(typeRules, dependencyRules);
             
+         
             var feedback = new FeedbackCollector();
-            var result = engine.Analyse(types, feedback);
-            var visitor = new FeedbackRecorder();
-            feedback.Explore(visitor);
-            TestContext.WriteLine("");
-            TestContext.WriteLine("--------------------------------------------------------------------");
-            foreach(var msg in visitor.GetResult())
-            {
-                TestContext.WriteLine(msg);
-            }
             
-            TestContext.WriteLine("--------------------------------------------------------------------");
-            TestContext.WriteLine("");
+            engine.Analyse(types, feedback);
 
-            Assert.That(result, Is.False);
+            
+            var visitor = new FeedbackRecorder();
+            
+            feedback.Explore(visitor);
+            visitor.WriteFeedbackResults(@".\out.txt");
+                       
+            FeedbackReader reader = new FeedbackReader();
+
+            reader.Do(@".\out.txt");
+
+            Assert.That(visitor.GetResult(), Is.EquivalentTo(reader.GetResult()));
         }
+
+        [Test]
+        public void FeedbackFilter_Given()
+        {
+            var sut = new TypeLoader(new[] { @"./ArchRuleExample.dll" });
+            var types = sut.GetTypes();
+            
+            var typeRepository = new ArchRuleExampleTypeRepository();
+            var mapper = new ArchRuleExampleRuleEngineMapper(typeRepository);
+
+            var typeRules = new ITypeRule<ITypeDescription>[]
+            {
+                new BaseTypeRule<ArchRuleExampleType, ArchRuleExampleDependency>( new CorrectNamespaceTypeRule(), mapper)
+            };
+
+            var dependencyRules = new IDependencyRule<ITypeDescription, IDependency>[]
+            {
+                new BaseDependencyRule<ArchRuleExampleType, ArchRuleExampleDependency>(new CrossComponentAccessOnlyOnSameTechnicalLayerDependencyRule(), mapper),
+                new BaseDependencyRule<ArchRuleExampleType, ArchRuleExampleDependency>(new OnlyAccessTypesOnOwnOrLowerTechnicalLayerDependencyRule(), mapper),
+                new BaseDependencyRule<ArchRuleExampleType, ArchRuleExampleDependency>(new OnlyAccessTypesOnOwnOrLowerDomainLayerDependencyRule(), mapper)
+            };
+
+            var engine = new DependencyRuleEngine(typeRules, dependencyRules);
+            
+         
+            var feedback = new FeedbackCollector();
+            
+            engine.Analyse(types, feedback);
+
+            ResultCollectorSimplePrinter printer = new ResultCollectorSimplePrinter();
+            
+            var filter = new FeedbackFilter(@".\CompleteBaselineArchRuleDemo.txt", printer);
+            
+            feedback.Explore(filter);
+                
+            TestContext.WriteLine(printer.GetFeedback());
+
+            Assert.That(printer.GetFeedback(), Is.Empty);
+        }
+
 
         [Test]
         public void Output_All_Violations_In_Example_Assembly()
@@ -90,13 +112,6 @@ namespace ArchRuleDemo.ArchRuleTests
 
             TestContext.WriteLine(printer.GetFeedback());
 
-            // foreach (var pair in feedback.GetFeedback())
-            // {
-            //     TestContext.WriteLine("--------------------------------------------");
-            //     TestContext.WriteLine($"Type: {pair.Item1}");
-            //     TestContext.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-            //     TestContext.WriteLine(pair.Item2);
-            // }
             
             Assert.That(result, Is.False);
         }
