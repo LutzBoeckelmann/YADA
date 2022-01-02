@@ -51,13 +51,13 @@ namespace ArchRuleDemo.ArchRuleTests
                        
             FeedbackReader reader = new FeedbackReader();
 
-            reader.Do(@".\out.txt");
+            reader.ReadRecording(@".\out.txt");
 
             Assert.That(visitor.GetResult(), Is.EquivalentTo(reader.GetResult()));
         }
 
         [Test]
-        public void FeedbackFilter_Given()
+        public void FeedbackFilter_NoChangesSinceLastBaseline_NoFeedback()
         {
             var sut = new TypeLoader(new[] { @"./ArchRuleExample.dll" });
             var types = sut.GetTypes();

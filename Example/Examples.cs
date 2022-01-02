@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 namespace Example
 {
+    #pragma warning disable CS0169
     public class Example1
     {
         private Dependency1 m_Dependency;
@@ -164,4 +165,5 @@ namespace Example
             Console.WriteLine(StaticProvider2.StaticReference);
         }
     }
+    #pragma warning restore CS0169
 }
