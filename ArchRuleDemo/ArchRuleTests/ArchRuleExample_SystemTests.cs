@@ -18,7 +18,7 @@ namespace ArchRuleDemo.ArchRuleTests
         [Test]
         public void FeedbackRecorder_FeedbackReader_Roundtrip()
         {
-            var sut = new TypeLoader(new[] { @"./ArchRuleExample.dll" });
+            var sut = new TypeLoader(new[] { "ArchRuleExample.dll" });
             var types = sut.GetTypes();
             
             var typeRepository = new ArchRuleExampleTypeRepository();
@@ -47,22 +47,28 @@ namespace ArchRuleDemo.ArchRuleTests
             var feedbackRecorder = new FeedbackRecorder();
             
             feedback.Explore(feedbackRecorder);
-            feedbackRecorder.WriteFeedbackResults(@".\out.txt");
+            feedbackRecorder.WriteFeedbackResults( "out.txt");
                        
             FeedbackReader reader = new FeedbackReader();
 
-            reader.ReadRecording(@".\out.txt");
+            reader.ReadRecording("out.txt");
 
             var visitorResult = feedbackRecorder.GetResult();
             var readerResult = reader.GetResult();
             
             Assert.That(visitorResult, Is.EquivalentTo(readerResult));
+
+            if(System.IO.File.Exists("out.txt"))
+            {
+                System.IO.File.Delete(@"out.txt");
+            }
+            
         }
 
         [Test]
         public void FeedbackFilter_NoChangesSinceLastBaseline_NoFeedback()
         {
-            var sut = new TypeLoader(new[] { @"./ArchRuleExample.dll" });
+            var sut = new TypeLoader(new[] { "ArchRuleExample.dll" });
             var types = sut.GetTypes();
             
             var typeRepository = new ArchRuleExampleTypeRepository();
@@ -88,7 +94,7 @@ namespace ArchRuleDemo.ArchRuleTests
 
             ResultCollectorSimplePrinter printer = new ResultCollectorSimplePrinter();
             
-            var filter = new FeedbackFilter(@"./CompleteBaselineArchRuleDemo.txt", printer);
+            var filter = new FeedbackFilter(@"ArchRuleTests/TestData/CompleteBaselineArchRuleDemo.txt", printer);
             
             feedback.Explore(filter);
                 
@@ -101,7 +107,7 @@ namespace ArchRuleDemo.ArchRuleTests
         [Test]
         public void Output_All_Violations_In_Example_Assembly()
         {
-            var sut = new TypeLoader(new[] { @"./ArchRuleExample.dll" });
+            var sut = new TypeLoader(new[] { "ArchRuleExample.dll" });
             var types = sut.GetTypes();
 
             var engine = CreateSut();
@@ -121,7 +127,7 @@ namespace ArchRuleDemo.ArchRuleTests
         [Test]
         public void Analyse_SingleTypeOnWhitelist_SingleTypeFails() 
         {
-            var sut = new TypeLoader(new[] { @"./ArchRuleExample.dll" });
+            var sut = new TypeLoader(new[] { "ArchRuleExample.dll" });
             var types = sut.GetTypes();
 
             var engine = CreateWithWhiteListSut(new []{"ArchRuleExample.Infrastructure.InfraModule1.UI.InfraModuleUIClass1"});
@@ -140,7 +146,7 @@ namespace ArchRuleDemo.ArchRuleTests
         [Test]
         public void Analyse_OnlyCorrectTypes_Success() 
         {
-            var sut = new TypeLoader(new[] { @"./ArchRuleExample.dll" });
+            var sut = new TypeLoader(new[] { "ArchRuleExample.dll" });
             var types = sut.GetTypes();
 
             var engine = CreateWithWhiteListSut(new []{"ArchRuleExample.Core.CoreModule1.Data.Module1DataClass1"});
