@@ -62,7 +62,7 @@ namespace ArchRuleDemo.ArchRuleTests
         [Test]
         public void FeedbackFilter_NoChangesSinceLastBaseline_NoFeedback()
         {
-            var sut = new TypeLoader(new[] { @"./ArchRuleExample.dll" });
+            var sut = new TypeLoader(new[] { @".\ArchRuleExample.dll" });
             var types = sut.GetTypes();
             
             var typeRepository = new ArchRuleExampleTypeRepository();
