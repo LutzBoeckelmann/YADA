@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using ArchRuleDemo.ArchitecturalModel;
+using YADA.Core.Analyser;
 
 namespace ArchRuleDemo.ArchRuleExampleDependencyRuleEngine
 {
@@ -16,14 +17,14 @@ namespace ArchRuleDemo.ArchRuleExampleDependencyRuleEngine
         public ArchRuleExampleDependency(ArchRuleExampleType dependencyType)
         {
             DependencyType = dependencyType;
-            Context = new List<string>();
+            Context = new List<IDependencyContext>();
         }
 
-        public ArchRuleExampleDependency(ArchRuleExampleType dependencyType, List<string> context)
+        public ArchRuleExampleDependency(ArchRuleExampleType dependencyType, List<IDependencyContext> context)
         {
             DependencyType = dependencyType;
             Context = context;
         }
-        public List<string> Context;
+        public List<IDependencyContext> Context;
     }
 }

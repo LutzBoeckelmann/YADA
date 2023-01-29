@@ -1,13 +1,14 @@
 // Copyright (c) Lutz Boeckelmann and Contributors. MIT License - see LICENSE.txt
 
 using System.Collections.Generic;
+using YADA.Core.Analyser;
 
 namespace YADA.Core.DependencyRuleEngine.Feedback
 {
     internal class DependencyFeedback : IDependencyFeedback
     {
-        private readonly List<string> m_Contexted = new List<string>();
-        public IDependencyFeedback At(string context)
+        private readonly List<IDependencyContext> m_Contexted = new List<IDependencyContext>();
+        public IDependencyFeedback At(IDependencyContext context)
         {
             m_Contexted.Add(context);
             return this;
@@ -17,7 +18,7 @@ namespace YADA.Core.DependencyRuleEngine.Feedback
         {
             foreach (var context in m_Contexted)
             {
-                visitor.Context(context);
+                using(visitor.Context(context)){}
             }
         }
     }

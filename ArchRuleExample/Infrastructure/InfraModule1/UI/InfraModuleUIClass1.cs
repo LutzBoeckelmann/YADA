@@ -4,7 +4,7 @@ namespace ArchRuleExample.Infrastructure.InfraModule1.UI
 {
     public class InfraModuleUIClass1
     {
-        private Module1DataClass1 m_ForbiddenMember;
+        private readonly Module1DataClass1 m_ForbiddenMember;
 
         public InfraModuleUIClass1(Module1DataClass1 forbiddenMember)
         {

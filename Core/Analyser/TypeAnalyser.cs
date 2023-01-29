@@ -6,14 +6,14 @@ using Mono.Cecil;
 namespace YADA.Core.Analyser
 {
     /// <summary>
-    /// Responsible for retriving all dependencies of the given type.
+    /// Responsible for retrieving all dependencies of the given type.
     /// </summary>
     public class TypeAnalyser
     {
         /// <summary>
         /// Analyses the given type. 
         /// </summary>
-        /// <param name="typeDefinition">The type to analyse as TypeDefinition</param>
+        /// <param name="typeDefinition">The type to analyze as TypeDefinition</param>
         /// <returns>The type a TypeDescription</returns>
         internal TypeDescription AnalyseType(TypeDefinition typeDefinition)
         {

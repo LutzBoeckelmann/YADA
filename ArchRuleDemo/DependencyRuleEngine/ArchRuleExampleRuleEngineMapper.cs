@@ -11,8 +11,7 @@ namespace ArchRuleDemo.ArchRuleExampleDependencyRuleEngine
     public class ArchRuleExampleRuleEngineMapper : IDependencyRuleInputMapper<ArchRuleExampleType, ArchRuleExampleDependency>
     {
         private readonly IArchRuleExampleTypeRepository m_TypeMapper;
-        private IDependencyContextVisitor<string> m_Visitor = new GenericDependencyContextVisitorSimplePrinter();
-
+     
         public ArchRuleExampleRuleEngineMapper(IArchRuleExampleTypeRepository typeMapper)
         {
             m_TypeMapper = typeMapper;
@@ -21,8 +20,9 @@ namespace ArchRuleDemo.ArchRuleExampleDependencyRuleEngine
         public ArchRuleExampleDependency MapDependency(IDependency dependency)
         {
             var dependencyType = m_TypeMapper.GetTypeRepresentation($"{dependency.Type.FullName} ({dependency.Type.AssemblyName})");
-            return new ArchRuleExampleDependency(dependencyType, dependency.Contexts.Select(context=>context.Visit(m_Visitor)).ToList());
+            return new ArchRuleExampleDependency(dependencyType, dependency.Contexts.ToList());
         }
+        
         public ArchRuleExampleType MapTypeDescription(ITypeDescription type)
         {
             return m_TypeMapper.GetTypeRepresentation($"{type.FullName} ({type.AssemblyName})");

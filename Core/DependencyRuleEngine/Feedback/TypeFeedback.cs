@@ -6,7 +6,7 @@ namespace YADA.Core.DependencyRuleEngine.Feedback
 {
     internal class TypeFeedback : ITypeFeedback
     {
-        private Dictionary<string, RuleFeedback> m_RuleViolations = new Dictionary<string, RuleFeedback>();
+        private readonly Dictionary<string, RuleFeedback> m_RuleViolations = new Dictionary<string, RuleFeedback>();
 
         public IRuleFeedback ViolatesRule(string nameOfRule)
         {
@@ -18,17 +18,17 @@ namespace YADA.Core.DependencyRuleEngine.Feedback
             return m_RuleViolations[nameOfRule];
         }
 
-        public void Explore(IFeedbackVisitor visitor) 
+        public void Explore(IFeedbackVisitor visitorExt)
         {
-            foreach (var pair in m_RuleViolations)
+             foreach (var pair in m_RuleViolations)
             {
-                visitor.ViolatedRule(pair.Key);
-                pair.Value.Explore(visitor);
+                using (visitorExt.ViolatedRule(pair.Key))
+                {
+                    pair.Value.Explore(visitorExt);
+                }
 
             }
         }
-
-   
     }
 }
 

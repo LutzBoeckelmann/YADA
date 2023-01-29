@@ -30,13 +30,15 @@ namespace YADA.Core.DependencyRuleEngine.Feedback
         {
             foreach (var msg in m_Infos)
             {
-                visitor.Info(msg);
+                using(visitor.Info(msg)) {}
             }
 
             foreach (var dependency in m_ViolatedDependency)
             {
-                visitor.ForbiddenDependency(dependency.Key);
-                dependency.Value.Explore(visitor);
+                using (visitor.ForbiddenDependency(dependency.Key))
+                {
+                    dependency.Value.Explore(visitor);
+                }
             }
         }
     }

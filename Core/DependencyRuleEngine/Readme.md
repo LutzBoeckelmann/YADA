@@ -53,9 +53,20 @@ The result of any rule is **DependencyRuleResult**. It provides four different r
   
 ### Feedback collector
 
-Like mentioned before without good feedback the best tests are worthless. To support this the FeedbackCollector was introduced. The **IFeedbackCollector** and the associated interfaces resides in the namespace *YADA.DependencyRuleEngine.Feedback*. As root element of any feedback an implementation of **IFeedbackCollector** must be injected to the rule engine. The analyse procedure follows always the same steps, this is reflected in the feedback interfaces too. For any specific situation a specific feedback interface is available. Adding feedback returns the next needed specific feedback interface. Simpler formulated the interfaces are nested in a way to form a fluent interface.
+Like mentioned before without good feedback the best tests are worthless.
+To support this the FeedbackCollector was introduced. The **IFeedbackCollector**
+and the associated interfaces resides in the namespace
+**YADA.DependencyRuleEngine.Feedback**.
+As root element of any feedback an implementation of **IFeedbackCollector**
+must be injected to the rule engine. The analyze procedure follows always the
+same steps, this is reflected in the feedback interfaces too.
+For any specific situation a specific feedback interface is available.
+Adding feedback returns the next needed specific feedback interface.
+Simpler formulated the interfaces are nested in a way to form a fluent interface.
 
-A good feedback should not only tell what was violated also where the violation can be found. The example strings above can be enhanced with the **IDependencyContextVisitor\<T>**. 
+A good feedback should not only tell what was violated also where the violation
+can be found. The example strings above can be enhanced with the
+**IDependencyContextVisitor\<T>**. 
 
 ### Testability
 

@@ -18,7 +18,7 @@ namespace YADA.Core.Analyser
         /// <summary>
         /// Constructs a TypeLoader. 
         /// </summary>
-        /// <param name="locations">Locations of the assemblies which should be analysed</param>
+        /// <param name="locations">Locations of the assemblies which should be analyzed</param>
         public TypeLoader(IEnumerable<string> locations)
         {
             m_AssemblyLocations = locations.ToList();
@@ -27,7 +27,7 @@ namespace YADA.Core.Analyser
 
         /// <summary>
         /// All types found in the given assemblies. The types are represented as
-        /// ITypeDescription. Startpoint of the analyse.
+        /// ITypeDescription. Start point of the analyze.
         /// </summary>
         public IEnumerable<ITypeDescription> GetTypes()
         {
