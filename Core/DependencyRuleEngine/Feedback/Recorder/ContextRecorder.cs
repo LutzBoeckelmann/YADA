@@ -1,3 +1,5 @@
+// Copyright (c) Lutz Boeckelmann and Contributors. MIT License - see LICENSE.txt
+
 using YADA.Core.Analyser;
 
 namespace YADA.Core.DependencyRuleEngine.Feedback

@@ -1,3 +1,5 @@
+// Copyright (c) Lutz Boeckelmann and Contributors. MIT License - see LICENSE.txt
+
 using NUnit.Framework;
 using ArchRuleDemo.ArchitecturalModel;
 using ArchRuleDemo.ArchitecturalRules;
@@ -7,8 +9,6 @@ using ArchRuleDemo.ArchRuleExampleDependencyRuleEngine;
 using YADA.Core.Analyser;
 using YADA.Core.DependencyRuleEngine;
 using System.Collections.Generic;
-using System.Linq;
-using System.IO;
 
 namespace ArchRuleDemo.ArchRuleTests
 {
@@ -44,16 +44,19 @@ namespace ArchRuleDemo.ArchRuleTests
             engine.Analyse(types, feedback);
 
             
-            var visitor = new FeedbackRecorder();
+            var feedbackRecorder = new FeedbackRecorder();
             
-            feedback.Explore(visitor);
-            visitor.WriteFeedbackResults(@".\out.txt");
+            feedback.Explore(feedbackRecorder);
+            feedbackRecorder.WriteFeedbackResults(@".\out.txt");
                        
             FeedbackReader reader = new FeedbackReader();
 
             reader.ReadRecording(@".\out.txt");
 
-            Assert.That(visitor.GetResult(), Is.EquivalentTo(reader.GetResult()));
+            var visitorResult = feedbackRecorder.GetResult();
+            var readerResult = reader.GetResult();
+            
+            Assert.That(visitorResult, Is.EquivalentTo(readerResult));
         }
 
         [Test]
@@ -78,8 +81,7 @@ namespace ArchRuleDemo.ArchRuleTests
             };
 
             var engine = new DependencyRuleEngine(typeRules, dependencyRules);
-            
-         
+                     
             var feedback = new FeedbackCollector();
             
             engine.Analyse(types, feedback);
@@ -91,8 +93,8 @@ namespace ArchRuleDemo.ArchRuleTests
             feedback.Explore(filter);
                 
             TestContext.WriteLine(printer.GetFeedback());
-
-            Assert.That(printer.GetFeedback(), Is.Empty);
+            var printerFeedBack = printer.GetFeedback();
+            Assert.That(printerFeedBack , Is.Empty);
         }
 
 
@@ -131,21 +133,10 @@ namespace ArchRuleDemo.ArchRuleTests
             feedback.Explore(printer);
 
             TestContext.WriteLine(printer.GetFeedback());
-
-            // // var typeFeedback = feedback.GetFeedback().Select(t=>t.Item1).ToArray();
-            //     foreach (var pair in feedback.GetFeedback())
-            // {
-            //     TestContext.WriteLine("--------------------------------------------");
-            //     TestContext.WriteLine($"Type: {pair.Item1}");
-            //     TestContext.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-            //     TestContext.WriteLine(pair.Item2);
-            // }
-            // // Assert.That(typeFeedback, Is.EquivalentTo(new[] { "ArchRuleExample.Core.CoreModule1.Data.Module1DataClass1" }));
-
+         
             Assert.That(result, Is.False);
         }
 
-    // only correct types should not fail
         [Test]
         public void Analyse_OnlyCorrectTypes_Success() 
         {

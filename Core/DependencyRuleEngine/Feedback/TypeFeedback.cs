@@ -6,7 +6,7 @@ namespace YADA.Core.DependencyRuleEngine.Feedback
 {
     internal class TypeFeedback : ITypeFeedback
     {
-        private Dictionary<string, RuleFeedback> m_RuleViolations = new Dictionary<string, RuleFeedback>();
+        private readonly Dictionary<string, RuleFeedback> m_RuleViolations = new Dictionary<string, RuleFeedback>();
 
         public IRuleFeedback ViolatesRule(string nameOfRule)
         {

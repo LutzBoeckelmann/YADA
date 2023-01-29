@@ -3,3 +3,4 @@
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("YADA.Test")]
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]

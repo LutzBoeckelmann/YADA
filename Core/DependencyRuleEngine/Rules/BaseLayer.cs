@@ -35,7 +35,7 @@ namespace Core.DependencyRuleEngine.Rules
         /// <summary>
         /// Name of the layer 
         /// </summary>
-        private string m_Layer;
+        private readonly string m_Layer;
 
         /// <summary>
         /// List of all layers. The order in the list is the order of the layers within the system

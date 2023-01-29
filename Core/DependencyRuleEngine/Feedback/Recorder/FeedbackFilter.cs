@@ -1,3 +1,5 @@
+// Copyright (c) Lutz Boeckelmann and Contributors. MIT License - see LICENSE.txt
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -58,8 +60,9 @@ namespace YADA.Core.DependencyRuleEngine.Feedback
             NotifyRule();
             if(m_DependencyNotNotified) 
             {
-                m_Next.ForbiddenDependency(m_CurrentDependency.DependencyName);
+                m_NextDependencyDisposable = m_Next.ForbiddenDependency(m_CurrentDependency.DependencyName);
             }
+            m_DependencyNotNotified = false;
         }
 
         private bool m_DependencyNotNotified;
@@ -74,9 +77,9 @@ namespace YADA.Core.DependencyRuleEngine.Feedback
             m_Next = next;
         }
 
-        internal FeedbackFilter(List<TypeRecording> types, IFeedbackVisitor next)
+        internal FeedbackFilter(IEnumerable<TypeRecording> types, IFeedbackVisitor next)
         {
-
+            m_Types = types.ToList();
             m_Next = next;
         }
 
@@ -121,18 +124,18 @@ namespace YADA.Core.DependencyRuleEngine.Feedback
 
         public IDisposable Info(string msg)
         {
+            IDisposable disposable = null;
             InfoRecording currentInfo = null;
             if(m_CurrentRule != null) 
             {
                 currentInfo = m_CurrentRule.Infos.FirstOrDefault(t => t.Info == msg);
             }
-            IDisposable disposable = null;
-            if(currentInfo == null) 
+            else
             {
-                NotifyRule();
+                // do ignore unknown infos for known rules!
                 disposable = m_Next.Info(msg);
             }
-           
+            
             return new Callback(() => { disposable?.Dispose(); });
         }
 
