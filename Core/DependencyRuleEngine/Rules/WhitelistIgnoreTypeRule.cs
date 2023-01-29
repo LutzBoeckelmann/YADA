@@ -7,6 +7,9 @@ using YADA.Core.DependencyRuleEngine.Feedback;
 
 namespace  YADA.Core.DependencyRuleEngine.Rules
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class WhitelistIgnoreTypeRule : ITypeRule<ITypeDescription>
     {
         private readonly IList<string> m_Whitelist = new List<string>();

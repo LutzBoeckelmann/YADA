@@ -1,12 +1,9 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/113627dff37e739515de/maintainability)](https://codeclimate.com/github/LutzBoeckelmann/YADA/maintainability)
+[![CodeFactor](https://www.codefactor.io/repository/github/lutzboeckelmann/yada/badge)](https://www.codefactor.io/repository/github/lutzboeckelmann/yada)
 
-<a href="https://scan.coverity.com/projects/lutzboeckelmann-yada">
-  <img alt="Coverity Scan Build Status"
-       src="https://scan.coverity.com/projects/23841/badge.svg"/>
-</a>
 # YADA 
 
-**YADA - Yet Another Dependency Analyser**
+**YADA - Yet Another Dependency Analyzer**
 
 The general purpose of YADA is to observe dependencies between classes in C# projects and
 provide a simple way to implement automated tests to ensure that any dependency follows the architectural rules.
@@ -15,7 +12,7 @@ YADA was created with some simple design rules in mind, which will be explained 
 
 ## First simple example
 
-In my opinion everybody who writes architectural tests needs a full and simple access to any dependency information which is retrievable from the code. Hence the first design goal is to provide the simplest possible interface providing any information needed to create an analyser.
+In my opinion everybody who writes architectural tests needs a full and simple access to any dependency information which is retrievable from the code. Hence the first design goal is to provide the simplest possible interface providing any information needed to create an analyzer.
 
 ```plantuml
 
@@ -37,7 +34,7 @@ TypeLoader ..> ITypeDependency : Creates
 
 ```
 
-Any think needed to analyse the code is placed in the namespace *YADA.Core.Analyser*. Maybe the most imported interface in *YADA* is *ITypeDependency*. It represents a simple C# type and delivers next to the full qualified name a set of dependencies. A dependency is represented by *IDependency*. It delivers the type of the dependency as *ITypeDependency* and some information about the location where the dependency was found.
+Any think needed to analyze the code is placed in the namespace *YADA.Core.Analyser*. Maybe the most imported interface in *YADA* is *ITypeDependency*. It represents a simple C# type and delivers next to the full qualified name a set of dependencies. A dependency is represented by *IDependency*. It delivers the type of the dependency as *ITypeDependency* and some information about the location where the dependency was found.
 The ITypeDescription for any type in a set of assembly can simply fetched with the TypeLoader instance by using the method *GetTypes()*.
 
 See the following snippet:
@@ -83,7 +80,7 @@ Dependencies of
 
 ### How it works
 
-Internally *YADA* uses the great [*Mono.Cecil*](https://www.mono-project.com/docs/tools+libraries/libraries/Mono.Cecil/) library to analyse the given assemblies. Each type found within the assemblies will be analysed by the *TypeAnalyse*.
+Internally *YADA* uses the great [*Mono.Cecil*](https://www.mono-project.com/docs/tools+libraries/libraries/Mono.Cecil/) library to analyze the given assemblies. Each type found within the assemblies will be analyzed by the *TypeAnalyse*.
 
 Dependencies will be searched at the following ways:
 
@@ -109,3 +106,8 @@ The *IDependencyContext* self is a nearly empty class, but it can be visited by 
 
 With the Core mechanisms of *YADA* described above it is possible to create own automated tests. A way to do this is provided with the rule engine, which can be found under . [*YADA.DependencyRuleEngine*](./core/DependencyRuleEngine/Readme.md).
 
+##  Filtering the results
+
+Not in all circumstances any rule may be fulfilled. Sometimes you add an new rule and the code base is still not adapted, sometimes someone has made
+a mistake. However you need a possibility to commit code which breaks the test but only with an exclusion for the current code base. Therefor a filter mechanism was added and the possibility to create a baseline file for the current code base.
+See [*FilteringResults*](./core/DependencyRuleEngine/ResultFiltering.md)

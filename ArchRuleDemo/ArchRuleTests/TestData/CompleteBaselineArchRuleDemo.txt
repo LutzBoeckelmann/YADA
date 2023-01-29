@@ -1,0 +1,29 @@
+Type: ArchRuleExample.ClassWithoutCorrectNamespace (ArchRuleExample, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null)
+Rule: CorrectNamespaceTypeRule
+Info: DomainLayer unexpected
+Info: TechnicalLayer unexpected
+Type: ArchRuleExample.Infrastructure.InfraModule1.UI.InfraModuleUIClass1 (ArchRuleExample, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null)
+Rule: CrossComponentAccessOnlyOnSameTechnicalLayerDependencyRule
+Dependency: ArchRuleExample.Core.CoreModule1.Data.Module1DataClass1 (ArchRuleExample, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null)
+Context: FieldDefinition_m_ForbiddenMember
+Context: MethodDefinitionParameter_.ctor
+Context: MethodBodyAccessedFieldType_.ctor_ArchRuleExample.Core.CoreModule1.Data.Module1DataClass1 ArchRuleExample.Infrastructure.InfraModule1.UI.InfraModuleUIClass1::m_ForbiddenMember
+Rule: OnlyAccessTypesOnOwnOrLowerDomainLayerDependencyRule
+Dependency: ArchRuleExample.Core.CoreModule1.Data.Module1DataClass1 (ArchRuleExample, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null)
+Context: FieldDefinition_m_ForbiddenMember
+Context: MethodDefinitionParameter_.ctor
+Context: MethodBodyAccessedFieldType_.ctor_ArchRuleExample.Core.CoreModule1.Data.Module1DataClass1 ArchRuleExample.Infrastructure.InfraModule1.UI.InfraModuleUIClass1::m_ForbiddenMember
+Type: ArchRuleExample.Infrastructure.InfraModule1.Data.InfraModuleDataClass1 (ArchRuleExample, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null)
+Rule: OnlyAccessTypesOnOwnOrLowerDomainLayerDependencyRule
+Dependency: ArchRuleExample.Core.CoreModule1.Data.Module1DataClass1 (ArchRuleExample, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null)
+Context: FieldDefinition_m_ForbiddenMember
+Context: MethodDefinitionParameter_.ctor
+Context: MethodBodyAccessedFieldType_.ctor_ArchRuleExample.Core.CoreModule1.Data.Module1DataClass1 ArchRuleExample.Infrastructure.InfraModule1.Data.InfraModuleDataClass1::m_ForbiddenMember
+Dependency: ArchRuleExample.Core.CoreModule1.UI.View1 (ArchRuleExample, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null)
+Context: FieldDefinition_m_ForbiddenAccessToCoreUI
+Rule: CrossComponentAccessOnlyOnSameTechnicalLayerDependencyRule
+Dependency: ArchRuleExample.Core.CoreModule1.UI.View1 (ArchRuleExample, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null)
+Context: FieldDefinition_m_ForbiddenAccessToCoreUI
+Rule: OnlyAccessTypesOnOwnOrLowerTechnicalLayerDependencyRule
+Dependency: ArchRuleExample.Core.CoreModule1.UI.View1 (ArchRuleExample, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null)
+Context: FieldDefinition_m_ForbiddenAccessToCoreUI
