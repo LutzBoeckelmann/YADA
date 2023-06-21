@@ -64,7 +64,7 @@ namespace ArchRuleDemo.ArchRuleTests
             }
             
         }
-
+        [IgnoreType("ArchRuleExample.Infrastructure.InfraModule1.UI.InfraModuleUIClass2")]
         [Test]
         public void FeedbackFilter_NoChangesSinceLastBaseline_NoFeedback()
         {

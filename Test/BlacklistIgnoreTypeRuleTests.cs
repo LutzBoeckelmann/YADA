@@ -1,3 +1,4 @@
+// Copyright (c) Lutz Boeckelmann and Contributors. MIT License - see LICENSE.txt
 
 using NUnit.Framework;
 using YADA.Core.Analyser;

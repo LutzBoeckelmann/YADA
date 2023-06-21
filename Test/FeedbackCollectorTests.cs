@@ -1,7 +1,5 @@
 // Copyright (c) Lutz Boeckelmann and Contributors. MIT License - see LICENSE.txt
 
-
-using System.Text;
 using YADA.Core.DependencyRuleEngine.Feedback;
 using NUnit.Framework;
 
