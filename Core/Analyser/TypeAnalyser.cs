@@ -1,5 +1,6 @@
 // Copyright (c) Lutz Boeckelmann and Contributors. MIT License - see LICENSE.txt
 
+using System;
 using System.Collections.Generic;
 using Mono.Cecil;
 
@@ -8,8 +9,14 @@ namespace YADA.Core.Analyser
     /// <summary>
     /// Responsible for retrieving all dependencies of the given type.
     /// </summary>
-    public class TypeAnalyser
+    internal class TypeAnalyser
     {
+        private readonly ITypeFilter m_TypeFilter;
+        public TypeAnalyser(ITypeFilter typeFilter = null)
+        {
+            m_TypeFilter = typeFilter;
+        }
+
         /// <summary>
         /// Analyses the given type. 
         /// </summary>
@@ -17,6 +24,11 @@ namespace YADA.Core.Analyser
         /// <returns>The type a TypeDescription</returns>
         internal TypeDescription AnalyseType(TypeDefinition typeDefinition)
         {
+            if(m_TypeFilter != null && m_TypeFilter.IgnoreType(typeDefinition))
+            {
+                throw new ArgumentException(nameof(typeDefinition), "Do not analyze ignored types");
+            }
+
             var result = new TypeDescription(typeDefinition.FullName, typeDefinition.Module.Assembly.FullName);
 
             //Check fields
@@ -120,22 +132,24 @@ namespace YADA.Core.Analyser
             }
         }
 
-        private static void AddDependency(TypeDescription currentType, TypeReference dependency, IDependencyContext context)
+        private void AddDependency(TypeDescription currentType, TypeReference dependency, IDependencyContext context)
         {
-            TypeDescription dependencyDescription;
+            if (m_TypeFilter != null && m_TypeFilter.IgnoreTypeAsDependency(dependency.Resolve()))
+            {
+                return;
+            }
 
             var dependencies = GetDependency(dependency);
-
+                            
             foreach (var type in dependencies)
             {
                 var d = type.Module.Assembly.FullName;
-                dependencyDescription = new TypeDescription(type.FullName, d);
+                var dependencyDescription = new TypeDescription(type.FullName, d);
                 currentType.AddDependency(dependencyDescription, context);
             }
-
         }
 
-        private static IEnumerable<TypeReference> GetDependency(TypeReference dependency)
+        private IEnumerable<TypeReference> GetDependency(TypeReference dependency)
         {
             List<TypeReference> result = new List<TypeReference>();
 
@@ -160,7 +174,7 @@ namespace YADA.Core.Analyser
             return result;
         }
 
-        private static IEnumerable<TypeReference> AnalyseGeneric(TypeReference dependency)
+        private IEnumerable<TypeReference> AnalyseGeneric(TypeReference dependency)
         {
             List<TypeReference> result = new List<TypeReference>();
 

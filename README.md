@@ -46,12 +46,12 @@ See the following snippet:
     // fetch all types 
     var typeDescriptions = typeLoader.GetTypes();
 
-    // iterate over all type for the analyse 
+    // iterate over all type for the analyze 
     foreach (var typeDescription in typeDescriptions)
     {
         // access the full qualified name of the current type
-        Console.WriteLine($"Full name: {typeDescription.FullName}");
-        Console.WriteLine("Dependencies of ");
+        Console.WriteLine($"Type: {typeDescription.FullName}");
+        Console.WriteLine("  Dependencies:");
 
         //iterate over all dependencies of the current type
         foreach (var typeDependency in typeDescription.Dependencies)
@@ -66,15 +66,16 @@ As you can see with under 10 lines of code you can generate some insights about 
 Executing the code produces the following output:
 ```bash
 ...
-Full name: Example.StaticProvider2
-Dependencies of 
-    - System.Int32
+Type: Example.Example1
+  Dependencies:
+    - Example.Dependency1
     - System.Object
-Full name: Example.ClassWithMethodUsingStaticReferences
-Dependencies of 
+Type: Example.Dependency1
+  Dependencies:
     - System.Object
-    - Example.StaticProvider
-    - Example.IDependencyInterface
+Type: Example.Dependency2
+  Dependencies:
+    - System.Object
 ...
 ```
 
@@ -92,6 +93,11 @@ Dependencies will be searched at the following ways:
   
 Any found dependency will be added to the ITypeDescription together with the IDependencyContext containing information about the occurrence. Any needed information will be retrieved during this step and stored in the result set.
 
+If not any type should be analyzed it is possible to ignore them directly during the type loading. This can be done with the **YADA.Core.Analyser.IgnoreType** Attribute.
+This has to be added above one method in the call stack which creates the typeloader. No only the type will be removed from the result set also
+any dependency to this type in other types are ignored.
+In the example above ```[IgnoreType("**.*Dependency*")]``` will remove any class containing **Dependency** in the name or as part of a namespace.
+
 ### Testability as first class citizen
 
 Any complex logic needs tests. And creating tests for input data fetched from assemblies is not the right way. So any interface in YADA uses only plain c# types, which provides a simple way to test your application with Fakes. In fact there are simple fake implementations for ITypeDescription and IDependency available.
@@ -104,7 +110,7 @@ The *IDependencyContext* self is a nearly empty class, but it can be visited by 
 
 ## Automate architectural rules
 
-With the Core mechanisms of *YADA* described above it is possible to create own automated tests. A way to do this is provided with the rule engine, which can be found under . [*YADA.DependencyRuleEngine*](./core/DependencyRuleEngine/Readme.md).
+With the Core mechanisms of *YADA* described above it is possible to create own automated tests. A way to do this is provided with the rule engine, which can be found under. [*YADA.DependencyRuleEngine*](./core/DependencyRuleEngine/Readme.md).
 
 ##  Filtering the results
 

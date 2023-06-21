@@ -375,6 +375,39 @@ namespace YADA.Test
             Assert.That(assemblyName.First, Is.EqualTo(expectedName));
         }
 
+        [IgnoreType("Example.Example1")]
+        [Test]
+        public void TypeLoader_Types_Can_Be_Ignored()
+        {
+            var sut = new TypeLoader(new[] { @"./YADA.Example.dll" });
+            var types = sut.GetTypes();
+
+            Assert.That(types.Any(t => t.FullName == "Example.Example1"), Is.False);
+        }
+
+        [IgnoreType("**Example*")]
+        [Test]
+        public void TypeLoader_Types_Can_Be_Ignored2()
+        {
+            var sut = new TypeLoader(new[] { @"./YADA.Example.dll" });
+            var types = sut.GetTypes();
+            var l = types.Select(t => t.FullName).ToList();
+            Assert.That(types.Any(t => t.FullName.Contains("Example")), Is.False);
+        }
+
+
+
+        [IgnoreType("Example.Dependency1", IgnoreTypeOptions.IgnoreAlsoAsDependency)]
+        [Test]
+        public void TypeLoader_Ignored_Types_Does_Not_Appear_As_Dependencies_Of_Other_Types()
+        {
+            var sut = new TypeLoader(new[] { @"./YADA.Example.dll" });
+            var types = sut.GetTypes();
+            var result = types.First(t => t.FullName == "Example.Example1");
+            
+            Assert.That(result.Dependencies.Any(d => d.Type.FullName == "Example.Dependency1"), Is.False);
+        }
+
         private void PrintType(ITypeDescription type)
         {
             TestContext.WriteLine(type.FullName);
