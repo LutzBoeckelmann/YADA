@@ -34,7 +34,7 @@ TypeLoader ..> ITypeDependency : Creates
 
 ```
 
-Any think needed to analyze the code is placed in the namespace *YADA.Core.Analyser*. Maybe the most imported interface in *YADA* is *ITypeDependency*. It represents a simple C# type and delivers next to the full qualified name a set of dependencies. A dependency is represented by *IDependency*. It delivers the type of the dependency as *ITypeDependency* and some information about the location where the dependency was found.
+Any think needed to analyze the code is placed in the namespace *YADA.Analyzer*. Maybe the most imported interface in *YADA* is *ITypeDependency*. It represents a simple C# type and delivers next to the full qualified name a set of dependencies. A dependency is represented by *IDependency*. It delivers the type of the dependency as *ITypeDependency* and some information about the location where the dependency was found.
 The ITypeDescription for any type in a set of assembly can simply fetched with the TypeLoader instance by using the method *GetTypes()*.
 
 See the following snippet:
@@ -61,7 +61,7 @@ See the following snippet:
         }
     }
 ```
-As you can see with under 10 lines of code you can generate some insights about your classes and its dependencies. The snipped was taken fromTest/FirstSimpleExample.cs.
+As you can see with under 10 lines of code you can generate some insights about your classes and its dependencies. The snipped was taken from AnalyzerTests/FirstSimpleExample.cs.
 
 Executing the code produces the following output:
 ```bash
@@ -93,7 +93,7 @@ Dependencies will be searched at the following ways:
   
 Any found dependency will be added to the ITypeDescription together with the IDependencyContext containing information about the occurrence. Any needed information will be retrieved during this step and stored in the result set.
 
-If not any type should be analyzed it is possible to ignore them directly during the type loading. This can be done with the **YADA.Core.Analyser.IgnoreType** Attribute.
+If not any type should be analyzed it is possible to ignore them directly during the type loading. This can be done with the **YADA.Analyzer.IgnoreType** Attribute.
 This has to be added above one method in the call stack which creates the typeloader. No only the type will be removed from the result set also
 any dependency to this type in other types are ignored.
 In the example above ```[IgnoreType("**.*Dependency*")]``` will remove any class containing **Dependency** in the name or as part of a namespace.
@@ -110,10 +110,10 @@ The *IDependencyContext* self is a nearly empty class, but it can be visited by 
 
 ## Automate architectural rules
 
-With the Core mechanisms of *YADA* described above it is possible to create own automated tests. A way to do this is provided with the rule engine, which can be found under. [*YADA.DependencyRuleEngine*](./core/DependencyRuleEngine/Readme.md).
+With the Core mechanisms of *YADA* described above it is possible to create own automated tests. A way to do this is provided with the rule engine, which can be found under. [*YADA.DependencyRuleEngine*](./src/DependencyRuleEngine/Readme.md).
 
 ##  Filtering the results
 
 Not in all circumstances any rule may be fulfilled. Sometimes you add an new rule and the code base is still not adapted, sometimes someone has made
 a mistake. However you need a possibility to commit code which breaks the test but only with an exclusion for the current code base. Therefor a filter mechanism was added and the possibility to create a baseline file for the current code base.
-See [*FilteringResults*](./core/DependencyRuleEngine/ResultFiltering.md)
+See [*FilteringResults*](./src/DependencyRuleEngine/ResultFiltering.md)

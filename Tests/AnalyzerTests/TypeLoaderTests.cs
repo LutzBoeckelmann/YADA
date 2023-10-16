@@ -123,7 +123,7 @@ namespace YADA.AnalyzerTests
         {
             var type = FetchType<Example.ClassWithSeveralInterfaceDependencies>();
 
-            PrintType(type);
+//            PrintType(type);
             DependencyAssertion
             .ForType(type)
             .Expected<Example.IDependencyInterface>()
@@ -137,7 +137,7 @@ namespace YADA.AnalyzerTests
         public void TypeLoader_Recognizes_ImplementedGenericInterfaces_As_Dependencies() 
         {
             var type = FetchType<Example.ClassWithGenericInterfaceDependencies>();
-            PrintType(type);
+           // PrintType(type);
             DependencyAssertion
             .ForType(type)
             .Expected<Example.IDependencyInterface>()
@@ -308,7 +308,6 @@ namespace YADA.AnalyzerTests
         public void TypeLoader_Recognizes_References_To_Static_Instances_In_Methods_As_Dependencies_But_Not_The_Static_ClassType()
         {
             var type = FetchType<Example.ClassWithMethodUsingDirectStaticReferences>();
-            PrintType(type);
             DependencyAssertion
                 .ForType(type)
                 //Direct used public fields of static classes are not tracable in il code
@@ -333,11 +332,11 @@ namespace YADA.AnalyzerTests
             var sut = new TypeLoader(new[] { @"./YADA.Example.dll" });
             var types = sut.GetTypes();
             
-            foreach(var type in types) 
-            {
-                PrintType(type);
-                TestContext.WriteLine("--------------------------------------------------------------");
-            }
+            //foreach(var type in types) 
+            //{
+            //    PrintType(type);
+            //    TestContext.WriteLine("--------------------------------------------------------------");
+            //}
         }
         
         [Test]

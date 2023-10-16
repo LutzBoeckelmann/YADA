@@ -9,6 +9,7 @@ namespace YADA.AnalyzerTests
     [TestFixture]
     public class FirstSimpleExample
     {
+        [Explicit]
         [Test]
         [IgnoreType("**.*Dependency*")]
         public void Simple_Way_To_List_All_Dependencies_In_ExampleDll() 
@@ -29,7 +30,7 @@ namespace YADA.AnalyzerTests
                 //iterate over all dependencies of the current type
                 foreach (var typeDependency in typeDescription.Dependencies)
                 {
-                    // access the full qualified name of the depenencies type
+                    // access the full qualified name of the dependencies type
                     Console.WriteLine($"    - {typeDependency.Type.FullName}");
                 }
             }

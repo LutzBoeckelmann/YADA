@@ -99,7 +99,7 @@ namespace ArchRuleDemo.ArchRuleTests
             
             feedback.Explore(filter);
                 
-            TestContext.WriteLine(printer.GetFeedback());
+            //TestContext.WriteLine(printer.GetFeedback());
             var printerFeedBack = printer.GetFeedback();
             Assert.That(printerFeedBack , Is.Empty);
         }
@@ -119,9 +119,6 @@ namespace ArchRuleDemo.ArchRuleTests
 
             feedback.Explore(printer);
 
-            TestContext.WriteLine(printer.GetFeedback());
-
-            
             Assert.That(result, Is.False);
         }
 
@@ -138,9 +135,7 @@ namespace ArchRuleDemo.ArchRuleTests
             ResultCollectorSimplePrinter printer = new ResultCollectorSimplePrinter();
 
             feedback.Explore(printer);
-
-            TestContext.WriteLine(printer.GetFeedback());
-         
+        
             Assert.That(result, Is.False);
         }
 
