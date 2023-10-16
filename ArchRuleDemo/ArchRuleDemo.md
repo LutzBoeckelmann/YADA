@@ -1,4 +1,5 @@
-To demonstrate the usage of YADA and a the possibility its RuleEngine provides, the ArchRuleDemo was created. The demo contains two parts at first the project ArchRuleExample. This project has self has no technical content, it only contains a set of classes, which should be analysed. The interesting part is the demo is contained in ArchRuleDemo project. It contains the codified rule of the example, the needed infrastructure and the tests for the rule and the system tests for the ArchRuleExample self.
+To demonstrate the usage of YADA and a the possibility its RuleEngine provides, the ArchRuleDemo was created.
+The demo contains two parts at first the project ArchRuleExample. This project has self has no technical content, it only contains a set of classes, which should be analyzed. The interesting part is the demo is contained in ArchRuleDemo project. It contains the codified rule of the example, the needed infrastructure and the tests for the rule and the system tests for the ArchRuleExample self.
 
 At first a brief definition of the rules any type in ArchRuleExample should fulfill. The example is structured in layers. Any class must be in exact one domain layer as well as exactly one technical layer. Additionally any piece of code must belong to one module. 
 This structure is expressed in the namespaces of any ArchRuleExample class.
@@ -37,7 +38,7 @@ md1 <- inmUI1 : illegal
 inmDa1 -u-> md1 : illegal
 ```
 
-The ArchRuleDemo assembly contains the code and the test to analyse the ArchRuleExample and is structured in the following parts.
+The ArchRuleDemo assembly contains the code and the test to analyze the ArchRuleExample and is structured in the following parts.
 
 * Architectural Models
     This contains the classes to describe the current architecture in code

@@ -1,8 +1,8 @@
 // Copyright (c) Lutz Boeckelmann and Contributors. MIT License - see LICENSE.txt
 
 using System.Collections.Generic;
-using YADA.Core.Analyser;
-using YADA.Core.DependencyRuleEngine.Feedback;
+using YADA.Analyzer;
+using YADA.DependencyRuleEngine.Feedback;
 
 
 namespace ArchRuleDemo.ArchRuleTests

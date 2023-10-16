@@ -1,14 +1,14 @@
 // Copyright (c) Lutz Boeckelmann and Contributors. MIT License - see LICENSE.txt
 
 using NUnit.Framework;
-using YADA.Core.Analyser;
+using YADA.Analyzer;
 using ArchRuleDemo.ArchRuleExampleDependencyRuleEngine;
 
 using ArchRuleDemo.ArchitecturalModel;
 using ArchRuleDemo.ArchitecturalRules;
-using YADA.Core.DependencyRuleEngine.Rules;
-using YADA.Core.DependencyRuleEngine.Feedback;
-using YADA.Core.DependencyRuleEngine;
+using YADA.DependencyRuleEngine.Rules;
+using YADA.DependencyRuleEngine.Feedback;
+using YADA.DependencyRuleEngine;
 
 namespace ArchRuleDemo.ArchRuleTests
 {
@@ -61,7 +61,7 @@ namespace ArchRuleDemo.ArchRuleTests
             Assert.That(result, Is.False);
         } 
         
-        private DependencyRuleEngine CreateSut()
+        private RuleEngine CreateSut()
         {
             var typeRepository = new ArchRuleExampleTypeRepository();
             var mapper = new ArchRuleExampleRuleEngineMapper(typeRepository);
@@ -78,7 +78,7 @@ namespace ArchRuleDemo.ArchRuleTests
                   new BaseDependencyRule<ArchRuleExampleType, ArchRuleExampleDependency>(new OnlyAccessTypesOnOwnOrLowerDomainLayerDependencyRule(), mapper)
             };
 
-            return new DependencyRuleEngine(typeRules, dependencyRules);
+            return new RuleEngine(typeRules, dependencyRules);
         }
 
     }
