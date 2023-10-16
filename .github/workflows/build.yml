@@ -7,6 +7,6 @@ jobs:
     - uses: actions/checkout@main
     - uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '3.1.x'
+        dotnet-version: '6.0.x'
     - run: dotnet build YADA.sln
     - run: dotnet test YADA.sln
