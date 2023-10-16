@@ -1,5 +1,6 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/113627dff37e739515de/maintainability)](https://codeclimate.com/github/LutzBoeckelmann/YADA/maintainability)
 [![CodeFactor](https://www.codefactor.io/repository/github/lutzboeckelmann/yada/badge)](https://www.codefactor.io/repository/github/lutzboeckelmann/yada)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/113627dff37e739515de/test_coverage)](https://codeclimate.com/github/LutzBoeckelmann/YADA/test_coverage)
 
 # YADA 
 
