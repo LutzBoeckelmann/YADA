@@ -1,8 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\Core\Core.csproj" />
     <ProjectReference Include="..\ArchRuleExample\ArchRuleExample.csproj" />
+    <ProjectReference Include="..\src\Analyzer\Analyzer.csproj" />
+    <ProjectReference Include="..\src\DependencyRuleEngine\DependencyRuleEngine.csproj" />
     
     <PackageReference Include="moq" Version="4.16.1" />
     <PackageReference Include="nunit" Version="3.12.0" />

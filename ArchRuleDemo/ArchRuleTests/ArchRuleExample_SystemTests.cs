@@ -3,12 +3,13 @@
 using NUnit.Framework;
 using ArchRuleDemo.ArchitecturalModel;
 using ArchRuleDemo.ArchitecturalRules;
-using YADA.Core.DependencyRuleEngine.Rules;
-using YADA.Core.DependencyRuleEngine.Feedback;
+using YADA.DependencyRuleEngine.Rules;
+using YADA.DependencyRuleEngine.Feedback;
 using ArchRuleDemo.ArchRuleExampleDependencyRuleEngine;
-using YADA.Core.Analyser;
-using YADA.Core.DependencyRuleEngine;
+using YADA.Analyzer;
+using YADA.DependencyRuleEngine;
 using System.Collections.Generic;
+using YADA.DependencyRuleEngine.Feedback.Recorder;
 
 namespace ArchRuleDemo.ArchRuleTests
 {
@@ -36,7 +37,7 @@ namespace ArchRuleDemo.ArchRuleTests
                 new BaseDependencyRule<ArchRuleExampleType, ArchRuleExampleDependency>(new OnlyAccessTypesOnOwnOrLowerDomainLayerDependencyRule(), mapper)
             };
 
-            var engine = new DependencyRuleEngine(typeRules, dependencyRules);
+            var engine = new RuleEngine(typeRules, dependencyRules);
             
          
             var feedback = new FeedbackCollector();
@@ -86,7 +87,7 @@ namespace ArchRuleDemo.ArchRuleTests
                 new BaseDependencyRule<ArchRuleExampleType, ArchRuleExampleDependency>(new OnlyAccessTypesOnOwnOrLowerDomainLayerDependencyRule(), mapper)
             };
 
-            var engine = new DependencyRuleEngine(typeRules, dependencyRules);
+            var engine = new RuleEngine(typeRules, dependencyRules);
                      
             var feedback = new FeedbackCollector();
             
@@ -162,7 +163,7 @@ namespace ArchRuleDemo.ArchRuleTests
         }
 
     	
-        private DependencyRuleEngine CreateWithWhiteListSut(IEnumerable<string> whiteList)
+        private RuleEngine CreateWithWhiteListSut(IEnumerable<string> whiteList)
         {
             var typeRepository = new ArchRuleExampleTypeRepository();
             var mapper = new ArchRuleExampleRuleEngineMapper(typeRepository);
@@ -180,11 +181,11 @@ namespace ArchRuleDemo.ArchRuleTests
                 new BaseDependencyRule<ArchRuleExampleType, ArchRuleExampleDependency>(new OnlyAccessTypesOnOwnOrLowerDomainLayerDependencyRule(), mapper)
             };
 
-            return new DependencyRuleEngine(typeRules, dependencyRules);
+            return new RuleEngine(typeRules, dependencyRules);
         }
 
 
-        private DependencyRuleEngine CreateSut()
+        private RuleEngine CreateSut()
         {
             var typeRepository = new ArchRuleExampleTypeRepository();
             var mapper = new ArchRuleExampleRuleEngineMapper(typeRepository);
@@ -201,7 +202,7 @@ namespace ArchRuleDemo.ArchRuleTests
                 new BaseDependencyRule<ArchRuleExampleType, ArchRuleExampleDependency>(new OnlyAccessTypesOnOwnOrLowerDomainLayerDependencyRule(), mapper)
             };
 
-            return new DependencyRuleEngine(typeRules, dependencyRules);
+            return new RuleEngine(typeRules, dependencyRules);
         }
 
 
