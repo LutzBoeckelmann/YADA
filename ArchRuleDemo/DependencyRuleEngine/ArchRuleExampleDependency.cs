@@ -2,7 +2,7 @@
 
 using System.Collections.Generic;
 using ArchRuleDemo.ArchitecturalModel;
-using YADA.Core.Analyser;
+using YADA.Analyzer;
 
 namespace ArchRuleDemo.ArchRuleExampleDependencyRuleEngine
 {
