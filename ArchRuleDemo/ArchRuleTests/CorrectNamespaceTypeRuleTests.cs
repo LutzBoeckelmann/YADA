@@ -2,10 +2,10 @@
 
 using Moq;
 using NUnit.Framework;
-using YADA.Core.DependencyRuleEngine;
+using YADA.DependencyRuleEngine;
 using ArchRuleDemo.ArchitecturalModel;
 using ArchRuleDemo.ArchitecturalRules;
-using YADA.Core.DependencyRuleEngine.Feedback;
+using YADA.DependencyRuleEngine.Feedback;
 
 namespace ArchRuleDemo.ArchRuleTests
 {

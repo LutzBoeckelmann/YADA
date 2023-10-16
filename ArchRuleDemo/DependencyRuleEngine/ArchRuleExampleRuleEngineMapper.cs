@@ -2,9 +2,9 @@
 
 using System.Linq;
 using ArchRuleDemo.ArchitecturalModel;
-using YADA.Core.Analyser;
-using YADA.Core.DependencyRuleEngine;
-using YADA.Core.DependencyRuleEngine.Feedback;
+using YADA.Analyzer;
+using YADA.DependencyRuleEngine;
+using YADA.DependencyRuleEngine.Feedback;
 
 namespace ArchRuleDemo.ArchRuleExampleDependencyRuleEngine
 {
