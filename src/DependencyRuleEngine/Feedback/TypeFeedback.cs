@@ -18,13 +18,13 @@ namespace YADA.DependencyRuleEngine.Feedback
             return m_RuleViolations[nameOfRule];
         }
 
-        public void Explore(IFeedbackVisitor visitorExt)
+        public void Explore(IFeedbackVisitor visitor)
         {
              foreach (var pair in m_RuleViolations)
             {
-                using (visitorExt.ViolatedRule(pair.Key))
+                using (visitor.ViolatedRule(pair.Key))
                 {
-                    pair.Value.Explore(visitorExt);
+                    pair.Value.Explore(visitor);
                 }
 
             }

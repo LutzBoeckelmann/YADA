@@ -5,7 +5,7 @@ using YADA.Analyzer;
 
 namespace YADA.DependencyRuleEngine.Feedback.Recorder.Recordings
 {
-    internal class InfoRecording : IRecording
+    internal sealed class InfoRecording : IRecording
     {
         private readonly IRecording m_Parent;
         
@@ -32,7 +32,6 @@ namespace YADA.DependencyRuleEngine.Feedback.Recorder.Recordings
         public void Dispose()
         {
             // do not inform violated rule
-            //m_Parent.Closed(this);
         }
 
         public IDisposable ForbiddenDependency(string dependency)

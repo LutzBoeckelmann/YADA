@@ -78,7 +78,7 @@ namespace YADA.Analyzer
     /// Similar to the normal visitor interface but a value may be returned.
     /// Can be used to retrieve more information about the context of the dependency.
     /// </summary>
-    public interface IDependencyContextVisitor<T>
+    public interface IDependencyContextVisitor<out T>
     {
         /// <summary>
         /// The dependency was introduced as field or property.
@@ -87,7 +87,7 @@ namespace YADA.Analyzer
         T FieldDefinition(string fieldName);
 
         /// <summary>
-        /// The dependency was introduced as Baseclass or implemented interface.
+        /// The dependency was introduced as base class or implemented interface.
         /// </summary>
         /// <param name="name">Name of the base class or interface</param>
         T BaseClassDefinition(string name);

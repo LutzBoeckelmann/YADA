@@ -12,7 +12,7 @@ namespace  YADA.DependencyRuleEngine.Rules
     /// </summary>
     public class WhitelistIgnoreTypeRule : ITypeRule<ITypeDescription>
     {
-        private readonly IList<string> m_Whitelist = new List<string>();
+        private readonly IList<string> m_Whitelist;
 
         public WhitelistIgnoreTypeRule(IEnumerable<string> typesOnWhitelist)
         {

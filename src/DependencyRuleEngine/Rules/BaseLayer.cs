@@ -1,7 +1,6 @@
 // Copyright (c) Lutz Boeckelmann and Contributors. MIT License - see LICENSE.txt
 
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Core.DependencyRuleEngine.Rules
 {
@@ -13,7 +12,7 @@ namespace Core.DependencyRuleEngine.Rules
     public abstract class BaseLayer<T> where T:BaseLayer<T>
     {
         /// <summary>
-        /// Indicates wether this is a valid layer in the system. 
+        /// Indicates whether this is a valid layer in the system. 
         /// </summary>
         /// <value></value>
         public bool Valid 
@@ -53,7 +52,7 @@ namespace Core.DependencyRuleEngine.Rules
         }
 
         /// <summary>
-        /// Checks wether types within this layer may be accessed from types of given other layer.
+        /// Checks whether types within this layer may be accessed from types of given other layer.
         /// In a layered architecture a type in a layer may only access types within the layer or
         /// below. In case of strict layering types may only access types on the next lower layer.
         /// </summary>
@@ -90,11 +89,17 @@ namespace Core.DependencyRuleEngine.Rules
 
         public static bool operator==(BaseLayer<T> first, BaseLayer<T> second) 
         {
-            
-            if(first is null && !(second is null)) {
+            if (ReferenceEquals(first, second))
+            {
+                return true;
+            }
+
+            if(first is null && !(second is null))
+            {
                 return false;
             }
-            if(!(first is null) && second is null) {
+            if(!(first is null) && second is null)
+            {
                 return false;
             }
 

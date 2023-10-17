@@ -42,7 +42,7 @@ namespace YADA.Analyzer
                 }
             }
             
-            m_Pattern = new Regex(patternBuilder.ToString());
+            m_Pattern = new Regex(patternBuilder.ToString(), RegexOptions.None, System.TimeSpan.FromMilliseconds(100));
         }
 
         public bool IsMatch(string input)

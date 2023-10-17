@@ -10,7 +10,7 @@ namespace YADA.DependencyRuleEngine.Feedback.Recorder
 {
     public class FeedbackFilter : IFeedbackVisitor
     {   
-        private class Callback : IDisposable
+        private sealed class Callback : IDisposable
         {
             private readonly Action m_Callback;
 
@@ -91,7 +91,7 @@ namespace YADA.DependencyRuleEngine.Feedback.Recorder
             
             if (m_CurrentDependency != null)
             {
-                currentContext = m_CurrentDependency.Contexts.FirstOrDefault(t => t.Context == context.Visit(m_Context));
+                currentContext = m_CurrentDependency.Contexts.Find(t => t.Context == context.Visit(m_Context));
             }
 
             if(currentContext == null)
@@ -107,7 +107,7 @@ namespace YADA.DependencyRuleEngine.Feedback.Recorder
         {
             if(m_CurrentRule != null) 
             {
-                m_CurrentDependency = m_CurrentRule.Dependencies.FirstOrDefault(t => t.DependencyName == dependency);
+                m_CurrentDependency = m_CurrentRule.Dependencies.Find(t => t.DependencyName == dependency);
             }
 
             if(m_CurrentDependency != null) 
@@ -129,7 +129,7 @@ namespace YADA.DependencyRuleEngine.Feedback.Recorder
             InfoRecording currentInfo = null;
             if(m_CurrentRule != null) 
             {
-                currentInfo = m_CurrentRule.Infos.FirstOrDefault(t => t.Info == msg);
+                currentInfo = m_CurrentRule.Infos.Find(t => t.Info == msg);
             }
             else
             {
@@ -143,7 +143,7 @@ namespace YADA.DependencyRuleEngine.Feedback.Recorder
      
         public IDisposable Type(string type)
         {
-            m_CurrentType = m_Types.FirstOrDefault(t => t.TypeName == type);
+            m_CurrentType = m_Types.Find(t => t.TypeName == type);
             
             if(m_CurrentType == null) 
             {
@@ -162,7 +162,7 @@ namespace YADA.DependencyRuleEngine.Feedback.Recorder
         {
             if(m_CurrentType != null) 
             {
-                m_CurrentRule = m_CurrentType.Rules.FirstOrDefault(t => t.RuleName == rule);
+                m_CurrentRule = m_CurrentType.Rules.Find(t => t.RuleName == rule);
             }
             
             if(m_CurrentRule == null) 

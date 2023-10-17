@@ -16,49 +16,49 @@ namespace YADA.DependencyRuleEngine.Feedback
            return $"Derives from class {name}";
         }
 
-        string IDependencyContextVisitor<string>.FieldDefinition(string name)
+        string IDependencyContextVisitor<string>.FieldDefinition(string fieldName)
         {
-            return $"Defines field {name}";
+            return $"Defines field {fieldName}";
         }
 
-        string IDependencyContextVisitor<string>.MethodBodyAccessedFieldType(string name, string m_FieldName)
+        string IDependencyContextVisitor<string>.MethodBodyAccessedFieldType(string methodName, string fieldName)
         {
-            return $"Method {name} access field {m_FieldName}";
+            return $"Method {methodName} access field {fieldName}";
         }
 
-        string IDependencyContextVisitor<string>.MethodBodyCalledMethodParameter(string name, string m_CalledMethodFullName)
+        string IDependencyContextVisitor<string>.MethodBodyCalledMethodParameter(string methodName, string calledMethodFullName)
         {
-            return $"Method {name} accessed type is parameter at calls method {m_CalledMethodFullName}";
+            return $"Method {methodName} accessed type is parameter at calls method {calledMethodFullName}";
         }
 
-        string IDependencyContextVisitor<string>.MethodBodyCalledMethodReturnType(string name, string m_CalledMethodFullName)
+        string IDependencyContextVisitor<string>.MethodBodyCalledMethodReturnType(string methodName, string calledMethodFullName)
         {
-            return $"Method {name} accessed type is return type of called method {m_CalledMethodFullName}";
+            return $"Method {methodName} accessed type is return type of called method {calledMethodFullName}";
         }
 
-        string IDependencyContextVisitor<string>.MethodBodyCallMethodAtType(string name, string m_CalledMethodFullName)
+        string IDependencyContextVisitor<string>.MethodBodyCallMethodAtType(string methodName, string calledMethodFullName)
         {
-            return $"Method {name} accessed type by calling method {m_CalledMethodFullName}";
+            return $"Method {methodName} accessed type by calling method {calledMethodFullName}";
         }
 
-        string IDependencyContextVisitor<string>.MethodBodyReferencedType(string name)
+        string IDependencyContextVisitor<string>.MethodBodyReferencedType(string methodName)
         {
-            return $"Method {name} references the accessed type";
+            return $"Method {methodName} references the accessed type";
         }
 
-         string IDependencyContextVisitor<string>.MethodDefinitionLocalVariable(string name)
+         string IDependencyContextVisitor<string>.MethodDefinitionLocalVariable(string methodName)
         {
-            return $"Method {name} accessed type is local defined variable";
+            return $"Method {methodName} accessed type is local defined variable";
         }
 
-        string IDependencyContextVisitor<string>.MethodDefinitionParameter(string name)
+        string IDependencyContextVisitor<string>.MethodDefinitionParameter(string methodName)
         {
-            return $"Method {name} accessed type as parameter";
+            return $"Method {methodName} accessed type as parameter";
         }
 
-         string IDependencyContextVisitor<string>.MethodDefinitionReturnType(string name)
+         string IDependencyContextVisitor<string>.MethodDefinitionReturnType(string methodName)
         {
-            return $"Method {name} returns accessed type";
+            return $"Method {methodName} returns accessed type";
         }
     }
 }

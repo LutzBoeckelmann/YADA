@@ -6,7 +6,7 @@ using YADA.Analyzer;
 
 namespace YADA.DependencyRuleEngine.Feedback.Recorder.Recordings
 {
-    internal class DependencyRecording : IRecording
+    internal sealed class DependencyRecording : IRecording
     {
         private readonly IRecording m_Parent;
 

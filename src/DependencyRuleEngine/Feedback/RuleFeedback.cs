@@ -10,9 +10,9 @@ namespace YADA.DependencyRuleEngine.Feedback
         private readonly List<string> m_Infos = new List<string>();
         private readonly Dictionary<string, DependencyFeedback> m_ViolatedDependency = new Dictionary<string, DependencyFeedback>();
 
-        public IRuleFeedback AddInfo(string name)
+        public IRuleFeedback AddInfo(string info)
         {
-            m_Infos.Add(name);
+            m_Infos.Add(info);
             return this;
         }
 
@@ -30,7 +30,10 @@ namespace YADA.DependencyRuleEngine.Feedback
         {
             foreach (var msg in m_Infos)
             {
-                using(visitor.Info(msg)) {}
+                using (visitor.Info(msg))
+                {
+                    ;
+                }
             }
 
             foreach (var dependency in m_ViolatedDependency)
