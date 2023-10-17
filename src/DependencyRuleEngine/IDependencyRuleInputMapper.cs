@@ -11,7 +11,7 @@ namespace YADA.DependencyRuleEngine
     /// </summary>
     /// <typeparam name="T">A adapter for ITypeDescription</typeparam>
     /// <typeparam name="K">A adapter for IDependency</typeparam>
-    public interface IDependencyRuleInputMapper<T, K>
+    public interface IDependencyRuleInputMapper<out T, out K>
     {
         /// <summary>
         /// Creates an adapter for the given dependency

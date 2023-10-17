@@ -8,7 +8,7 @@ using YADA.Analyzer;
 
 namespace YADA.DependencyRuleEngine.Feedback.Recorder.Recordings
 {
-    internal class FeedbackRoot : IRecording
+    internal sealed class FeedbackRoot : IRecording
     {
         private readonly List<IRecording> m_Types = new List<IRecording>();
 

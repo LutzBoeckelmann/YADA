@@ -13,7 +13,7 @@ namespace YADA.Analyzer
     /// </summary>
     public class TypeLoader
     {
-        private class MultipleTypeFilter : ITypeFilter
+        private sealed class MultipleTypeFilter : ITypeFilter
         {
             private readonly IList<ITypeFilter> m_InternalFilters;
 
@@ -109,12 +109,9 @@ namespace YADA.Analyzer
             {
                 foreach (var type in module.GetTypes())
                 {
-                    if (type.FullName != "<Module>")
+                    if (type.FullName != "<Module>" && (filter == null || !filter.IgnoreType(type)))
                     {
-                        if (filter == null || !filter.IgnoreType(type))
-                        {
-                            yield return type;
-                        }
+                        yield return type;
                     }
                 }
             }

@@ -150,5 +150,13 @@ namespace YADA.DependencyRuleEngine.Test
             Assert.That(result, Is.True);
         }
 
+        [Test]
+        public void Equals_BothNull_True()
+        {
+            TestLayer first = null;
+            TestLayer second = null;
+
+            Assert.That(first, Is.EqualTo( second));
+        }
     }
 }

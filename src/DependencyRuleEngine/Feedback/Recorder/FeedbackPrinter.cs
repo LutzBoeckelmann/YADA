@@ -5,7 +5,7 @@ using YADA.DependencyRuleEngine.Feedback.Recorder.Recordings;
 
 namespace YADA.DependencyRuleEngine.Feedback.Recorder
 {
-    internal class FeedbackPrinter 
+    internal static class FeedbackPrinter 
     {
         public static IList<string> Print(List<TypeRecording> types) 
         {

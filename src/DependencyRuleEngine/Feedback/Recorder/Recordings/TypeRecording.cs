@@ -6,7 +6,7 @@ using YADA.Analyzer;
 
 namespace YADA.DependencyRuleEngine.Feedback.Recorder.Recordings
 {
-    internal class TypeRecording : IRecording
+    internal sealed class TypeRecording : IRecording
     {
         private readonly IRecording m_Parent;
         private RuleRecording m_Current;
@@ -23,9 +23,9 @@ namespace YADA.DependencyRuleEngine.Feedback.Recorder.Recordings
         public IDependencyContextVisitor<string> ContextVisitor => m_Parent.ContextVisitor;
         public bool ReadMode => m_Parent.ReadMode;
 
-        public void Closed(IRecording typeRecording)
+        public void Closed(IRecording current)
         {
-            if(typeRecording != m_Current || m_Current == null) 
+            if(current != m_Current || m_Current == null) 
             {
                 throw new NotSupportedException();
             }

@@ -1,14 +1,13 @@
 // Copyright (c) Lutz Boeckelmann and Contributors. MIT License - see LICENSE.txt
 
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace YADA.DependencyRuleEngine.Feedback
 {
     public class FeedbackCollector : IFeedbackCollector
     {
         private readonly IDictionary<string, TypeFeedback> m_Feedbacks = new Dictionary<string, TypeFeedback>();
+       
         public ITypeFeedback AddFeedbackForType(string type)
         {
             if (!m_Feedbacks.ContainsKey(type))
@@ -19,13 +18,13 @@ namespace YADA.DependencyRuleEngine.Feedback
             return m_Feedbacks[type];
         }
 
-        public void Explore(IFeedbackVisitor collector) 
+        public void Explore(IFeedbackVisitor visitor) 
         {
             foreach(var pair in m_Feedbacks) 
             {
-                using (collector.Type(pair.Key))
+                using (visitor.Type(pair.Key))
                 {
-                    pair.Value.Explore(collector);
+                    pair.Value.Explore(visitor);
                 }
             }
         }

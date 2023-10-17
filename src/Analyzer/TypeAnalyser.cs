@@ -26,7 +26,7 @@ namespace YADA.Analyzer
         {
             if(m_TypeFilter != null && m_TypeFilter.IgnoreType(typeDefinition))
             {
-                throw new ArgumentException(nameof(typeDefinition), "Do not analyze ignored types");
+                throw new ArgumentException("Do not analyze ignored types", nameof(typeDefinition));
             }
 
             var result = new TypeDescription(typeDefinition.FullName, typeDefinition.Module.Assembly.FullName);

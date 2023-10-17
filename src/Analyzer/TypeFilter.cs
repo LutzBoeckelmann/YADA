@@ -39,7 +39,7 @@ namespace YADA.Analyzer
 
         public RegExMatcher(string regex, bool ignoreAlsoAsDependencies) 
         {
-            m_RegEx = new Regex(regex, RegexOptions.Compiled);
+            m_RegEx = new Regex(regex, RegexOptions.Compiled, System.TimeSpan.FromMilliseconds(100));
             m_IgnoreAlsoAsDependencies = ignoreAlsoAsDependencies;
         }
         public bool IgnoreType(TypeDefinition type)

@@ -8,7 +8,7 @@ namespace YADA.DependencyRuleEngine.Rules
     public abstract class AbstractBaseTypeRule<T,K> : ITypeRule<ITypeDescription>
     {
         private readonly IDependencyRuleInputMapper<T, K> m_Mapper;
-        public AbstractBaseTypeRule(IDependencyRuleInputMapper<T, K> mapper)
+        protected AbstractBaseTypeRule(IDependencyRuleInputMapper<T, K> mapper)
         {
             m_Mapper = mapper;
         }

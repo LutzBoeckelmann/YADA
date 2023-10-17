@@ -6,12 +6,12 @@ namespace YADA.DependencyRuleEngine.Rules
 {
     /// <summary>
     /// A dependency rule checks a specific dependency of a type. So any dependency rule will be called for any dependency of any type to
-    /// be analysed. This kind of rules can be used accept or reject the dependency between types. Also dependencies to types may be ignored 
+    /// be analyzed. This kind of rules can be used accept or reject the dependency between types. Also dependencies to types may be ignored 
     /// or can be skipped. In opposite of ignore, skip does suppress further processing of the dependency.
     /// </summary>
-    /// <typeparam name="T">Generic parameter decribing the Type, the engine maps ITypeDescription to T</typeparam>
-    /// <typeparam name="K">Generic parameter decribing the Dependency of a type, the engine maps IDependencyDescription to K</typeparam>
-    public interface IDependencyRule<T, K>
+    /// <typeparam name="T">Generic parameter describing the Type, the engine maps ITypeDescription to T</typeparam>
+    /// <typeparam name="K">Generic parameter describing the Dependency of a type, the engine maps IDependencyDescription to K</typeparam>
+    public interface IDependencyRule<in T, in K>
     {
         /// <summary>
         /// Apply the rule at the given dependency of the given type.

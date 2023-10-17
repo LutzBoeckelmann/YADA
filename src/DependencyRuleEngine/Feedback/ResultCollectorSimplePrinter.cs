@@ -13,7 +13,7 @@ namespace YADA.DependencyRuleEngine.Feedback
     /// </summary>
     public class ResultCollectorSimplePrinter : IFeedbackVisitor
     {
-        private class Disposable : IDisposable
+        private sealed class Disposable : IDisposable
         {
             public void Dispose()
             {
@@ -52,9 +52,9 @@ namespace YADA.DependencyRuleEngine.Feedback
             return new Disposable();
         }
 
-        public IDisposable ViolatedRule(string key)
+        public IDisposable ViolatedRule(string rule)
         {
-            m_Result.Add($"  ViolatesRule: {key}");
+            m_Result.Add($"  ViolatesRule: {rule}");
             return new Disposable();
         }
 
