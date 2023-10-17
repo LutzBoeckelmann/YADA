@@ -30,10 +30,7 @@ namespace YADA.DependencyRuleEngine.Feedback
         {
             foreach (var msg in m_Infos)
             {
-                using (visitor.Info(msg))
-                {
-                    ;
-                }
+                visitor.Info(msg).Dispose();
             }
 
             foreach (var dependency in m_ViolatedDependency)

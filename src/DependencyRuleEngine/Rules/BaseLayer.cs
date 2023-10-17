@@ -93,14 +93,19 @@ namespace Core.DependencyRuleEngine.Rules
             {
                 return true;
             }
-
-            if(first is null && !(second is null))
+            
+            if (first is null && !(second is null))
             {
                 return false;
             }
             if(!(first is null) && second is null)
             {
                 return false;
+            }
+
+            if (first is null && second is null)
+            {
+                return true;
             }
 
             return first.m_Layer == second.m_Layer;

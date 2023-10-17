@@ -18,7 +18,7 @@ namespace YADA.DependencyRuleEngine.Feedback
         {
             foreach (var context in m_Contexted)
             {
-                using (visitor.Context(context)) { ; }
+                visitor.Context(context).Dispose();
             }
         }
     }
