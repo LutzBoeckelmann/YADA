@@ -20,7 +20,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       - run: |
-        dotnet sonarscanner begin /k:"LutzBoeckelmann_YADA" /d:sonar.token="Analyze "b351b8ecaff27aa69decc0a6035722b42f377dbd" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
+        dotnet sonarscanner begin /k:"LutzBoeckelmann_YADA" /d:sonar.token="Analyze "CoverageToken" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
         dotnet build YADA.sln --no-incremental
         dotnet-coverage collect "dotnet test  YADA.sln" -f xml -o "coverage.xml"
-        dotnet sonarscanner end /d:sonar.token="Analyze "b351b8ecaff27aa69decc0a6035722b42f377dbd"
+        dotnet sonarscanner end /d:sonar.token="Analyze "CoverageToken"
