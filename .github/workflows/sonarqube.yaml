@@ -1,0 +1,26 @@
+name: CodeCoverage and Static Code Analyses
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    types: [opened, synchronize, reopened]
+jobs:
+  sonarcloud:
+    name: SonarCloud
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env: -Dsonar.projectKey=LutzBoeckelmann_YADA
+            -Dsonar.organization=lutz-boeckelmann
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - run: |
+        dotnet sonarscanner begin /k:"LutzBoeckelmann_YADA" /d:sonar.token="Analyze "b351b8ecaff27aa69decc0a6035722b42f377dbd" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
+        dotnet build YADA.sln --no-incremental
+        dotnet-coverage collect "dotnet test  YADA.sln" -f xml -o "coverage.xml"
+        dotnet sonarscanner end /d:sonar.token="Analyze "b351b8ecaff27aa69decc0a6035722b42f377dbd"
