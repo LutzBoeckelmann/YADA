@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using Mono.Cecil;
 
 namespace YADA.Analyzer
@@ -24,7 +25,7 @@ namespace YADA.Analyzer
 
             public bool IgnoreType(TypeDefinition type)
             {
-                return m_InternalFilters.Any(f=>f.IgnoreType(type));
+                return m_InternalFilters.Any(f => f.IgnoreType(type));
             }
 
             public bool IgnoreTypeAsDependency(TypeDefinition type)
@@ -39,38 +40,76 @@ namespace YADA.Analyzer
 
         /// <summary>
         /// Constructs a TypeLoader. 
+        /// 
+        /// The constructor determines all IgnoreAttributes from the StackTrace.
+        /// The method uses the diagnostic service which may not be available
+        /// in any builds. In doubt collect the attributes directly and provide
+        /// them as parameter.
         /// </summary>
         /// <param name="locations">Locations of the assemblies which should be analyzed</param>
-        public TypeLoader(IEnumerable<string> locations)
+        public TypeLoader(IEnumerable<string> locations) : this(locations, GetIgnoreAttributes()) { }
+
+        /// <summary>
+        /// Constructs a TypeLoader
+        /// 
+        /// Load the IgnoreAttributes from the given methods (The methods are the test methods creating
+        /// this TypeLoader carrying the IngoreTypeAttributes.         
+        /// </summary>
+        /// <param name="locations">Locations of the assemblies which should be analyzed</param>
+        /// <param name="callStack"></param>
+        public TypeLoader(IEnumerable<string> locations, IReadOnlyCollection<MethodBase> callStack) : this(locations, GetIgnoreAttributes(callStack)) 
+        { }
+        
+        private TypeLoader(IEnumerable<string> locations, IReadOnlyCollection<IgnoreTypeAttribute> ignoreAttributes)
         {
-            m_TypeFilter = new MultipleTypeFilter(ReadIgnoreAttributes());
+            m_TypeFilter = new MultipleTypeFilter(ReadIgnoreAttributes(ignoreAttributes));
 
             m_AssemblyLocations = locations.ToList();
             m_TypeAnalyser = new TypeAnalyser(m_TypeFilter);
         }
 
-        private IEnumerable<ITypeFilter> ReadIgnoreAttributes()
+        /// <summary>
+        /// This method determines all IgnoreAttributes from the StackTrace.
+        /// The method uses the diagnostic service which may not be available
+        /// in any builds. In doubt collect the attributes directly and provide
+        /// them as parameter.
+        /// </summary>
+        /// <returns></returns>
+        private static IReadOnlyCollection<IgnoreTypeAttribute> GetIgnoreAttributes()
+        {
+            return GetIgnoreAttributes(new StackTrace().GetFrames().Select(f => f.GetMethod()).ToArray());
+        }
+
+        private static IReadOnlyCollection<IgnoreTypeAttribute> GetIgnoreAttributes(IReadOnlyCollection<MethodBase> callStack)
+        {
+            List<IgnoreTypeAttribute> result = new List<IgnoreTypeAttribute>();
+            foreach (var method in callStack)
+            {
+                result.AddRange(method.GetCustomAttributes(typeof(IgnoreTypeAttribute), true)?.Cast<IgnoreTypeAttribute>());
+            }
+
+            return result;
+        }
+
+        private static IReadOnlyCollection<ITypeFilter> ReadIgnoreAttributes(IEnumerable<IgnoreTypeAttribute> list)
         {
             var result = new List<ITypeFilter>();
-            foreach (var method in new StackTrace().GetFrames())
+
+            if (list != null)
             {
-                var list = method.GetMethod().GetCustomAttributes(typeof(IgnoreTypeAttribute), true)?.Cast<IgnoreTypeAttribute>().ToArray();
-                    
-                if (list != null)
+                foreach (var ignoreAttribute in list)
                 {
-                    foreach (var ignoreAttribute in list)
+                    if (ignoreAttribute.PatternType == IgnorePatternType.Glob)
                     {
-                        if (ignoreAttribute.PatternType == IgnorePatternType.Glob) 
-                        {
-                            result.Add(new GlobTypeFilter(ignoreAttribute.Pattern, ignoreAttribute.IgnoreTypeAsDependency)); 
-                        }
-                        else if(ignoreAttribute.PatternType == IgnorePatternType.Regex)
-                        {
-                            result.Add(new RegExMatcher(ignoreAttribute.Pattern, ignoreAttribute.IgnoreTypeAsDependency));
-                        }
+                        result.Add(new GlobTypeFilter(ignoreAttribute.Pattern, ignoreAttribute.IgnoreTypeAsDependency));
+                    }
+                    else if (ignoreAttribute.PatternType == IgnorePatternType.Regex)
+                    {
+                        result.Add(new RegExMatcher(ignoreAttribute.Pattern, ignoreAttribute.IgnoreTypeAsDependency));
                     }
                 }
             }
+
             return result;
         }
 
