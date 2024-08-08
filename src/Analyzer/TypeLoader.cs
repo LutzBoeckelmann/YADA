@@ -23,14 +23,14 @@ namespace YADA.Analyzer
                 m_InternalFilters = internalFilters.ToList();
             }
 
-            public bool IgnoreType(TypeDefinition type)
+            public bool IgnoreType(string typeFullname)
             {
-                return m_InternalFilters.Any(f => f.IgnoreType(type));
+                return m_InternalFilters.Any(f => f.IgnoreType(typeFullname));
             }
 
-            public bool IgnoreTypeAsDependency(TypeDefinition type)
+            public bool IgnoreTypeAsDependency(string typeFullname)
             {
-                return m_InternalFilters.Any(f => f.IgnoreTypeAsDependency(type));
+                return m_InternalFilters.Any(f => f.IgnoreTypeAsDependency(typeFullname));
             }
         }
         private readonly TypeAnalyser m_TypeAnalyser;
@@ -148,7 +148,7 @@ namespace YADA.Analyzer
             {
                 foreach (var type in module.GetTypes())
                 {
-                    if (type.FullName != "<Module>" && (filter == null || !filter.IgnoreType(type)))
+                    if (type.FullName != "<Module>" && (filter == null || !filter.IgnoreType(type.FullName)))
                     {
                         yield return type;
                     }

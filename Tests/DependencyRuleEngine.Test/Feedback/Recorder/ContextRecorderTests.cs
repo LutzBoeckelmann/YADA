@@ -21,15 +21,15 @@ namespace YADA.DependencyRuleEngine.Test.Feedback.Recorder
         public void BaseClassDefinition() 
         {
             var input = "BaseClass";
-            var result = m_Sut.BaseClassDefinition(input);
+            var result = m_Sut.BaseClassDefinition();
 
-            Assert.That(result, Is.EqualTo($"{nameof(ContextRecorder.BaseClassDefinition)}_{input}"));
+            Assert.That(result, Is.EqualTo($"{nameof(ContextRecorder.BaseClassDefinition)}"));
         }
 
         [Test]
         public void FieldDefinition()
         {
-            var input = "FiedName";
+            var input = "FieldName";
 
             var result = m_Sut.FieldDefinition(input);
 

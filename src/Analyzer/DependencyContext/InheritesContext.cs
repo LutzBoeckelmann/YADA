@@ -4,15 +4,15 @@ namespace YADA.Analyzer
 {
     internal class InheritesContext : DependencyContextBase
     {
-        public InheritesContext(string dependencyName) : base(dependencyName) { }
+        public InheritesContext() : base("") { }
         public override void Visit(IDependencyContextVisitor visitor)
         {
-            visitor.BaseClassDefinition(Name);
+            visitor.BaseClassDefinition();
         }
 
         public override T Visit<T>(IDependencyContextVisitor<T> visitor) 
         {
-            return visitor.BaseClassDefinition(Name);
+            return visitor.BaseClassDefinition();
         }
     }
 }
