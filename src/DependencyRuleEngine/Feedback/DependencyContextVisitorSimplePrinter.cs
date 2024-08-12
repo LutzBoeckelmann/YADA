@@ -1,5 +1,6 @@
 // Copyright (c) Lutz Boeckelmann and Contributors. MIT License - see LICENSE.txt
 
+using System.Net.Http.Headers;
 using YADA.Analyzer;
 
 namespace YADA.DependencyRuleEngine.Feedback
@@ -11,9 +12,9 @@ namespace YADA.DependencyRuleEngine.Feedback
     /// </summary>
     public class GenericDependencyContextVisitorSimplePrinter : IDependencyContextVisitor<string>
     {
-        string IDependencyContextVisitor<string>.BaseClassDefinition(string name)
+        string IDependencyContextVisitor<string>.BaseClassDefinition()
         {
-           return $"Derives from class {name}";
+           return $"Derives from dependency";
         }
 
         string IDependencyContextVisitor<string>.FieldDefinition(string fieldName)
@@ -24,6 +25,21 @@ namespace YADA.DependencyRuleEngine.Feedback
         string IDependencyContextVisitor<string>.MethodBodyAccessedFieldType(string methodName, string fieldName)
         {
             return $"Method {methodName} access field {fieldName}";
+        }
+
+        public string ClassAttributeContext()
+        {
+            return "Uses the dependency as class Attribute";
+        }
+
+        public string MethodAttributeContext(string methodName)
+        {
+            return $"The dependency is used as an attribute at the method {methodName}";
+        }
+
+        public string FieldAttribute(string fieldAttributeName)
+        {
+            return $"The dependency is used as an attribute at the field  or property {fieldAttributeName}";
         }
 
         string IDependencyContextVisitor<string>.MethodBodyCalledMethodParameter(string methodName, string calledMethodFullName)

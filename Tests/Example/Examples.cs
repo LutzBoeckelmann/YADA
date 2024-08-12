@@ -165,5 +165,117 @@ namespace Example
             Console.WriteLine(StaticProvider2.StaticReference);
         }
     }
-    #pragma warning restore CS0169
+  
+    public class DependencyAttribute : Attribute { }
+
+
+    public enum EnumDependency
+    {
+        [Dependency]
+        Value1,
+        Value2
+    }
+    public class ClassWithEnumDependency
+    {
+        public EnumDependency EnumDependency { get; set; }
+        private void Test(EnumDependency enumDependency) { }
+    }
+
+    [Dependency]
+    public class ClassWithAttributeDependency
+    {
+
+    }
+
+    public class ClassWithAttributeDependencyAtConstructor
+    {
+        [Dependency]
+        public ClassWithAttributeDependencyAtConstructor([Dependency] string test) { }
+    }
+
+
+    public class ClassWithMethodAttributeDependency
+    {
+        [Dependency]
+        public void MethodWithAttributeDependency([Dependency] string test) { }
+    }
+
+    public class ClassWithPropertyAttributeDependency
+    {
+
+        public bool  MethodWithAttributeDependency { [Dependency] get; [Dependency] set; }
+    }
+
+    public class ClassWithSimplePropertyAttributeDependency
+    {
+        [Dependency]
+        public bool MethodWithAttributeDependency { get; set; }
+    }
+
+    public class ClassWithSimplePropertyDependency
+    {
+        public bool MethodWithAttributeDependency { get; set; }
+    }
+
+    public class ClassWithFieldAttributeDependency
+    {
+        [Dependency]
+        private string m_FieldWithAttributeDependency;
+    }
+
+    [Dependency]
+    public interface IInterfaceWithAttributeDependency
+    {
+
+        void MethodWithAttributeDependency();
+    }
+
+    public  class  ClassWithMethodAttributeDependency2
+    {
+        [return: Dependency]
+        public  void MethodWithAttributeDependency()
+        {
+           
+        }
+    }
+
+    public class ClassWithMethodAttributeDependency3
+    {
+        
+        public void MethodWithAttributeDependency([Dependency]int parameter1, [Dependency]string parameter2)
+        {
+        }
+    }
+
+    public class ClassWithAttributeDependencyAtEvent
+    {
+        [Dependency]
+        public event EventHandler EventWithAttributeDependency;
+    }
+
+    public class ClassWithAttributeDependencyAtDelegate
+    {
+        [Dependency]
+        public delegate MyEventHandler MyEventHandler(object sender, EventArgs e);
+    }
+
+    public delegate void MyEventHandler(object sender, EventArgs e);
+
+    public class ClassWithDelegateDependencyAtEvent
+    {
+        
+        public event MyEventHandler MyEventHandler;
+    }
+
+    public class ClassWithNestedClass
+    {
+        public class NestedClass
+        {
+            
+        }   
+    }
+
+
+
+#pragma warning restore CS0169
 }

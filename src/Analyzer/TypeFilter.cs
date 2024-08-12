@@ -1,14 +1,13 @@
 ﻿// Copyright (c) Lutz Boeckelmann and Contributors. MIT License - see LICENSE.txt
 
 using System.Text.RegularExpressions;
-using Mono.Cecil;
 
 namespace YADA.Analyzer
 {
     internal interface ITypeFilter
     {
-        bool IgnoreType(TypeDefinition type);
-        bool IgnoreTypeAsDependency(TypeDefinition type);
+        bool IgnoreType(string type);
+        bool IgnoreTypeAsDependency(string typeFullName);
     }
 
     internal class GlobTypeFilter : ITypeFilter
@@ -20,14 +19,14 @@ namespace YADA.Analyzer
             m_Matcher = new GlobPatternMatcher(globPattern);
             m_IgnoreAlsoAsDependencies = ignoreAlsoAsDependencies;
         }
-        public bool IgnoreType(TypeDefinition type)
+        public bool IgnoreType(string typeFullName)
         {
-            return m_Matcher.IsMatch(type.FullName);
+            return m_Matcher.IsMatch(typeFullName);
         }
 
-        public bool IgnoreTypeAsDependency(TypeDefinition type)
+        public bool IgnoreTypeAsDependency(string typeFullName)
         {
-            return m_IgnoreAlsoAsDependencies && m_Matcher.IsMatch(type.FullName);
+            return m_IgnoreAlsoAsDependencies && m_Matcher.IsMatch(typeFullName);
         }
     }
 
@@ -42,14 +41,14 @@ namespace YADA.Analyzer
             m_RegEx = new Regex(regex, RegexOptions.Compiled, System.TimeSpan.FromMilliseconds(100));
             m_IgnoreAlsoAsDependencies = ignoreAlsoAsDependencies;
         }
-        public bool IgnoreType(TypeDefinition type)
+        public bool IgnoreType(string typeFullName)
         {
-            return m_RegEx.IsMatch(type.FullName);
+            return m_RegEx.IsMatch(typeFullName);
         }
 
-        public bool IgnoreTypeAsDependency(TypeDefinition type)
+        public bool IgnoreTypeAsDependency(string typeFullName)
         {
-            return m_IgnoreAlsoAsDependencies && m_RegEx.IsMatch(type.FullName);
+            return m_IgnoreAlsoAsDependencies && m_RegEx.IsMatch(typeFullName);
         }
     }
 }

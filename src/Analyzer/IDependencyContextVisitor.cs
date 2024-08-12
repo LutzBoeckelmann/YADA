@@ -17,8 +17,7 @@ namespace YADA.Analyzer
         /// <summary>
         /// The dependency was introduced as base class or implemented interface.
         /// </summary>
-        /// <param name="name">Name of the base class or interface</param>
-        void BaseClassDefinition(string name);
+        void BaseClassDefinition();
         
         /// <summary>
         /// The dependency was introduced as type of a methods parameter
@@ -71,6 +70,23 @@ namespace YADA.Analyzer
         /// <param name="methodName">Name of the method</param>
         /// <param name="fieldName">Name of the field</param>
         void MethodBodyAccessedFieldType(string methodName, string fieldName);
+
+        /// <summary>
+        /// The dependency was introduced because the class has a specific attribute.
+        /// </summary>
+        void ClassAttributeContext();
+
+        /// <summary>
+        /// The dependency was introduced because the method has a specific attribute.
+        /// </summary>
+        /// <param name="methodName">Name of the method</param>
+        void MethodAttributeContext(string methodName);
+
+        /// <summary>
+        /// The dependency was introduced because the field has a specific attribute.
+        /// </summary>
+        /// <param name="name"></param>
+        void FieldAttribute(string name);
     }
     
     /// <summary>
@@ -89,8 +105,7 @@ namespace YADA.Analyzer
         /// <summary>
         /// The dependency was introduced as base class or implemented interface.
         /// </summary>
-        /// <param name="name">Name of the base class or interface</param>
-        T BaseClassDefinition(string name);
+        T BaseClassDefinition();
         
         /// <summary>
         /// The dependency was introduced as type of a methods parameter
@@ -143,6 +158,23 @@ namespace YADA.Analyzer
         /// <param name="methodName">Name of the method</param>
         /// <param name="fieldName">Name of the field</param>
         T MethodBodyAccessedFieldType(string methodName, string fieldName);
+
+        /// <summary>
+        /// The dependency was introduced because the class has a specific attribute.
+        /// </summary>
+        T ClassAttributeContext();
+        
+        /// <summary>
+        /// The dependency was introduced because the method has a specific attribute.
+        /// </summary>
+        /// <param name="methodName">Name of the method</param>
+        T MethodAttributeContext(string methodName);
+
+        /// <summary>
+        /// The dependency was introduced because the field has a specific attribute.
+        /// </summary>
+        /// <param name="fieldAttributeName">Name of the Field</param>
+        T FieldAttribute(string fieldAttributeName);
     }
 
 }

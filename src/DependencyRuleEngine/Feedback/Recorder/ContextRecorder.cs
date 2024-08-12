@@ -6,9 +6,9 @@ namespace YADA.DependencyRuleEngine.Feedback.Recorder
 {
     public class ContextRecorder : IDependencyContextVisitor<string>
     {
-        public string BaseClassDefinition(string name)
+        public string BaseClassDefinition()
         {
-            return $"{nameof(BaseClassDefinition)}_{name}";
+            return $"{nameof(BaseClassDefinition)}";
         }
 
         public string FieldDefinition(string fieldName)
@@ -19,6 +19,21 @@ namespace YADA.DependencyRuleEngine.Feedback.Recorder
         public string MethodBodyAccessedFieldType(string methodName, string fieldName)
         {
             return $"{nameof(MethodBodyAccessedFieldType)}_{methodName}_{fieldName}";
+        }
+
+        public string ClassAttributeContext()
+        {
+            return $"{nameof(ClassAttributeContext)}";
+        }
+
+        public string MethodAttributeContext(string methodName)
+        {
+            return $"{nameof(MethodAttributeContext)}_{methodName}";
+        }
+
+        public string FieldAttribute(string fieldAttributeName)
+        {
+            return $"{nameof(FieldAttribute)}_{fieldAttributeName}";
         }
 
         public string MethodBodyCalledMethodParameter(string methodName, string calledMethodFullName)
