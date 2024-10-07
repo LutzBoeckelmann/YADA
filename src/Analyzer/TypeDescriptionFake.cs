@@ -33,5 +33,9 @@ namespace YADA.Analyzer
         {
             m_Dependencies.Add(new DependencyFake(dependency, occurrence));
         }
+        public override string ToString()
+        {
+            return FullName;
+        }
     }
 }
