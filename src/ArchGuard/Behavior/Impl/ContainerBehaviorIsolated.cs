@@ -8,6 +8,7 @@ namespace YADA.ArchGuard.Behavior.Impl
 {
     class ContainerBehaviorIsolated : IInternalContainerBehavior
     {
+        public string AsString => "Restricted";
 
         public bool Check(IReadOnlyList<IBuildingBlock> chain, int currentIndex, IBuildingBlock buildingBlock, ICheckFeedback feedback)
         {

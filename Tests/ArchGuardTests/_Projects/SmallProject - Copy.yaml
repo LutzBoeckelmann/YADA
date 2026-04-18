@@ -1,0 +1,55 @@
+name: root
+filter:
+- .*
+behavior:
+  internal:
+  - Public
+  container:
+  - Layer
+children:
+- name: Extension
+  filter:
+  - .*Ext.*
+  behavior:
+    internal:
+    - Public
+    container:
+    - Open
+  children:
+  - name: SubsystemB
+    filter:
+    - .*Ext.*SubsystemB.*
+    behavior:
+      internal:
+      - Public
+      container:
+      - Open
+    children: 
+  - name : SubsystemA_Extension
+    filter:
+    - .*Ext.*SubsystemAExt.*
+    behavior:
+        internal:
+        - Public
+        container:
+        - Open
+    children:
+
+- name: Core
+  filter:
+  - .*Core.*
+  behavior:
+    internal:
+    - Public
+    container:
+    - Layer
+  children:
+  - name: SubsystemAInternal
+    filter:
+    - .*Subsystem.*
+    behavior:
+      internal:
+      - Private
+      container:
+      - Open
+    children: 

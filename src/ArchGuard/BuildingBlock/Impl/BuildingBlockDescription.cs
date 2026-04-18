@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Lutz Boeckelmann and Contributors. MIT License - see LICENSE.txt
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using YADA.Analyzer;
@@ -15,11 +16,14 @@ namespace YADA.ArchGuard.BuildingBlock
     public interface IBuildingBlockTypeFilter
     {
         bool Match(Analyzer.ITypeDescription typeDefintion);
+
+        string[] AsString { get; }
     }
 
     public class BuildingBlockTypeFilter : IBuildingBlockTypeFilter
     {
         private ILogicalExpression m_Matcher;
+        private string[] m_AsString; 
 
         public BuildingBlockTypeFilter(string filter) : this(new List<string>() { filter }) { }
 
@@ -27,7 +31,10 @@ namespace YADA.ArchGuard.BuildingBlock
         {
             var parser = new ShiftReduceParser();
             m_Matcher = parser.ParseLogicalExpression(filters.ToList());
+            m_AsString = filters.ToArray();
         }
+
+        public string[] AsString => m_AsString;
 
         /// <summary>
         /// not and or regex
@@ -39,14 +46,18 @@ namespace YADA.ArchGuard.BuildingBlock
             return m_Matcher.Evaluate(typeDefintion);
         }
     }
-
+    /*
+     BuildingBlockDescription
+        name:
+        filter:
+     */
     public class BuildingBlockDescription : IBuildingBlockDescription
     {
-        public BuildingBlockDescription(string name, IBuildingBlockTypeFilter filter, bool isAbstract)
+        public BuildingBlockDescription(string name, IBuildingBlockTypeFilter filter/*, bool isAbstract*/)
         {
             Name = name;
             TypeFilter = filter;
-            Abstract = isAbstract;
+            //Abstract = isAbstract;
         }
 
         public string Name { get; }
@@ -56,6 +67,7 @@ namespace YADA.ArchGuard.BuildingBlock
         /// 
         /// For example a layer box may not contain a type directly any type needs to be part of a child layer.
         /// </summary>
+        [Obsolete("Not any longer supported. Any buildingblock with children is abstract")]
         public bool Abstract { get; }
 
         public IBuildingBlockTypeFilter TypeFilter { get; }

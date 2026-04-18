@@ -2,14 +2,18 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using YADA.ArchGuard.BuildingBlock;
 using YADA.ArchGuard.Feedback;
 
 namespace YADA.ArchGuard.Behavior.Impl
 {
+
     public class ContainerBehavior : IContainerBehavior
     {
         List<IInternalContainerBehavior> m_List = new List<IInternalContainerBehavior>();
+
+        public List<string> AsString => m_List.Select(l => l.AsString).ToList();
 
         // questionable if we really need more than one
         public void AddBehavior(string behavior)

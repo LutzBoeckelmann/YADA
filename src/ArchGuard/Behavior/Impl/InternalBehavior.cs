@@ -1,16 +1,21 @@
 ﻿// Copyright (c) Lutz Boeckelmann and Contributors. MIT License - see LICENSE.txt
 
 using System.Collections.Generic;
+using System.Linq;
 using YADA.ArchGuard.BuildingBlock;
 using YADA.ArchGuard.Feedback;
 
 namespace YADA.ArchGuard.Behavior.Impl
 {
+    public class Traits
+    {
+
+    }
 
     public class InternalBehavior : IInternalBehavior
     {
         List<IInternalChildBehaviorType> m_List = new List<IInternalChildBehaviorType>();
-
+        public List<string> AsString => m_List.Select(i=>i.AsString).ToList();
         public void AddBehavior(string behavior)
         {
             IInternalChildBehaviorType internalBehavior = null;

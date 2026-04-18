@@ -19,8 +19,30 @@ namespace YADA.ArchGuard.Behavior.Impl
         }
     }
 
+    public class BuildingBlockBehaviorData
+    {
+        public string ContainerBehavior { get; set; }
+        public string InternalBehavior { get; set; }
+    }
+
     public class BuildingBlockBehavior : IBuildingBlockBehavior
     {
+        public static BuildingBlockBehavior Create(BuildingBlockBehaviorData data)
+        {
+            var containerBehavior  = data.ContainerBehavior;
+            if(string.IsNullOrEmpty(containerBehavior))
+            {
+                containerBehavior = "Open";
+            }
+           
+            var internalBehavior = data.InternalBehavior;
+            if (string.IsNullOrEmpty(internalBehavior))
+            {
+                internalBehavior = "Public";
+            }
+            return new BuildingBlockBehavior(data.ContainerBehavior.Split(','), data.InternalBehavior.Split(','));
+        }
+
         public BuildingBlockBehavior() :this(new string[] { "Open" }, new string[] { "Public" })
         {
 

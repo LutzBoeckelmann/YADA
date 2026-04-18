@@ -1,0 +1,37 @@
+name: project
+filter:
+- .*(Domain|Core).*
+behavior:
+  internal:
+  - Layer
+  container:
+  - Public
+children:
+- name: DomainLayer
+  filter:
+  - .*Domain.*
+  behavior:
+    internal:
+    - Restricted
+    container:
+    - Public
+  children:
+  - name: Domain1
+    filter:
+    - .*Domain.DomainSubsystem.*
+    behavior:
+      internal:
+      - Public
+      container:
+      - Open
+    children: []
+  - name: ExtCore1
+    filter:
+    - .*Domain.SubsystemA.*
+    behavior:
+      internal:
+      - Public
+      container:
+      - Open
+      - Extension
+    children: []

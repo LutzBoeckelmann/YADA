@@ -32,8 +32,11 @@ namespace YADA.ArchGuard.Behavior
 
     ## Facade
 
-    only access to a specific child, is this doable with public/private child behavior?
+    only access to a specific child, is this double with public/private child behavior?
     all other is restricted.
+
+
+
 
     # Child behavior
 
@@ -104,6 +107,8 @@ namespace YADA.ArchGuard.Behavior
     {
         void AddBehavior(string containerBehavior);
         bool Check(IReadOnlyList<IBuildingBlock> chain, int currentIndex, IBuildingBlock buildingBlock, ICheckFeedback feedback);
+
+        List<string> AsString { get; }
     }
 }
 

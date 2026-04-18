@@ -8,7 +8,7 @@ namespace YADA.ArchGuard.Behavior.Impl
 {
     class ContainerBehaviorLayer : IInternalContainerBehavior
     {
-
+        public string AsString => "Layer";
         public bool Check(IReadOnlyList<IBuildingBlock> chain, int currentIndex, IBuildingBlock buildingBlock, ICheckFeedback feedback)
         {
             if (currentIndex > 0 && currentIndex + 1 < chain.Count && chain[currentIndex - 1].Parent == buildingBlock && chain[currentIndex + 1].Parent == buildingBlock)

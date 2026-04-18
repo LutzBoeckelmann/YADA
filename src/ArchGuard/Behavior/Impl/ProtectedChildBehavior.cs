@@ -10,6 +10,8 @@ namespace YADA.ArchGuard.Behavior.Impl
 {
     class ProtectedChildBehavior : IInternalChildBehaviorType
     {
+        public string AsString => "Protected";
+
         public bool Check(IReadOnlyList<IBuildingBlock> chain, int currentIndex, ICheckFeedback feedback)
         {
             feedback.AddFeedback(FeedbackType.Warning, "ProtectedBehavior not implemented");

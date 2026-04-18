@@ -8,6 +8,8 @@ namespace YADA.ArchGuard.Behavior.Impl
 {
     class PublicChildBehavior : IInternalChildBehaviorType
     {
+        public string AsString => "Public";
+
         public bool Check(IReadOnlyList<IBuildingBlock> chain, int currentIndex, ICheckFeedback feedback)
         {
             return true;

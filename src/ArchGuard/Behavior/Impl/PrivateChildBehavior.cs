@@ -9,6 +9,8 @@ namespace YADA.ArchGuard.Behavior.Impl
 {
     class PrivateChildBehavior : IInternalChildBehaviorType
     {
+        public string AsString => "Private";
+
         public bool Check(IReadOnlyList<IBuildingBlock> chain, int currentIndex, ICheckFeedback feedback)
         {
             if (currentIndex <= 1)

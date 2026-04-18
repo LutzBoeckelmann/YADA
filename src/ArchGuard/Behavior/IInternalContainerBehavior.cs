@@ -9,6 +9,8 @@ namespace YADA.ArchGuard.Behavior.Impl
     interface IInternalContainerBehavior
     {
         bool Check(IReadOnlyList<IBuildingBlock> chain, int currentIndex, IBuildingBlock buildingBlock, ICheckFeedback feedback);
+
+        string AsString { get; }
     }
 }
 

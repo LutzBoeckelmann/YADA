@@ -33,6 +33,8 @@ namespace YADA.ArchGuard.Behavior
     {
         void AddBehavior(string childBehavior);
         bool Check(IReadOnlyList<IBuildingBlock> chain, int currentIndex, ICheckFeedback feedback);
+
+        List<string> AsString { get; }
     }
 }
 

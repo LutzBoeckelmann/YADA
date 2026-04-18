@@ -1,0 +1,45 @@
+name: root
+filter:
+- .*(Domain|Core).*
+behavior:
+  internal:
+  - Public
+  container:
+  - Layer
+children:
+- name: DomainLayer
+  filter:
+  - .*Domain.*
+  behavior:
+    internal:
+    - Public
+    container:
+    - Open
+  children:
+  - name: Domain1
+    filter:
+    - .*Domain1.*
+    behavior:
+      internal:
+      - Private
+      container:
+      - Open
+    children: 
+- name: CoreLayer
+  filter:
+  - .*Core.*
+  behavior:
+    internal:
+    - Public
+    container:
+    - Open
+  children:
+  - name: Core1
+    filter:
+    - .*Core1.*
+    behavior:
+      internal:
+      - Public
+      container:
+      - Open
+    children: 

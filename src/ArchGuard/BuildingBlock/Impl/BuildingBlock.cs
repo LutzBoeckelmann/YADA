@@ -7,10 +7,52 @@ using System.Text.RegularExpressions;
 
 using YADA.Analyzer;
 using YADA.ArchGuard.Behavior;
+using YADA.ArchGuard.Behavior.Impl;
 using YADA.ArchGuard.Feedback;
 
 namespace YADA.ArchGuard.BuildingBlock.Impl
 {
+
+    public interface IBehaviorDTO
+    {
+        List<string> Internal { get; set; }
+        List<string> Container { get; set; }
+    }
+    public interface IBuildingBlockDTO
+    {
+        string Name { get; set; }
+        List<string> Filter { get; set; }
+        IBehaviorDTO Behavior { get; set; }
+
+        List<IBuildingBlockDTO> Children { get; set; }
+    }
+    public static class BuildingBlockFactory
+    {
+        public static IBuildingBlock Get(IBuildingBlockDTO buildingBlockDTO)
+        {
+            return InternalCreateBuildingBlock(buildingBlockDTO, null);
+        }
+        private static BuildingBlock InternalCreateBuildingBlock(IBuildingBlockDTO buildingBlockDTO, BuildingBlock parent)
+        {
+            BuildingBlock root = new BuildingBlock(parent,
+                new BuildingBlockDescription(buildingBlockDTO.Name, new BuildingBlockTypeFilter(buildingBlockDTO.Filter)),
+                new BuildingBlockBehavior(buildingBlockDTO.Behavior.Container.ToArray(), buildingBlockDTO.Behavior.Internal.ToArray()));
+            if (buildingBlockDTO.Children != null)
+            {
+                foreach (var child in buildingBlockDTO.Children)
+                {
+                    var childblock = InternalCreateBuildingBlock(child, root);
+                    root.AddChild(childblock);
+                }
+            }
+
+            return root;
+        }
+
+
+    }
+
+
     /// <summary>
     /// Responsibilities
     /// 
@@ -21,6 +63,46 @@ namespace YADA.ArchGuard.BuildingBlock.Impl
     /// Todo introduce a blockage between both usages. After creation
     /// the BuildingBlocks are readonly.
     /// </summary>
+
+
+    public class BuildingBlockComparer
+    {
+        public static bool Compare(BuildingBlock one, BuildingBlock other)
+        {
+            if(one.Description.Abstract != other.Description.Abstract)
+            {
+                return false;
+            }
+            if (!Enumerable.SequenceEqual(one.Description.TypeFilter.AsString, other.Description.TypeFilter.AsString ) )
+            {
+                return false;
+            }
+            if(one.Description.Name != other.Description.Name)
+            {
+                return false;
+            }
+            if(!Enumerable.SequenceEqual(one.Behavior.ContainerBehavior.AsString, other.Behavior.ContainerBehavior.AsString))
+            {
+                return false;
+            }
+            if (!Enumerable.SequenceEqual(one.Behavior.InternalBehavior.AsString, other.Behavior.InternalBehavior.AsString))
+            {
+                return false; 
+            }
+            if(one.Children.Count != other.Children.Count)
+            { 
+                return false;
+            }
+            for(int i= 0; i< one.Children.Count; i++)
+            {
+                if(!Compare((BuildingBlock)one.Children[i], (BuildingBlock) other.Children[i]))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
 
     public class BuildingBlock : IBuildingBlock
     {
@@ -40,14 +122,15 @@ namespace YADA.ArchGuard.BuildingBlock.Impl
 
         public BuildingBlock AddChild(IBuildingBlockDescription dependency, IBuildingBlockBehavior behavior)
         {
-            if (!Description.Abstract)
-            {
-                throw new NotSupportedException("Can not add a child building block to a non abstract building block");
-            }
-
             var child = new BuildingBlock(this, dependency, behavior);
             m_Children.Add(child);
             return child;
+        }
+
+        public BuildingBlock AddChild(BuildingBlock buildingBlockChild)
+        {
+            m_Children.Add(buildingBlockChild);
+            return buildingBlockChild;
         }
 
         public BuildingBlock Clone(BuildingBlock parent)
@@ -75,7 +158,7 @@ namespace YADA.ArchGuard.BuildingBlock.Impl
 
             result.Reverse();
 
-            if (result.Count == 0 || result.First().Description.Abstract)
+            if (result.Count == 0 || result.First().Children.Count > 0)
             {
                 // error
                 return null; // better error indication needed
@@ -149,6 +232,7 @@ namespace YADA.ArchGuard.BuildingBlock.Impl
             return m_Children.IndexOf(buildingBlock as BuildingBlock);
         }
 
+    
     }
 }
 

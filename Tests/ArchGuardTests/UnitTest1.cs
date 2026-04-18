@@ -1,7 +1,9 @@
 // Copyright (c) Lutz Boeckelmann and Contributors. MIT License - see LICENSE.txt
 
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using ArchGuardReader;
 using NUnit.Framework;
 using YADA.Analyzer;
 using YADA.ArchGuard;
@@ -14,9 +16,7 @@ namespace ArchMatcherTests
 {
     public class TestDataProvider
     {
-
-
-        public IBuildingBlock GetTestData()
+        public IBuildingBlock GetTestData2()
         {/*
             Layers: (Domain, Core, Infra)
                         Domain 
@@ -36,20 +36,20 @@ namespace ArchMatcherTests
 
                         */
 
-            BuildingBlock project = new BuildingBlock(null, new BuildingBlockDescription("root", new BuildingBlockTypeFilter(".*(Domain|Core|Infrastructure).*"), true), new BuildingBlockBehavior( new string[] { "Layer"}));
-            var domain = project.AddChild(new BuildingBlockDescription("DomainLayer", new BuildingBlockTypeFilter(".*Domain.*"), true), new BuildingBlockBehavior(new string[] { "Restricted" }));
-            domain.AddChild(new BuildingBlockDescription("Domain1", new BuildingBlockTypeFilter(".*Domain1.*"), false), new BuildingBlockBehavior(new string[] { "Open" }));
-            domain.AddChild(new BuildingBlockDescription("ExtCore2", new BuildingBlockTypeFilter(".*ExtCore2.*"), false), new BuildingBlockBehavior(new string[] { "Open" }, new string[] { "Extension" }));
+            BuildingBlock project = new BuildingBlock(null, new BuildingBlockDescription("root", new BuildingBlockTypeFilter(".*(Domain|Core|Infrastructure).*")), new BuildingBlockBehavior( new string[] { "Layer"}));
+            var domain = project.AddChild(new BuildingBlockDescription("DomainLayer", new BuildingBlockTypeFilter(".*Domain.*")), new BuildingBlockBehavior(new string[] { "Restricted" }));
+            domain.AddChild(new BuildingBlockDescription("Domain1", new BuildingBlockTypeFilter(".*Domain1.*")), new BuildingBlockBehavior(new string[] { "Open" }));
+            domain.AddChild(new BuildingBlockDescription("ExtCore2", new BuildingBlockTypeFilter(".*ExtCore2.*")), new BuildingBlockBehavior(new string[] { "Open" }, new string[] { "Extension" }));
 
-            var coreLayerBox = project.AddChild(new BuildingBlockDescription("CoreLayer", new BuildingBlockTypeFilter(".*(Core3|Core2|Core1).*"), true), new BuildingBlockBehavior(new string[] { "Layer" })); // unclear the structure is smelly
-            coreLayerBox.AddChild(new BuildingBlockDescription("Core3", new BuildingBlockTypeFilter(".*Core3.*"), false), new BuildingBlockBehavior(new string[] { "Restricted" }));
-            var lowerCoreLayer = coreLayerBox.AddChild(new BuildingBlockDescription("Core21", new BuildingBlockTypeFilter(".*(Core2|Core1).*"), true), new BuildingBlockBehavior(new string[] { "Open" }));
-            lowerCoreLayer.AddChild(new BuildingBlockDescription("Core1", new BuildingBlockTypeFilter(".*Core1.*"), false), new BuildingBlockBehavior(new string[] { "Open" }));
-            lowerCoreLayer.AddChild(new BuildingBlockDescription("Core2", new BuildingBlockTypeFilter(".*Core2.*"), false), new BuildingBlockBehavior(new string[] { "Open" }, new string[] { "Private" }));
-            var infra = project.AddChild(new BuildingBlockDescription("InfrastructureLayer", new BuildingBlockTypeFilter(".*Infrastructure.*"), true), new BuildingBlockBehavior(new string[] { "Restricted" }));
+            var coreLayerBox = project.AddChild(new BuildingBlockDescription("CoreLayer", new BuildingBlockTypeFilter(".*(Core3|Core2|Core1).*")), new BuildingBlockBehavior(new string[] { "Layer" })); // unclear the structure is smelly
+            coreLayerBox.AddChild(new BuildingBlockDescription("Core3", new BuildingBlockTypeFilter(".*Core3.*")), new BuildingBlockBehavior(new string[] { "Restricted" }));
+            var lowerCoreLayer = coreLayerBox.AddChild(new BuildingBlockDescription("Core21", new BuildingBlockTypeFilter(".*(Core2|Core1).*")), new BuildingBlockBehavior(new string[] { "Open" }));
+            lowerCoreLayer.AddChild(new BuildingBlockDescription("Core1", new BuildingBlockTypeFilter(".*Core1.*")), new BuildingBlockBehavior(new string[] { "Open" }));
+            lowerCoreLayer.AddChild(new BuildingBlockDescription("Core2", new BuildingBlockTypeFilter(".*Core2.*")), new BuildingBlockBehavior(new string[] { "Open" }, new string[] { "Private" }));
+            var infra = project.AddChild(new BuildingBlockDescription("InfrastructureLayer", new BuildingBlockTypeFilter(".*Infrastructure.*")), new BuildingBlockBehavior(new string[] { "Restricted" }));
 
-            var infraSub1 = infra.AddChild(new BuildingBlockDescription("Sub1", new BuildingBlockTypeFilter(".*Infrastructure.Sub1.*"), false), new BuildingBlockBehavior(new string[] { "Restricted" }));
-            var infraSub2 = infra.AddChild(new BuildingBlockDescription("Sub2", new BuildingBlockTypeFilter(".*Infrastructure.Sub2.*"), false), new BuildingBlockBehavior());
+            var infraSub1 = infra.AddChild(new BuildingBlockDescription("Sub1", new BuildingBlockTypeFilter(".*Infrastructure.Sub1.*")), new BuildingBlockBehavior(new string[] { "Restricted" }));
+            var infraSub2 = infra.AddChild(new BuildingBlockDescription("Sub2", new BuildingBlockTypeFilter(".*Infrastructure.Sub2.*")), new BuildingBlockBehavior());
 
 
             return project;
@@ -99,9 +99,7 @@ namespace ArchMatcherTests
         [Test]
         public void Test2()
         {
-            var sut = new TestDataProvider();
-
-            var testProject = sut.GetTestData() as BuildingBlock;
+            var testProject = GetTestData("TestProject.yaml");
             ITypeDescription core1 = new TypeDescriptionFake("CoreLayer.Core1", "Blub");
             ITypeDescription type3 = new TypeDescriptionFake("CoreLayer.Core2", "Blub");
             var typeMatcher = new TypeMatcher(testProject);
@@ -116,9 +114,7 @@ namespace ArchMatcherTests
         [Test]
         public void Test1()
         {
-            var sut = new TestDataProvider();
-
-            var testProject = sut.GetTestData();
+            var testProject = GetTestData("TestProject.yaml");
             ITypeDescription domain1 = new TypeDescriptionFake("Domain.Domain1", "Blub");
 
             ITypeDescription core1 = new TypeDescriptionFake("CoreLayer.Core1", "Blub");
@@ -181,9 +177,7 @@ namespace ArchMatcherTests
         [Test]
         public void Test3()
         {
-            var sut = new TestDataProvider();
-
-            var testProject = sut.GetTestData() as BuildingBlock;
+            var testProject = GetTestData("TestProject.yaml");
             var domain1 = new TypeDescriptionFake("Domain.Domain1", "Blub");
 
             var core1 = new TypeDescriptionFake("CoreLayer.Core1", "Blub");
@@ -214,23 +208,129 @@ namespace ArchMatcherTests
         }
 
 
-        private BuildingBlock GetSmallProject()
+        private BuildingBlock GetTestData(string projectFile)
         {
-            BuildingBlock project = new BuildingBlock(null, new BuildingBlockDescription("root", new BuildingBlockTypeFilter(".*(Domain|Core).*"), true), new BuildingBlockBehavior(new string[] { "Layer" }));
-            var domain = project.AddChild(new BuildingBlockDescription("DomainLayer", new BuildingBlockTypeFilter(".*Domain.*"), true), new BuildingBlockBehavior(new string[] { "Open" }));
-            domain.AddChild(new BuildingBlockDescription("Domain1", new BuildingBlockTypeFilter(".*Domain1.*"), false), new BuildingBlockBehavior(new string[] { "Open" }, new string[] { "Private" }));
-            var coreLayer = project.AddChild(new BuildingBlockDescription("CoreLayer", new BuildingBlockTypeFilter(".*Core.*"), true), new BuildingBlockBehavior(new string[] { "Open" })); // unclear the structure is smelly
-            coreLayer.AddChild(new BuildingBlockDescription("Core1", new BuildingBlockTypeFilter(".*Core1.*"), false), new BuildingBlockBehavior(new string[] { "Open" }));
+            var reader = new YamlProject();
+            var yamlProject = reader.ReadProject(Path.Combine(TestContext.CurrentContext.TestDirectory, "_Projects", projectFile));
+            var project = BuildingBlockFactory.Get(yamlProject.Create());
+         
+            return (BuildingBlock)project;
+        }
+
+        private BuildingBlock GetSmallProject2()
+        {
+            BuildingBlock project = new BuildingBlock(null, new BuildingBlockDescription("root", new BuildingBlockTypeFilter(".*(Domain|Core).*")), new BuildingBlockBehavior(new string[] { "Layer" }));
+            var domain = project.AddChild(new BuildingBlockDescription("DomainLayer", new BuildingBlockTypeFilter(".*Domain.*")), new BuildingBlockBehavior(new string[] { "Open" }));
+            domain.AddChild(new BuildingBlockDescription("Domain1", new BuildingBlockTypeFilter(".*Domain1.*")), new BuildingBlockBehavior(new string[] { "Open" }, new string[] { "Private" }));
+            var coreLayer = project.AddChild(new BuildingBlockDescription("CoreLayer", new BuildingBlockTypeFilter(".*Core.*")), new BuildingBlockBehavior(new string[] { "Open" })); // unclear the structure is smelly
+            coreLayer.AddChild(new BuildingBlockDescription("Core1", new BuildingBlockTypeFilter(".*Core1.*")), new BuildingBlockBehavior(new string[] { "Open" }));
 
             return project;
         }
 
+     
+        [Test]
+        public void ReaderTest()
+        {
+            var sut = new YamlProject(); 
+            var dto = sut.ReadProject(Path.Combine(TestContext.CurrentContext.TestDirectory, "_Projects", "TestProject.yaml"));
+            
+            Assert.NotNull(dto);            
+        }
+
+        [Test]
+        public void WriteTest()
+        {
+            var sut = new YamlProject();
+
+            var dto = new YamlBuildingBlockDTO()
+            {
+                name = "project",
+                filter = new List<string>() { ".*(Domain|Core).*" },
+                behavior = new YamlBehaviorDTO()
+                {
+                    Container = new List<string>() { "Public" },
+                    Internal = new List<string>() { "Layer" }
+                },
+                children = new List<YamlBuildingBlockDTO>()
+                {
+                    new YamlBuildingBlockDTO() {
+                        name = "DomainLayer",
+                        filter = new List<string>() { ".*Domain.*" },
+                        behavior = new YamlBehaviorDTO()
+                        {
+                            Container = new List<string>() { "Public" },
+                            Internal = new List<string>() { "Restricted" }
+                        },
+                        children = new List<YamlBuildingBlockDTO>
+                        {
+                            new YamlBuildingBlockDTO(){
+                                name = "Domain1",
+                                filter = new List<string> () {".*Domain.DomainSubsystem.*" },
+                                behavior = new YamlBehaviorDTO
+                                {
+                                    Container = new List<string>() { "Open" },
+                                    Internal = new List<string>() { "Public" }
+                                }
+                            },
+
+                            new YamlBuildingBlockDTO {
+                                name = "ExtCore1",
+                                filter = new List<string> { ".*Domain.SubsystemA.*" },
+                                behavior = new YamlBehaviorDTO
+                                {
+                                    Container = new List<string>() { "Open", "Extension" },
+                                    Internal = new List<string>() { "Public" }
+                                }
+                            }
+                        }
+                    }
+
+                }
+            };
+
+            var input = dto.Create();
+            var yamlProject = sut.SerializeProject(input);
+                        
+            Assert.NotNull(dto);
+        }
+
+
+        [Test]
+        public void RoundTrip()
+        {
+            var sut = new YamlProject();
+
+            var yaml = File.ReadAllText(Path.Combine(TestContext.CurrentContext.TestDirectory, "_Projects", "TestProject.yaml"));
+            var input = sut.DeserializeProject(yaml).Create();
+            
+            var root = BuildingBlockFactory.Get(input);
+            var output = sut.Get((BuildingBlock)root);
+            
+            var serialized = sut.SerializeProject(output);
+            
+            Assert.AreEqual(yaml, serialized);
+
+        }
+
+        [Test]
+        public void HandCraftedProject_ExportedYamlProject_AreEqual()
+        {
+            var project = GetTestData("SmallProject.yaml");
+            var p2 = GetSmallProject2();
+
+            var result = BuildingBlockComparer.Compare(project, p2);
+            Assert.True(result);
+        }
+
+
         [Test]
         public void Test4()
         {
-            var project = GetSmallProject();
-            var domain = new TypeDescriptionFake("Domain.Domain1", "Blub");
+            var project = GetTestData("SmallProject.yaml");
+            
 
+            var domain = new TypeDescriptionFake("Domain.Domain1", "Blub");
             var core = new TypeDescriptionFake("CoreLayer.Core1", "Blub");
 
             core.Add(domain);

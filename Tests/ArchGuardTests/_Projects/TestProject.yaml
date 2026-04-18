@@ -1,0 +1,108 @@
+name: root
+filter:
+- .*(Domain|Core|Infrastructure).*
+behavior:
+  internal:
+  - Public
+  container:
+  - Layer
+children:
+- name: DomainLayer
+  filter:
+  - .*Domain.*
+  behavior:
+    internal:
+    - Public
+    container:
+    - Restricted
+  children:
+  - name: Domain1
+    filter:
+    - .*Domain1.*
+    behavior:
+      internal:
+      - Public
+      container:
+      - Open
+    children: 
+  - name: ExtCore2
+    filter:
+    - .*ExtCore2.*
+    behavior:
+      internal:
+      - Extension
+      container:
+      - Open
+    children: 
+- name: CoreLayer
+  filter:
+  - .*(Core3|Core2|Core1).*
+  behavior:
+    internal:
+    - Public
+    container:
+    - Layer
+  children:
+  - name: Core3
+    filter:
+    - .*Core3.*
+    behavior:
+      internal:
+      - Public
+      container:
+      - Restricted
+    children: 
+  - name: Core21
+    filter:
+    - .*(Core2|Core1).*
+    behavior:
+      internal:
+      - Public
+      container:
+      - Open
+    children:
+    - name: Core1
+      filter:
+      - .*Core1.*
+      behavior:
+        internal:
+        - Public
+        container:
+        - Open
+      children: 
+    - name: Core2
+      filter:
+      - .*Core2.*
+      behavior:
+        internal:
+        - Private
+        container:
+        - Open
+      children: 
+- name: InfrastructureLayer
+  filter:
+  - .*Infrastructure.*
+  behavior:
+    internal:
+    - Public
+    container:
+    - Restricted
+  children:
+  - name: Sub1
+    filter:
+    - .*Infrastructure.Sub1.*
+    behavior:
+      internal:
+      - Public
+      container:
+      - Restricted
+    children: 
+  - name: Sub2
+    filter:
+    - .*Infrastructure.Sub2.*
+    behavior:
+      internal:
+      - Public
+      container:
+      - Open
+    children: 
